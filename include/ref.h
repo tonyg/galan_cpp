@@ -7,16 +7,20 @@
 #define WANT_REF_DEBUG_CODE	0
 #define WANT_REF_USING_RTTI	1
 
-#include <iostream.h>
+#include <iostream>
+#include <stdexcept>
+
 #include <assert.h>
 
 #if WANT_REF_USING_RTTI
 #include <typeinfo>
 #endif
 
-class InvalidDowncastException {
+class InvalidDowncastException: public std::runtime_error {
 public:
-  InvalidDowncastException() {}
+  InvalidDowncastException()
+    : std::runtime_error("InvalidDowncastException")
+  {}
 };
 
 template <class T> class c_auto_ptr {

@@ -4,17 +4,16 @@ bin_PROGRAMS = galan
 EXTRA_DIST =
 
 galan_SOURCES = \
-	model.cc registry.cc opossum.cc \
+	model.cc registry.cc \
 	generator.cc macro.cc \
 	clock.cc event.cc \
 	plugin.cc main.cc \
-	msgbox.cc MainWindow.cc
+	msgbox.cc
 
-galan_LDFLAGS = -rdynamic `gtkmm-config --libs`
-galan_LDADD = @GTK_LIBS@ -ldl
+galan_LDFLAGS = -rdynamic
+galan_LDADD = @GLIB_LIBS@ -ldl
 
 CXXFLAGS = -O0 -g
 
 INCLUDES = \
-	-I.. -I$(srcdir)/../include @GTK_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\" \
-	`gtkmm-config --cflags`
+	-I.. -I$(srcdir)/../include @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"

@@ -1,33 +1,34 @@
 #include "event.h"
 #include "clock.h"
 
-priority_queue<Event> Event::event_q;
+priority_queue<Event *> Event::event_q;
 
 sampletime_t Event::mainloop() {
   while (event_q.size()) {
-    Event e = event_q.top();
+    Event *e = event_q.top();
 
-    sampletime_t delta = e.time - Clock::now();
+    sampletime_t delta = e->time - Clock::now();
     if (delta > 0) {
       delta = MIN(delta, Clock::max_step());
       return delta;
     }
 
-    IFDEBUG(cerr << "Sending event " << e << endl);
-    e.send();
+    IFDEBUG(cerr << "Sending event " << *e << endl);
+    e->send();
+    delete e;
   }
 
   return Clock::max_step();
 }
 
 void Event::purge_references_to(EventHandler *handler) {
-  priority_queue<Event> other;
+  priority_queue<Event *> other;
 
   while (event_q.size()) {
-    Event e = event_q.top();
+    Event *e = event_q.top();
     event_q.pop();
 
-    if (e.target != handler)
+    if (e->target != handler)
       other.push(e);
   }
 
@@ -36,7 +37,7 @@ void Event::purge_references_to(EventHandler *handler) {
 
 void Event::post() {
   IFDEBUG(cerr << "Posting event " << *this << endl);
-  event_q.push(*this);
+  event_q.push(this);
 }
 
 void Event::send() {

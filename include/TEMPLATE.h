@@ -8,8 +8,8 @@
 class CLASSNAME {
 private:
   CLASSNAME() {}
-  CLASSNAME(CLASSNAME const &from) {}
-  CLASSNAME const &operator =(CLASSNAME const &from) {}
+  CLASSNAME(CLASSNAME const &from);			// deliberately unimplemented
+  CLASSNAME const &operator =(CLASSNAME const &from);	// deliberately unimplemented
 
 public:
 };

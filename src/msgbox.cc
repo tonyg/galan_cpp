@@ -16,6 +16,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+#if 0
+// I'll change this to a Qt implementation shortly.
+
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
@@ -133,3 +136,5 @@ MsgBoxResponse popup_msgbox(char *title, MsgBoxResponse buttons,
 
   return popup_dialog(title, buttons, timeout_millis, def, label, NULL, NULL);
 }
+
+#endif

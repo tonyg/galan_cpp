@@ -14,22 +14,20 @@
 #include "plugin.h"
 #include "macro.h"
 
-#include "MainWindow.h"
-
 class DefaultClock: public Clock {
 private:
   guint timeout_tag;
 
 public:
   DefaultClock(): Clock(), timeout_tag(0) {
-    clockManager.register_clock(this);
-    clockManager.set_default_clock(this);
-    clockManager.select_clock(this);
+    ClockManager::instance()->register_clock(this);
+    ClockManager::instance()->set_default_clock(this);
+    ClockManager::instance()->select_clock(this);
   }
 
   virtual ~DefaultClock() {
-    clockManager.set_default_clock(NULL);
-    clockManager.stop_clock();
+    ClockManager::instance()->set_default_clock(NULL);
+    ClockManager::instance()->stop_clock();
   }
 
   virtual string const &getName() const {
@@ -43,7 +41,7 @@ public:
 
 void DefaultClock::disable() {
   IFDEBUG(cerr << "Disabling DefaultClock" << endl);
-  gtk_timeout_remove(timeout_tag);
+//    gtk_timeout_remove(timeout_tag);
 }
 
 static gint timeout_handler(gpointer data) {
@@ -54,21 +52,16 @@ static gint timeout_handler(gpointer data) {
 
 void DefaultClock::enable() {
   IFDEBUG(cerr << "Enabling DefaultClock" << endl);
-  timeout_tag = gtk_timeout_add(1000 / (Sample::rate / Clock::max_step()),
-				timeout_handler,
-				NULL);
+//    timeout_tag = gtk_timeout_add(1000 / (Sample::rate / Clock::max_step()),
+//  				timeout_handler,
+//  				NULL);
 }
 
 int main(int argc, char *argv[]) {
-  Gtk::Main kit(argc, argv);
-
-  MainWindow mainWindow;
   DefaultClock defaultClock;
 
   Macro::initialise();
-
   Plugin::loadPlugins();
 
-  kit.run();
   return EXIT_SUCCESS;
 }

@@ -30,6 +30,12 @@
 # define M_PI		3.14159265358979323846	/* pi */
 #endif
 
+/**
+ * Used like assert, except for non-fatal errors.
+ *
+ * @param test a test expression that, if it evaluates to false, will
+ * cause the current subroutine to return.
+ **/
 #define RETURN_UNLESS(test)	G_STMT_START {			\
   if (!(test)) {						\
     g_warning("file %s line %d: failed RETURN_UNLESS `%s'",	\
@@ -40,6 +46,13 @@
     return;							\
   }; }G_STMT_END
 
+/**
+ * Used like assert, except for non-fatal errors.
+ *
+ * @param test a test expression that, if it evaluates to false, will
+ * cause the current subroutine to return 'val'.
+ * @param val the value to return if the test fails.
+ **/
 #define RETURN_VAL_UNLESS(test, val)	G_STMT_START {		\
   if (!(test)) {						\
     g_warning("file %s line %d: failed RETURN_VAL_UNLESS `%s'",	\

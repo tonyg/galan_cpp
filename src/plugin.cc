@@ -27,12 +27,12 @@
 Registry *Plugin::registry = new Registry();
 
 void Plugin::registerPlugin(string const &_author, string const &_title,
-			    string const &_version, plugin_callback_t const about = 0)
+			    string const &_version, string const &_description)
 {
   author = _author;
   title = _title;
   version = _version;
-  aboutCallback = about;
+  description = _description;
 
   IFDEBUG(cerr << "Registering plugin " << title << " (version " << version << ") by "
 	  << author <<endl);
@@ -41,7 +41,7 @@ void Plugin::registerPlugin(string const &_author, string const &_title,
   }
 }
 
-void Plugin::loadPlugin(string const &filename, string const &leafname) {
+void Plugin::loadPlugin(loaderResult_t &result, string const &filename, string const &leafname) {
   GModule *handle = g_module_open(filename.c_str(), (enum GModuleFlags) 0);
   Plugin *plugin;
   plugin_callback_t initializer;
@@ -61,12 +61,8 @@ void Plugin::loadPlugin(string const &filename, string const &leafname) {
   initstr = string(INITFUNC_PREFIX) + pluginname;
 
   if (!g_module_symbol(handle, initstr.c_str(), (gpointer *) &initializer)) {
-    popup_msgbox("Plugin Error", MSGBOX_OK, 0, MSGBOX_OK,
-		 "Plugin %s has no accessible initializer.\n"
-		 "(%s)\n"
-		 "This is most likely a bug in the plugin.\n"
-		 "Please report this to the author of the *PLUGIN*.",
-		 leafname.c_str(), initstr.c_str());
+    result.push_back(faultyPlugin(filename, pluginname,
+				  "Plugin is missing initializer (" + initstr + ")"));
     g_message("Error finding initializer for plugin %s", leafname.c_str());
     g_module_close(handle);
     return;
@@ -78,19 +74,19 @@ void Plugin::loadPlugin(string const &filename, string const &leafname) {
   /* Don't g_module_close(handle) because it will unload the .so */
 }
 
-bool Plugin::checkPluginValidity(string const &name) {
+bool Plugin::checkPluginValidity(loaderResult_t &result, string const &name) {
   struct stat sb;
 
   if (stat(name.c_str(), &sb) == -1)
     return false;
 
   if (S_ISDIR(sb.st_mode))
-    loadAllPlugins(name);
+    loadAllPlugins(result, name);
 
   return S_ISREG(sb.st_mode);
 }
 
-void Plugin::loadAllPlugins(string const &dir) {
+void Plugin::loadAllPlugins(loaderResult_t &result, string const &dir) {
   DIR *d = opendir(dir.c_str());
   struct dirent *de;
 
@@ -108,24 +104,27 @@ void Plugin::loadAllPlugins(string const &dir) {
 
     fullname = dir + G_DIR_SEPARATOR_S + de->d_name;
 
-    if (checkPluginValidity(fullname))
-      loadPlugin(fullname, string(de->d_name));
+    if (checkPluginValidity(result, fullname))
+      loadPlugin(result, fullname, string(de->d_name));
   }
 
   closedir(d);
 }
 
-void Plugin::loadPlugins(void) {
+Plugin::loaderResult_t Plugin::loadPlugins(void) {
   char *home;
   char *plugindir = getenv("GALAN_PLUGIN_DIR");
+  loaderResult_t result;
 
   if (plugindir != NULL)
-    loadAllPlugins(string(plugindir));
+    loadAllPlugins(result, string(plugindir));
   else
-    loadAllPlugins(string(SITE_PKGLIB_DIR G_DIR_SEPARATOR_S "plugins"));
+    loadAllPlugins(result, string(SITE_PKGLIB_DIR G_DIR_SEPARATOR_S "plugins"));
 
   home = getenv("HOME");
   if (home != NULL) {
-    loadAllPlugins(string(home) + HOMEDIR_SUFFIX);
+    loadAllPlugins(result, string(home) + HOMEDIR_SUFFIX);
   }
+
+  return result;
 }

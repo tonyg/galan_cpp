@@ -9,40 +9,53 @@
 
 #include "global.h"
 
-class View;	// forward
+class Model;
+class View;
 
+///////////////////////////////////////////////////////////////////////////
+
+/**
+ * Observable object. Has dependent View instances, which are notified
+ * of (abstract) changes in thie object's state by calls to
+ * notifyViews().
+ **/
 class Model {
- private:
-  typedef set<View *> dependents_t;
-  dependents_t dependents;
-
-  Model(Model const &from) {}
-  Model &operator =(Model const &from) {}
-
  public:
+  typedef set<View *> dependents_t;
+
   Model() {}
   virtual ~Model() {}
 
-  virtual void addDependent(View &v);
-  virtual void removeDependent(View &v);
-  virtual bool hasDependent(View &v) const;
-  virtual dependents_t const &getDependents() const;
+  virtual void addDependent(View &v);			///< Install a new dependent
+  virtual void removeDependent(View &v);		///< Remove a dependent
+  virtual bool hasDependent(View &v) const;		///< "Is v a dependent of this?"
+  virtual dependents_t const &getDependents() const;	///< Retrieve all dependents of this
 
-  virtual void notifyViews();
+  virtual void notifyViews();				///< Call View::modelChanged() on deps.
+
+ private:
+  dependents_t dependents;		///< All dependents of this.
+
+  Model(Model const &from);		//unimpl
+  Model &operator =(Model const &from);	//unimpl
 };
 
 class View {
- private:
-  Model &model;
-
-  View(View const &from): model(from.model) {}
-  View &operator =(View const &from) {}
-
  public:
   View(Model &_model);
   virtual ~View();
 
+  /**
+   * Called whenever our Model has changed (indirectly, via
+   * Model::notifyViews()).
+   **/
   virtual void modelChanged() = 0;
+
+ private:
+  Model &model;				///< Our model.
+
+  View(View const &from);		//unimpl
+  View &operator =(View const &from);	//unimpl
 };
 
 #endif

@@ -69,6 +69,12 @@ Registry::leaf_t Registry::find_leaf(string const &path, bool create_missing_nod
 bool Registry::bind(string const &path, Registrable *what, bool override = false) {
   leaf_t leaf = find_leaf(path, true);
   Registry *parent = leaf.first;
+
+  if (parent == 0) {
+    // Refuse, because some "intermediate" node wasn't a Registry.
+    return false;
+  }
+
   string const &child = leaf.second;
   iterator i = parent->children.find(child);
   bool present = (i != parent->children.end());
@@ -89,6 +95,12 @@ bool Registry::bind(string const &path, Registrable *what, bool override = false
 bool Registry::unbind(string const &path) {
   leaf_t leaf = find_leaf(path);
   Registry *parent = leaf.first;
+
+  if (parent == 0) {
+    // Refuse, because some "intermediate" node wasn't a Registry.
+    return false;
+  }
+
   string const &child = leaf.second;
   
   RETURN_VAL_UNLESS(parent, false);
@@ -116,6 +128,12 @@ bool Registry::unbind(Registrable *what) {
 Registrable *Registry::lookup(string const &path) {
   leaf_t leaf = find_leaf(path);
   Registry *parent = leaf.first;
+
+  if (parent == 0) {
+    // Intermediate node was not a Registry.
+    return 0;
+  }
+
   string const &child = leaf.second;
 
   RETURN_VAL_UNLESS(parent, 0);

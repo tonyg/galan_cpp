@@ -13,7 +13,6 @@
 #include "generator.h"
 #include "sample.h"
 #include "plugin.h"
-#include "msgbox.h"
 
 static GeneratorClass *pluginClass;
 
@@ -41,13 +40,9 @@ bool Test::MainOutput(RealtimeOutputDescriptor const &desc, SampleBuf *buf) {
   return read_input(main, buf);
 }
 
-void aboutFn(Plugin &plugin) {
-  popup_msgbox("About Test Plugin", MSGBOX_DISMISS, 0, MSGBOX_DISMISS,
-	       "This plugin is a stub, do-nothing plugin.");
-}
-
 PUBLIC_SYMBOL void init_plugin_Test(Plugin &plugin) {
-  plugin.registerPlugin("Author's Name", "Test Plugin", "1.0", aboutFn);
+  plugin.registerPlugin("Author's Name", "Test Plugin", "1.0",
+			"This plugin is a stub, do-nothing plugin.");
 
   pluginClass = new GeneratorClass(&Test::factory, "Main/Test Plugin");
 

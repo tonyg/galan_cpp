@@ -1,5 +1,4 @@
-/* Template gAlan plugin file. Please distribute your plugins according to
-   the GNU General Public License! (You don't have to, but I'd prefer it.) */
+/* OSS Output Plugin */
 
 #include <stdlib.h>
 #include <string.h>
@@ -22,7 +21,6 @@
 #include "generator.h"
 #include "sample.h"
 #include "plugin.h"
-#include "msgbox.h"
 #include "clock.h"
 
 #include <set>
@@ -80,11 +78,11 @@ OssOutputClock::OssOutputClock(string const &dsppath)
     audiofd = -1;
   }
 
-  clockManager.register_clock(this);
+  ClockManager::instance()->register_clock(this);
 }
 
 OssOutputClock::~OssOutputClock() {
-  clockManager.deregister_clock(this);
+  ClockManager::instance()->deregister_clock(this);
   close(audiofd);
 }
 
@@ -209,13 +207,9 @@ OssOutput::~OssOutput() {
 
 ///////////////////////////////////////////////////////////////////////////
 
-void aboutFn(Plugin &plugin) {
-  popup_msgbox("About OSS Output Plugin", MSGBOX_DISMISS, 0, MSGBOX_DISMISS,
-	       "Sends input data to /dev/dsp");
-}
-
 PUBLIC_SYMBOL void init_plugin_OssOutput(Plugin &plugin) {
-  plugin.registerPlugin("Tony Garnock-Jones", "OSS Output Plugin", "1.0", aboutFn);
+  plugin.registerPlugin("Tony Garnock-Jones", "OSS Output Plugin", "1.0",
+			"Sends input data to /dev/dsp");
 
   pluginClass = new GeneratorClass(&OssOutput::factory, "Output/OSS");
 

@@ -1,3 +1,4 @@
+dnl -*- shell-script -*-
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/main.cc)
 AM_INIT_AUTOMAKE(galan, 0.4.0)
@@ -30,14 +31,24 @@ dnl AC_CHECK_HEADER(esd.h, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} esd_output.so")
 dnl Feature tests
 dnl ===========================================================================
 
-AM_PATH_GTK(1.2.0, ,
-	    AC_MSG_ERROR(Cannot find GTK: is gtk-config in path?))
+AC_MSG_CHECKING(for \$QTDIR)
+if test "x$QTDIR" = "x"; then
+    AC_MSG_ERROR(\$QTDIR not set - please set it to where you installed Qt v2.x)
+fi
+AC_SUBST(QTDIR)
+AC_MSG_RESULT($QTDIR)
+
+AM_PATH_GLIB(1.2.0, , AC_MSG_ERROR(Cannot find glib: is glib-config in path?), gmodule)
 
 dnl Only use -Wall if we have gcc
+AC_MSG_CHECKING(to see if we want to use GCC specific compiler flags)
 if test "x$GCC" = "xyes"; then
+  AC_MSG_RESULT([yes, we do])
   if test -z "`echo "$CFLAGS" | grep "\-Wall" 2> /dev/null`" ; then
     CFLAGS="$CFLAGS -Wall"
   fi
+else
+  AC_MSG_RESULT([no, we\'re not using GCC])
 fi
 
 AC_OUTPUT(Makefile src/Makefile plugins/Makefile tests/Makefile galan.spec)

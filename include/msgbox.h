@@ -31,19 +31,31 @@ typedef enum MsgBoxResponse {
 
 typedef void (*MsgBoxResponseHandler)(MsgBoxResponse action_taken, gpointer userdata);
 
-/* Pops up a message box displaying the text. If def != MSGBOX_NONE,
-   the corresponding button is made the default selection. If
-   timeout_millis is non-zero, then after that length of time, the
-   default action will be taken. If no default is defined, the timeout
-   has no effect. */
+/**
+ * Pops up a message box displaying the text. If def != MSGBOX_NONE,
+ * the corresponding button is made the default selection. If
+ * timeout_millis is non-zero, then after that length of time, the
+ * default action will be taken. If no default is defined, the timeout
+ * has no effect.
+ *
+ * @param title the title of the message box
+ * @param buttons the buttons to display
+ * @param timeout_millis timeout in milliseconds
+ * @param def the default response to return if we time out
+ * @param format a printf-style format string
+ * @return the button selected, or 'def' if we time out
+ **/
 extern MsgBoxResponse popup_msgbox(char *title, MsgBoxResponse buttons,
 				   gint timeout_millis, MsgBoxResponse def,
 				   char *format, ...);
 
+#if 0
+// GTK-specific, here. May change to Qt?
 extern MsgBoxResponse popup_dialog(char *title, MsgBoxResponse buttons,
 				   gint timeout_millis, MsgBoxResponse def,
 				   GtkWidget *contents,
 				   MsgBoxResponseHandler handler,
 				   gpointer userdata);
+#endif
 
 #endif

@@ -8,3 +8,6 @@ SUBDIRS = src plugins tests
 
 tags:
 	etags `find . -name "*.h" -o -name "*.c" -o -name "*.cc"`
+
+clean:
+	make -C doc clean

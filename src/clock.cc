@@ -1,7 +1,5 @@
 #include "clock.h"
 
-ClockManager clockManager;
-
 sampletime_t Clock::time_now = 0;
 sampletime_t Clock::max_realtime_step = 1024;
 list<RealtimeHandler *> Clock::realtime_fns;
@@ -41,6 +39,17 @@ void Clock::advance(sampletime_t remaining) {
 
     time_now += delta;
   }
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+ClockManager *ClockManager::_instance = 0;
+
+ClockManager *ClockManager::instance() {
+  if (_instance == 0) {
+    _instance = new ClockManager();
+  }
+  return _instance;
 }
 
 void ClockManager::register_clock(Clock *clock) {
