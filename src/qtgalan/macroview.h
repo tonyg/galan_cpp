@@ -33,7 +33,9 @@ public:
   //@}
 
 private:
-  QCanvasItem *topItemAt(QPoint const &p);
+  QCanvasItemList itemsAt(QPoint p);
+  QCanvasItem *topItemAt(QPoint p);
+
   void setSelection(QCanvasItem *sel);
   void updateHalo();
 
@@ -55,9 +57,10 @@ private:
   };
 
   enum ItemDepth {
-    LINK_DEPTH = 0,
-    ITEM_DEPTH = 1,
-    HALO_DEPTH = 2
+    LINK_HEIGHT = 0,
+    ITEM_HEIGHT = 1,
+    HALO_HEIGHT = 2,
+    SELECTION_HEIGHT = 3
   };
 
   Galan::Macro *macro;

@@ -4,12 +4,14 @@
 
 #include "macroview.h"
 
+#include <qpopupmenu.h>
+
 GALAN_USE_NAMESPACE
 
 MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   : QCanvasView(0, parent, name, f),
     macro(_macro),
-    c(new QCanvas(1024, 1024)),
+    c(new QCanvas(2048, 2048)),
     halo(new QCanvasRectangle(c)),
     selection(0),
     linkLine(0),
@@ -19,12 +21,19 @@ MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
 
   halo->setBrush(QBrush(NoBrush));
   halo->setPen(QPen(Qt::white, 3));
-  halo->setZ(HALO_DEPTH);
+  halo->setZ(HALO_HEIGHT);
+  // Keep the halo hidden until a selection comes along.
 
   QCanvasPolygonalItem *r = new QCanvasRectangle(10, 10, 30, 20, c);
   r->setBrush(Qt::yellow);
   r->setPen(Qt::white);
-  r->setZ(ITEM_DEPTH);
+  r->setZ(ITEM_HEIGHT);
+  r->show();
+
+  r = new QCanvasRectangle(12, 12, 30, 20, c);
+  r->setBrush(Qt::blue);
+  r->setPen(Qt::white);
+  r->setZ(ITEM_HEIGHT);
   r->show();
 
   setCanvas(c);
@@ -34,12 +43,24 @@ MacroView::~MacroView() {
   delete c;
 }
 
-QCanvasItem *MacroView::topItemAt(QPoint const &p) {
+QCanvasItemList MacroView::itemsAt(QPoint p) {
+  QCanvasItemList l = c->collisions(p);
+  QCanvasItemList r;
+  for (QCanvasItemList::Iterator i = l.begin(); i != l.end(); i++) {
+    if ((*i)->z() == ITEM_HEIGHT || (*i)->z() == SELECTION_HEIGHT) {
+      // We only want items (so exclude lines and the halo)
+      r.append(*i);
+    }
+  }
+  return r;
+}
+
+QCanvasItem *MacroView::topItemAt(QPoint p) {
   QCanvasItemList l = c->collisions(p);
   for (QCanvasItemList::Iterator i = l.begin();
        i != l.end();
        i++) {
-    if ((*i)->z() == ITEM_DEPTH) {
+    if ((*i)->z() == ITEM_HEIGHT || (*i)->z() == SELECTION_HEIGHT) {
       // We only want items (so exclude lines and the halo)
       return (*i);
     }
@@ -48,7 +69,9 @@ QCanvasItem *MacroView::topItemAt(QPoint const &p) {
 }
 
 void MacroView::setSelection(QCanvasItem *sel) {
+  if (selection) selection->setZ(ITEM_HEIGHT);
   selection = sel;
+  if (selection) selection->setZ(SELECTION_HEIGHT);
   updateHalo();
 }
 
@@ -92,7 +115,31 @@ void MacroView::moveItem(QMouseEvent *evt) {
 }
 
 void MacroView::popupMenu(QMouseEvent *evt) {
-  cerr << "UNIMPLEMENTED: MacroView::popupMenu" << endl;
+  QCanvasItemList items = itemsAt(evt->pos());
+
+  QPopupMenu newMenu(this);
+  newMenu.insertItem("Placeholder", 0, "");
+
+  QPopupMenu menu(this);
+  menu.insertItem("New", &newMenu);
+
+  if (!items.isEmpty()) {
+    menu.insertSeparator();
+  }
+
+  int counter = 0;
+  for (QCanvasItemList::Iterator i = items.begin();
+       i != items.end();
+       i++) {
+    QPopupMenu *itemMenu = new QPopupMenu(&menu);
+    itemMenu->insertItem("Placeholder", 0, "");
+
+    QString msg;
+    msg.sprintf("Item %d", counter++);
+    menu.insertItem(msg, itemMenu);
+  }
+
+  menu.exec(evt->globalPos(), items.isEmpty() ? 0 : 2);
 }
 
 void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
@@ -115,7 +162,7 @@ void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
 	  linkLine = new QCanvasLine(c);
 	  linkLine->setPoints(startPoint.x(), startPoint.y(), evt->x(), evt->y());
 	  linkLine->setPen(Qt::white);
-	  linkLine->setZ(LINK_DEPTH);
+	  linkLine->setZ(LINK_HEIGHT);
 	  linkLine->show();
 	  editState = DRAGGING_LINK;
 	}
