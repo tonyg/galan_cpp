@@ -106,7 +106,7 @@ public:
   void assign(SampleBuf const &from) {
     if (length != from.length)
       resize(from.length);
-    memcpy(buffer, from.buffer, length);
+    memcpy(buffer, from.buffer, sizeof(Sample) * length);
   }
 
   /**
@@ -182,7 +182,7 @@ public:
 
     if (newlen >= length) {
       memcpy(n, buffer, sizeof(Sample) * length);
-      memset(n + length, 0, newlen - length);
+      memset(n + length, 0, sizeof(Sample) * (newlen - length));
     } else {
       memcpy(n, buffer, sizeof(Sample) * newlen);
     }
