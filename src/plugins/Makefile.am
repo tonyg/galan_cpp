@@ -2,6 +2,7 @@
 
 #EXTRA_DIST = TEMPLATE.cc
 
+pkglibdir = @PKGLIB_DIRECTORY@
 plugindir = $(pkglibdir)/plugins
 
 # the configure variable OPTIONAL_PLUGINS consists of a (possibly

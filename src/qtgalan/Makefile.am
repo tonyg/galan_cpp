@@ -1,5 +1,8 @@
 ## Process this file with automake to produce Makefile.in
 
+pkglibdir = @PKGLIB_DIRECTORY@
+pkgdatadir = @PKGDATA_DIRECTORY@
+
 MOC=@QTDIR@/bin/moc
 UIC=@QTDIR@/bin/uic
 
@@ -64,9 +67,14 @@ BUILT_SOURCES= \
 	SelectClock_base.h \
 	IconLinkEditor_base.h
 
-%_base.cc %_base.h: %.ui
-	$(UIC) -o $*_base.h $*.ui
-	$(UIC) -o $*_base.cc -i $*_base.h $*.ui
+EXTRA_qtgalan_SOURCES = \
+	PluginInfo.ui \
+	SelectClock.ui \
+	IconLinkEditor.ui
+
+%_base.cc %_base.h: $(srcdir)/%.ui
+	$(UIC) -o $*_base.h $(srcdir)/$*.ui
+	$(UIC) -o $*_base.cc -i $*_base.h $(srcdir)/$*.ui
 
 # Use this target (by hand) to generate implementation stubs for a new
 # .ui file. For example, say you create foo.ui, and want to work with

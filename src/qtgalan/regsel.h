@@ -17,10 +17,10 @@ public:
   virtual ~RegistrySelectionMenu();
 
 signals:
-  void itemSelected(Galan::Registrable const *item);
+  void itemSelected(const Galan::Registrable *item);
 
 private slots:
-  void subItem(Galan::Registrable const *item);
+  void subItem(const Galan::Registrable *item);
   void itemSelected(int id);
 
 private:

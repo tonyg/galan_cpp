@@ -199,13 +199,13 @@ void ControlPanel::popupPanelMenu(QMouseEvent *evt) {
   menu.setItemEnabled(menu.insertItem("New control", -1, 0), false);
   menu.insertSeparator(1);
 
-  connect(&menu, SIGNAL(itemSelected(Galan::Registrable const *)),
-	  this, SLOT(buildUIControl(Galan::Registrable const *)));
+  connect(&menu, SIGNAL(itemSelected(const Galan::Registrable*)),
+	  this, SLOT(buildUIControl(const Galan::Registrable*)));
 
   menu.exec(evt->globalPos(), 2);
 }
 
-void ControlPanel::buildUIControl(Galan::Registrable const *maybeFactory) {
+void ControlPanel::buildUIControl(const Galan::Registrable *maybeFactory) {
   ControlFactory const *factory = dynamic_cast<ControlFactory const *>(maybeFactory);
 
   if (factory == 0) {

@@ -45,7 +45,7 @@ public:
   void popupPanelMenu(QMouseEvent *evt);
 
 private slots:
-  void buildUIControl(Galan::Registrable const *maybeFactory);
+  void buildUIControl(const Galan::Registrable *maybeFactory);
 
 private:
   QScrollView *scrollView;

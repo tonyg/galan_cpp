@@ -226,8 +226,8 @@ void MacroView::popupMenu(QMouseEvent *evt) {
   RegistrySelectionMenu *regSel = 
     new RegistrySelectionMenu(Registry::root->lookup("Generator")->toRegistry(), &menu);
   menu.insertItem("New primitive", regSel);
-  connect(regSel, SIGNAL(itemSelected(Galan::Registrable const *)),
-	  this, SLOT(createPrimitive(Galan::Registrable const *)));
+  connect(regSel, SIGNAL(itemSelected(const Galan::Registrable*)),
+	  this, SLOT(createPrimitive(const Galan::Registrable*)));
 
   menu.insertSeparator();
 
@@ -462,18 +462,18 @@ void MacroView::contentsMouseReleaseEvent(QMouseEvent *evt) {
       break;
 
     case DRAGGING_LINK:
-      createLink(evt);
       editState = IDLE;
+      createLink(evt);
       break;
 
     case DRAGGING_ITEM:
-      moveItem(evt);
       editState = IDLE;
+      moveItem(evt);
       break;
 
     case DRAGGING_VIEW:
-      setCursor(ArrowCursor);
       editState = IDLE;
+      setCursor(ArrowCursor);
       break;
 
     default:

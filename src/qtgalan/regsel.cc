@@ -20,8 +20,8 @@ RegistrySelectionMenu::RegistrySelectionMenu(Registry const *base,
     if (r->isRegistry()) {
       RegistrySelectionMenu *subMenu = new RegistrySelectionMenu(r->toRegistry(), this);
       insertItem(r->getLocalname().c_str(), subMenu);
-      connect(subMenu, SIGNAL(itemSelected(Galan::Registrable const *)),
-	      this, SLOT(subItem(Galan::Registrable const *)));
+      connect(subMenu, SIGNAL(itemSelected(const Galan::Registrable*)),
+	      this, SLOT(subItem(const Galan::Registrable*)));
     } else {
       itemMap[insertItem(r->getLocalname().c_str(), this, SLOT(itemSelected(int)))] = r;
     }
@@ -31,7 +31,7 @@ RegistrySelectionMenu::RegistrySelectionMenu(Registry const *base,
 RegistrySelectionMenu::~RegistrySelectionMenu() {
 }
 
-void RegistrySelectionMenu::subItem(Registrable const *item) {
+void RegistrySelectionMenu::subItem(const Registrable *item) {
   //IFDEBUG(cerr << "Node Item selected, fullpath = " << item->getFullpath() << endl);
   emit itemSelected(item);
 }

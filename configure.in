@@ -1,6 +1,12 @@
 dnl -*- shell-script -*-
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/galan/global.h)
+
+dnl These three are required to make libtool work on MacOS X.
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_CANONICAL_TARGET
+
 AM_INIT_AUTOMAKE(galan, 0.4.0pre)
 AM_CONFIG_HEADER(config.h)
 
@@ -61,9 +67,39 @@ else
   AC_MSG_RESULT([no, we\'re not using GCC])
 fi
 
+AC_ARG_WITH([pkglib-dir],
+    AC_HELP_STRING([--with-pkglib-dir],
+	[Set the pkglib directory [[EPREFIX/lib/galan]]]),
+    [PKGLIB_DIRECTORY=$withval],
+    [PKGLIB_DIRECTORY=$libdir/galan])
+AC_SUBST(PKGLIB_DIRECTORY)
+
+AC_ARG_WITH([pkgdata-dir],
+    AC_HELP_STRING([--with-pkgdata-dir],
+	[Set the pkgdate directory [[PREFIX/share/galan]]]),
+    [PKGDATA_DIRECTORY=$withval],
+    [PKGDATA_DIRECTORY=$libdir/galan])
+AC_SUBST(PKGDATA_DIRECTORY)
+
+AC_ARG_WITH([galan-framework],
+    AC_HELP_STRING([--with-galan-framework],
+	[Post-installation MacOS X framework location]),
+    [FRAMEWORK_DIRECTORY=$withval],
+    [FRAMEWORK_DIRECTORY=no])
+AC_SUBST(FRAMEWORK_DIRECTORY)
+AM_CONDITIONAL(NoMacOSXFramework, test "$FRAMEWORK_DIRECTORY" = "no")
+
+AC_ARG_WITH([documentation],
+    AC_HELP_STRING([--with-documentation],
+	[Build and install documentation [[no]]]),
+    [want_documentation=$withval],
+    [want_documentation=no])
+AM_CONDITIONAL(WantDocumentation, test "$want_documentation" = "yes")
+
 AC_OUTPUT(
     Makefile
     doc/Makefile
+    doc/Info.plist
     doc/manual/galandoc.dtd
     doc/manual/Makefile
     src/Makefile

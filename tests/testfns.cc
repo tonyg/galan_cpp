@@ -58,7 +58,7 @@ struct B: public A {
 
 #define DO(a,b)		(a ->* fn##b)();printf("\n")
 
-void main() {
+int main(int argc, char *argv[]) {
   Base *x = new Base(3, "x");
   Base *y = new A(4, "y");
   Base *z = new B(7, "z");
@@ -84,4 +84,6 @@ void main() {
   DO(z,x);
   DO(z,y);
   DO(z,z);
+
+  return 0;
 }

@@ -2,6 +2,8 @@
 
 lib_LTLIBRARIES = libgalan.la
 
+pkglibdir = @PKGLIB_DIRECTORY@
+
 pkginclude_HEADERS = \
 	global.h \
 	model.h registry.h \
