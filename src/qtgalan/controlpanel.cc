@@ -12,6 +12,7 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qinputdialog.h>
+#include <qpainter.h>
 
 GALAN_USE_NAMESPACE
 using namespace std;
@@ -219,6 +220,7 @@ void ControlPanel::buildUIControl(Galan::Registrable const *maybeFactory) {
   bool ok = false;
   QString response = QInputDialog::getText("Name Control",
 					   prompt,
+					   QLineEdit::Normal,
 					   "",
 					   &ok);
 

@@ -3,7 +3,7 @@
 
 GALAN_USE_NAMESPACE
 
-ConnectionDescriptor::ConnectionDescriptor(string const &_name)
+ConnectionDescriptor::ConnectionDescriptor(std::string const &_name)
   : name(_name)
 {
   cls = 0;
@@ -48,23 +48,23 @@ void GeneratorClass::register_desc(OutputDescriptor *output) {
   outputs[output->name] = output;
 }
 
-vector<InputDescriptor *> GeneratorClass::getInputs() const {
-  vector<InputDescriptor *> result;
+std::vector<InputDescriptor *> GeneratorClass::getInputs() const {
+  std::vector<InputDescriptor *> result;
   for (descriptormap_t::const_iterator i = inputs.begin(); i != inputs.end(); i++) {
     result.push_back(dynamic_cast<InputDescriptor *>((*i).second));
   }
   return result;
 }
 
-vector<OutputDescriptor *> GeneratorClass::getOutputs() const {
-  vector<OutputDescriptor *> result;
+std::vector<OutputDescriptor *> GeneratorClass::getOutputs() const {
+  std::vector<OutputDescriptor *> result;
   for (descriptormap_t::const_iterator i = outputs.begin(); i != outputs.end(); i++) {
     result.push_back(dynamic_cast<OutputDescriptor *>((*i).second));
   }
   return result;
 }
 
-InputDescriptor const &GeneratorClass::getInput(string const &name) const {
+InputDescriptor const &GeneratorClass::getInput(std::string const &name) const {
   descriptormap_t::const_iterator i = inputs.find(name);
   if (i == inputs.end()) {
     throw std::logic_error("GeneratorClass::getInput: not found: " + name);
@@ -72,7 +72,7 @@ InputDescriptor const &GeneratorClass::getInput(string const &name) const {
   return *dynamic_cast<InputDescriptor *>((*i).second);
 }
 
-OutputDescriptor const &GeneratorClass::getOutput(string const &name) const {
+OutputDescriptor const &GeneratorClass::getOutput(std::string const &name) const {
   descriptormap_t::const_iterator i = outputs.find(name);
   if (i == outputs.end()) {
     throw std::logic_error("GeneratorClass::getOutput: not found: " + name);
@@ -175,7 +175,7 @@ bool SampleCache::read(GeneratorState *voice, RealtimeOutputDescriptor const &ou
   return last_result;
 }
 
-Generator::Generator(GeneratorClass &_cls, bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY)
+Generator::Generator(GeneratorClass &_cls, bool _polyphonic, int _nvoices)
   : cls(_cls),
     inputs(cls.getNumInputs()),
     outputs(cls.getNumOutputs()),
@@ -282,14 +282,14 @@ void Generator::addOutput() {
 }
 
 void Generator::removeInput(int index) {
-  inputs.erase(&inputs[index]);
+  inputs.erase(inputs.begin() + index);
 }
 
 void Generator::removeOutput(int index) {
-  outputs.erase(&outputs[index]);
+  outputs.erase(outputs.begin() + index);
 
   for (cachevec_t::iterator i = caches.begin(); i != caches.end(); i++)
-    (*i).erase(&(*i)[index]);
+    (*i).erase((*i).begin() + index);
 }
 
 bool Generator::aggregate_input(RealtimeInputDescriptor const &q, int voice, SampleBuf *buffer) {
@@ -466,7 +466,7 @@ void Generator::setNumVoices(int nvoices) {
 
   for (int i = voices.size(); i < nvoices; i++) {
     voices.push_back(cls.instantiate(*this, i));
-    caches.push_back(vector<SampleCache>(numOut));
+    caches.push_back(std::vector<SampleCache>(numOut));
   }
 
   while (voices.size() > nvoices) {

@@ -3,7 +3,7 @@
 
 GALAN_USE_NAMESPACE
 
-priority_queue<Event *> Event::event_q;
+std::priority_queue<Event *> Event::event_q;
 
 Event::Event() {
 }
@@ -28,7 +28,7 @@ sampletime_t Event::mainloop() {
 }
 
 void Event::purge_references_to(EventHandler *handler) {
-  priority_queue<Event *> other;
+  std::priority_queue<Event *> other;
 
   while (event_q.size()) {
     Event *e = event_q.top();

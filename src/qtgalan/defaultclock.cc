@@ -2,6 +2,9 @@
 
 GALAN_USE_NAMESPACE
 
+using std::cerr;
+using std::endl;
+
 DefaultClock::DefaultClock()
   : Clock(), timer()
 {
@@ -19,8 +22,8 @@ DefaultClock::~DefaultClock() {
   cm->stop_clock();
 }
 
-string const &DefaultClock::getName() const {
-  static string result("Default Clock");
+std::string const &DefaultClock::getName() const {
+  static std::string result("Default Clock");
   return result;
 }
 

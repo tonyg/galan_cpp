@@ -8,17 +8,17 @@ plugindir = $(pkglibdir)/plugins
 # empty) whitespace-separated list of names from the list just
 # below. (The optional plugins HAVE to be defined in EXTRA_PROGRAMS -
 # see the infopages for automake.)
-EXTRA_PROGRAMS =
+EXTRA_PROGRAMS = OssOutput.la
 
 plugin_PROGRAMS = \
 	Test.la \
-	OssOutput.la \
 	VCO.la \
 	Gain.la \
 	Delay.la \
-	Vorbis.la \
 	Controllers.la \
 	@OPTIONAL_PLUGINS@
+
+#	Vorbis.la
 
 #CXXFLAGS = -O0 -g
 CXXFLAGS = -O3 -g
@@ -36,8 +36,8 @@ VCO_la_SOURCES = VCO.cc
 Gain_la_SOURCES = Gain.cc
 Delay_la_SOURCES = Delay.cc
 
-Vorbis_la_SOURCES = Vorbis.cc
-Vorbis_la_CFLAGS = $(VORBIS_CFLAGS)
-Vorbis_la_LDADD = $(VORBISFILE_LIBS) $(VORBIS_LIBS)
+#Vorbis_la_SOURCES = Vorbis.cc
+#Vorbis_la_CFLAGS = $(VORBIS_CFLAGS)
+#Vorbis_la_LDADD = $(VORBISFILE_LIBS) $(VORBIS_LIBS)
 
 Controllers_la_SOURCES = Controllers.cc

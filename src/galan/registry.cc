@@ -5,7 +5,7 @@ GALAN_USE_NAMESPACE
 
 //////////////////////////////////////////////////////////////////////////////
 
-string Registrable::getFullpath() const {
+std::string Registrable::getFullpath() const {
   Registry *parent = getParent();
 
   if (parent)
@@ -18,7 +18,7 @@ string Registrable::getFullpath() const {
 
 Registry *Registry::root = new Registry();
 
-Registry::leaf_t Registry::find_leaf(string const &path, bool create_missing_nodes = false)
+Registry::leaf_t Registry::find_leaf(std::string const &path, bool create_missing_nodes)
 {
   int startpos = 0;
 
@@ -36,7 +36,7 @@ Registry::leaf_t Registry::find_leaf(string const &path, bool create_missing_nod
     return result;
   } else {
     // Nonterminal. Recurse.
-    string nodename = path.substr(startpos, pos - startpos);
+    std::string nodename = path.substr(startpos, pos - startpos);
 
     IFDEBUG(cerr << "Nonterminal - finding child " << nodename << "." << endl);
 
@@ -69,7 +69,7 @@ Registry::leaf_t Registry::find_leaf(string const &path, bool create_missing_nod
   }
 }
 
-bool Registry::bind(string const &path, Registrable *what, bool override = false) {
+bool Registry::bind(std::string const &path, Registrable *what, bool override) {
   leaf_t leaf = find_leaf(path, true);
   Registry *parent = leaf.first;
 
@@ -78,7 +78,7 @@ bool Registry::bind(string const &path, Registrable *what, bool override = false
     return false;
   }
 
-  string const &child = leaf.second;
+  std::string const &child = leaf.second;
   iterator i = parent->children.find(child);
   bool present = (i != parent->children.end());
   bool result = (!present || override);
@@ -101,7 +101,7 @@ bool Registry::bind(string const &path, Registrable *what, bool override = false
   return result;
 }
 
-bool Registry::unbind(string const &path) {
+bool Registry::unbind(std::string const &path) {
   leaf_t leaf = find_leaf(path);
   Registry *parent = leaf.first;
 
@@ -110,7 +110,7 @@ bool Registry::unbind(string const &path) {
     return false;
   }
 
-  string const &child = leaf.second;
+  std::string const &child = leaf.second;
   
   RETURN_VAL_UNLESS(parent, false);
 
@@ -136,7 +136,7 @@ bool Registry::unbind(Registrable *what) {
   }
 }
 
-Registrable *Registry::lookup(string const &path) {
+Registrable *Registry::lookup(std::string const &path) {
   leaf_t leaf = find_leaf(path);
   Registry *parent = leaf.first;
 
@@ -145,7 +145,7 @@ Registrable *Registry::lookup(string const &path) {
     return 0;
   }
 
-  string const &child = leaf.second;
+  std::string const &child = leaf.second;
 
   RETURN_VAL_UNLESS(parent, 0);
 

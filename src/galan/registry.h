@@ -66,7 +66,7 @@ public:
 class Registry: public Registrable {
 public:
   typedef std::map<std::string, Registrable *> children_t;
-  typedef pair<Registry *, std::string> leaf_t;
+  typedef std::pair<Registry *, std::string> leaf_t;
 
 public:
   typedef children_t::iterator iterator;
@@ -137,7 +137,7 @@ public:
    * @param override if true, replaces existing entries, otherwise refuses to bind
    * @return true if the bind succeeded; false otherwise
    **/
-  bool bind(string const &path, Registrable *what, bool override = false);
+  bool bind(std::string const &path, Registrable *what, bool override = false);
 
   /**
    * Unbinds a subpath from a Registrable.
@@ -145,7 +145,7 @@ public:
    * @param path the subpath to unbind
    * @return true if specified entry existed and was unbound; false otherwise
    **/
-  bool unbind(string const &path);
+  bool unbind(std::string const &path);
 
   /**
    * Unbind a child from this Registry. If the child's parent object
@@ -161,10 +161,10 @@ public:
    * @path the path to retrieve
    * @return the object, if found; otherwise 0
    **/
-  Registrable *lookup(string const &path);
+  Registrable *lookup(std::string const &path);
 
   /// Synonym for Registry::lookup().
-  Registrable *operator[](string const &path) { return lookup(path); }
+  Registrable *operator[](std::string const &path) { return lookup(path); }
 
 private:
   children_t children;		///< All children of this registry.
@@ -182,7 +182,7 @@ private:
    * @param create_missing_nodes true to create intermediaries
    * @return pair with first==node's parent and second==node's leafname
    **/
-  leaf_t find_leaf(string const &path, bool create_missing_nodes = false);
+  leaf_t find_leaf(std::string const &path, bool create_missing_nodes = false);
 };
 
 //////////////////////////////////////////////////////////////////////////////

@@ -12,7 +12,7 @@ public:
   DefaultClock();
   virtual ~DefaultClock();
 
-  virtual string const &getName() const;
+  virtual std::string const &getName() const;
   virtual void disable();
   virtual void enable();
 

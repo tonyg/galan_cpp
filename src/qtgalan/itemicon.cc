@@ -192,6 +192,7 @@ void ItemIcon::renameIcon() {
   bool ok = false;
   QString response = QInputDialog::getText("Rename Generator",
 					   prompt,
+					   QLineEdit::Normal,
 					   name.c_str(),
 					   &ok);
 

@@ -6,6 +6,7 @@
 #include <vector>
 
 #include <qcanvas.h>
+#include <qpopupmenu.h>
 
 #include "itemlink.h"
 

@@ -4,7 +4,10 @@ GALAN_USE_NAMESPACE
 
 sampletime_t Clock::time_now = 0;
 sampletime_t Clock::max_realtime_step = 1024;
-list<RealtimeHandler *> Clock::realtime_fns;
+std::list<RealtimeHandler *> Clock::realtime_fns;
+
+using std::cerr;
+using std::endl;
 
 Clock::Clock() {
 }
@@ -31,7 +34,7 @@ void Clock::advance(sampletime_t remaining) {
   sampletime_t delta;
 
   while (remaining > 0) {
-    list<RealtimeHandler *>::iterator i = realtime_fns.begin();
+    std::list<RealtimeHandler *>::iterator i = realtime_fns.begin();
 
     delta = MIN(remaining, Event::mainloop());
     remaining -= delta;

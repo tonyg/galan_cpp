@@ -30,8 +30,8 @@ private:
   void destroyTree(Galan::Registry *base,
 		   QListViewItem *parent);
 
-  typedef map<QListViewItem *, Galan::Registrable *> regMap_t;
-  typedef map<Galan::Registrable *, QListViewItem *> itemMap_t;
+  typedef std::map<QListViewItem *, Galan::Registrable *> regMap_t;
+  typedef std::map<Galan::Registrable *, QListViewItem *> itemMap_t;
 
   regMap_t regMap;
   itemMap_t itemMap;

@@ -14,8 +14,12 @@
 
 #include <qpopupmenu.h>
 #include <qtooltip.h>
+#include <qcursor.h>
 
 GALAN_USE_NAMESPACE
+
+using std::cerr;
+using std::endl;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -327,8 +331,8 @@ void MacroView::createPrimitive(Registrable const *generatorClass,
   if (!macro->addChild(newName, prim)) {
     qWarning("Name %s already taken! Eeek", newName.c_str());
 
-    ostrstream n;
-    n << name << '-' << ++counter << ends;
+    std::ostrstream n;
+    n << name << '-' << ++counter << std::ends;
     newName = n.str();
 
     goto retry;
@@ -367,7 +371,7 @@ void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
 	// Drag the view around.
 	moveOffset = QPoint(contentsX() + evt->globalX(),
 			    contentsY() + evt->globalY());
-	setCursor(SizeAllCursor);
+	setCursor(QCursor(SizeAllCursor));
 	editState = DRAGGING_VIEW;
       } else if ((button == LeftButton) && (state & ShiftButton)) {
 	// Connect objects - either basic or detailed (without/with ctrl)

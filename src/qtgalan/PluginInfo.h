@@ -18,7 +18,7 @@ protected slots:
     void selectionChanged();
 
 private:
-  vector<Galan::Plugin *> allPlugins;
+    std::vector<Galan::Plugin *> allPlugins;
 };
 
 #endif // PLUGININFOIMPL_H

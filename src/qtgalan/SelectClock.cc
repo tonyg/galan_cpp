@@ -4,6 +4,9 @@
 
 GALAN_USE_NAMESPACE
 
+using std::cerr;
+using std::endl;
+
 /* 
  *  Constructs a SelectClockImpl which is a child of 'parent', with the 
  *  name 'name' and widget flags set to 'f' 

@@ -40,7 +40,7 @@ Macro *Macro::create(bool _polyphonic, int _nvoices) {
   return new Macro(cls, _polyphonic, _nvoices);
 }
 
-Macro::Macro(MacroClass *_cls, bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY)
+Macro::Macro(MacroClass *_cls, bool _polyphonic, int _nvoices)
   : Generator(*_cls, _polyphonic, _nvoices),
     cls(_cls)
 {
@@ -59,7 +59,7 @@ Generator *Macro::clone() {
   for (Registry::iterator i = children.begin();
        i != children.end();
        i++) {
-    string name = (*i).first;
+    std::string name = (*i).first;
     Generator *child = dynamic_cast<Generator *>((*i).second);
 
     // paranoia
@@ -84,10 +84,10 @@ Generator *Macro::clone() {
   for (Registry::iterator i = children.begin();
        i != children.end();
        i++) {
-    string name = (*i).first;
+    std::string name = (*i).first;
     Generator *child = dynamic_cast<Generator *>((*i).second);
 
-    vector<OutputDescriptor *> outputDescs = child->getClass().getOutputs();
+    std::vector<OutputDescriptor *> outputDescs = child->getClass().getOutputs();
 
     for (unsigned int i = 0; i < outputDescs.size(); i++) {
       conduitlist_t const &outs(child->outboundLinks(*outputDescs[i]));
@@ -130,20 +130,20 @@ void Macro::unregister_desc(OutputDescriptor *output) {
   cls->unregister_desc(output);
 }
 
-bool Macro::addChild(string const &name, Generator *child) {
+bool Macro::addChild(std::string const &name, Generator *child) {
   return children.bind(name, child, false);
 }
 
-Generator *Macro::findChild(string const &name) {
+Generator *Macro::findChild(std::string const &name) {
   return dynamic_cast<Generator *>(children.lookup(name));
 }
 
-bool Macro::removeChild(string const &name) {
+bool Macro::removeChild(std::string const &name) {
   return children.unbind(name);
 }
 
-bool Macro::renameChild(string const &name,
-			string const &newName)
+bool Macro::renameChild(std::string const &name,
+			std::string const &newName)
 {
   if (children.lookup(newName) != 0) {
     // New name already taken.
@@ -160,7 +160,7 @@ bool Macro::renameChild(string const &name,
   return children.bind(newName, child, false);
 }
 
-Generator *Macro::addRealtimeInput(string const &name) {
+Generator *Macro::addRealtimeInput(std::string const &name) {
   if (findChild(name))
     return 0;
 
@@ -173,7 +173,7 @@ Generator *Macro::addRealtimeInput(string const &name) {
   return result;
 }
 
-Generator *Macro::addRandomaccessInput(string const &name) {
+Generator *Macro::addRandomaccessInput(std::string const &name) {
   if (findChild(name))
     return 0;
 
@@ -186,7 +186,7 @@ Generator *Macro::addRandomaccessInput(string const &name) {
   return result;
 }
 
-Generator *Macro::addRealtimeOutput(string const &name) {
+Generator *Macro::addRealtimeOutput(std::string const &name) {
   if (findChild(name))
     return 0;
 
@@ -198,7 +198,7 @@ Generator *Macro::addRealtimeOutput(string const &name) {
   return result;
 }
 
-Generator *Macro::addRandomaccessOutput(string const &name) {
+Generator *Macro::addRandomaccessOutput(std::string const &name) {
   if (findChild(name))
     return 0;
 

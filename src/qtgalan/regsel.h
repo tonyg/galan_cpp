@@ -24,7 +24,7 @@ private slots:
   void itemSelected(int id);
 
 private:
-  map<int, Galan::Registrable const *> itemMap;
+  std::map<int, Galan::Registrable const *> itemMap;
 };
 
 #endif

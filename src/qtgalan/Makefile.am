@@ -40,7 +40,7 @@ qtgalan_LDADD = \
 	SelectClock_base_moc.o SelectClock_moc.o \
 	IconLinkEditor_base_moc.o IconLinkEditor_moc.o \
 	\
-	../galan/libgalan.la -L@QTDIR@/lib -lqt
+	../galan/libgalan.la -L@QTDIR@/lib @QTLIBRARY@
 
 noinst_HEADERS = \
 	mainwin.h \
@@ -92,7 +92,8 @@ CXXFLAGS = -O3 -g -pg
 #CXXFLAGS = -O0 -g -pg
 
 INCLUDES = \
-	-I$(top_srcdir)/src -I@QTDIR@/include @GLIB_CFLAGS@ \
+	-I$(top_srcdir)/src -I@QTDIR@/include -I@QTDIR@/include/qt \
+	@GLIB_CFLAGS@ \
 	-DSITE_PKGLIB_DIR=\"$(pkglibdir)\" \
 	-DSITE_PKGDATA_DIR=\"$(pkgdatadir)\"
 

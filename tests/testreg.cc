@@ -2,12 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <hash_map>
+#include <map>
 #include <string>
+#include <iostream>
 
 #include "galan/registry.h"
 
 GALAN_USE_NAMESPACE
+using namespace std;
 
 class A: public Registrable {
 public:

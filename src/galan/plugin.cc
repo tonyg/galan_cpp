@@ -10,6 +10,12 @@
 
 GALAN_USE_NAMESPACE
 
+using std::string;
+
+#include <iostream>
+using std::cerr;
+using std::endl;
+
 /* %%% Win32: dirent.h seems to conflict with glib-1.3, so ignore dirent.h */
 #ifndef NATIVE_WIN32
 #include <dirent.h>

@@ -11,6 +11,9 @@
 
 GALAN_USE_NAMESPACE
 
+using std::cerr;
+using std::endl;
+
 IconLinkEditorImpl::IconLinkEditorImpl(ItemLink *_link,
 				       QWidget* parent,
 				       const char* name,
@@ -113,7 +116,7 @@ void IconLinkEditorImpl::accept() {
 }
 
 void IconLinkEditorImpl::outputSelected(QListBoxItem *item) {
-  std::string itemName(item->text());
+  std::string itemName((char const *) item->text());
   //IFDEBUG(cerr << "Chose output" << itemName << endl);
 
   OutputDescriptor const &src_q(link->getSource()->getGenerator()->getClass().getOutput(itemName));
@@ -149,7 +152,7 @@ void IconLinkEditorImpl::recomputeInputSelection() {
 
   for (int i = 0; i < InputsList->count(); i++) {
     QListBoxItem *item = InputsList->item(i);
-    std::string itemName(item->text());
+    std::string itemName((char const *) item->text());
 
     InputDescriptor const &dst_q
       (link->getTarget()->getGenerator()->getClass().getInput(itemName));

@@ -26,7 +26,8 @@ dnl ===========================================================================
 AC_SUBST(OPTIONAL_PLUGINS)
 OPTIONAL_PLUGINS=
 
-dnl AC_CHECK_HEADER(esd.h, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} esd_output.so")
+dnl AC_CHECK_HEADER(esd.h, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} esd_output.la")
+AC_CHECK_HEADER(sys/soundcard.h, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} OssOutput.la")
 
 dnl Feature tests
 dnl ===========================================================================
@@ -38,7 +39,14 @@ fi
 AC_SUBST(QTDIR)
 AC_MSG_RESULT($QTDIR)
 
-AM_PATH_VORBIS
+LDFLAGS="$LDFLAGS -L$QTDIR/lib"
+AC_CHECK_LIB(qt, main, QTLIBRARY="-lqt",
+    AC_CHECK_LIB(qt-mt, main, QTLIBRARY="-lqt-mt",
+	AC_MSG_ERROR(Could not determine which QTLIBRARY to use!)))
+AC_SUBST(QTLIBRARY)
+AC_MSG_NOTICE([Using $QTLIBRARY as QTLIBRARY.])
+
+dnl AM_PATH_VORBIS
 
 AM_PATH_GLIB(1.2.0, , AC_MSG_ERROR(Cannot find glib: is glib-config in path?), gmodule)
 

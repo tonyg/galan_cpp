@@ -15,12 +15,16 @@
 
 #include <qapplication.h>
 #include <qtimer.h>
+#include <qpainter.h>
 
 #include "mainwin.h"
 #include "qtio.h"
 #include "defaultclock.h"
 
 GALAN_USE_NAMESPACE
+
+using std::cerr;
+using std::endl;
 
 #include "controlpanel.h"
 

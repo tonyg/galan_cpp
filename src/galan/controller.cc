@@ -45,9 +45,9 @@ void Controller::activate() {
 
 void Controller::deactivate() {
   if (_active_instance != this) {
-    ostrstream s;
+    std::ostrstream s;
     s << "Eeek! deactivate called on " << this
-      << " when instance == " << _active_instance << "!" << ends;
+      << " when instance == " << _active_instance << "!" << std::ends;
     throw std::logic_error(s.str());
   }
 

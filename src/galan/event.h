@@ -94,7 +94,7 @@ private:
   static std::priority_queue<Event *> event_q;	///< The global event queue
 };
 
-inline ostream &operator<<(ostream &o, Event const &e) {
+inline std::ostream &operator<<(std::ostream &o, Event const &e) {
   return o << "Event(" << e.getTarget() << "@" << e.getTime() << ")";
 }
 
@@ -132,7 +132,7 @@ public:
   virtual void send();
 };
 
-inline ostream &operator<<(ostream &o, SampleEvent const &e) {
+inline std::ostream &operator<<(std::ostream &o, SampleEvent const &e) {
   return o << "SampleEvent(" << e.getTarget() << "@" << e.getTime() << ":" << e.getValue() << ")";
 }
 
