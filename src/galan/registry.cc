@@ -14,21 +14,6 @@ string Registrable::getFullpath() const {
     return getLocalname();
 }
 
-Registry *Registrable::toRegistry() {
-  if (!isRegistry()) {
-    // This object claims not to be a registry.
-    return 0;
-  }
-
-  Registry *reg = dynamic_cast<Registry *>(this);
-  if (reg == 0) {
-    // The dynamic_cast failed.
-    return 0;
-  }
-
-  return reg;
-}
-
 //////////////////////////////////////////////////////////////////////////////
 
 Registry *Registry::root = new Registry();
@@ -73,7 +58,7 @@ Registry::leaf_t Registry::find_leaf(string const &path, bool create_missing_nod
       }
     }
 
-    Registry *par_reg = dynamic_cast<Registry *>(par);
+    Registry *par_reg = par->toRegistry();
 
     if (!par_reg) {
       IFDEBUG(cerr << "Intermediate node " << par->getFullpath() << " not a Registry." << endl);

@@ -153,7 +153,13 @@ public:
   virtual sampletime_t get_output_range(RandomaccessOutputDescriptor const &q, int voice);
 
   /// Passes on the command to all our child nodes.
-  virtual void setPolyphony(int nvoices);
+  virtual void setPolyphony(bool poly);
+
+  /// Passes on the command to all our child nodes.
+  virtual void setNumVoices(int nvoices);
+
+  /// Extract a reference to our children. Used for UI purposes %%% is this sensible?
+  Registry *getChildren() { return &children; }
 
 private:
   friend class MacroInputProxy;

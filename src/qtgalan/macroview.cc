@@ -318,7 +318,7 @@ void MacroView::createPrimitive(Registrable const *generatorClass,
     return;
   }
 
-  Generator *prim = new Generator(*cls, true /*%%%*/);
+  Generator *prim = new Generator(*cls, true /*%%%*/, 1 /*%%%*/);
 
   int counter = 1;
   std::string newName = name;

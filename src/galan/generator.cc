@@ -179,11 +179,11 @@ Generator::Generator(GeneratorClass &_cls, bool _polyphonic, int _nvoices = DEFA
   : cls(_cls),
     inputs(cls.getNumInputs()),
     outputs(cls.getNumOutputs()),
-    polyphonic(_polyphonic),
     muted(false),
+    numVoices(_nvoices),
     _userdata(0)
 {
-  setPolyphony(_nvoices);
+  setPolyphony(_polyphonic);
 }
 
 Generator::~Generator() {
@@ -206,7 +206,7 @@ Generator::~Generator() {
 }
 
 Generator *Generator::clone() {
-  return new Generator(cls, polyphonic, voices.size());
+  return new Generator(cls, isPolyphonic(), getNumVoices());
 }
 
 Conduit *Generator::find_link(OutputDescriptor const *src_q, Generator *dst, InputDescriptor const *dst_q) {
@@ -299,19 +299,28 @@ bool Generator::aggregate_input(RealtimeInputDescriptor const &q, int voice, Sam
   RETURN_VAL_UNLESS(q.getGeneratorClass() == &cls, false);
 
   conduitlist_t &lst = inputs[index];
+  conduitlist_t::iterator i = lst.begin();
 
-  // Questionable optimisation? list<>::size() is linear-time...
-  if (lst.size() == 1) {
+  if (i == lst.end()) {
+    // Empty inputs list.
+    return false;
+  }
+
+  if (++i == lst.end()) {
+    // Single element only.
     Conduit *c = lst.front();
     RealtimeOutputDescriptor const *output =
       dynamic_cast<RealtimeOutputDescriptor const *>(c->src_q);
     return c->src->read_output(*output, voice, buffer);
   }
 
+  // Multiple elements. Merging required.
   SampleBuf tmp(buffer->getLength());
   bool result = false;
 
-  for (conduitlist_t::iterator i = lst.begin(); i != lst.end(); i++) {
+  // (note we reuse i here, resetting it from the second position to
+  // the front position!)
+  for (i = lst.begin(); i != lst.end(); i++) {
     Conduit *c = (*i);
     RealtimeOutputDescriptor const *output =
       dynamic_cast<RealtimeOutputDescriptor const *>(c->src_q);
@@ -402,7 +411,9 @@ bool Generator::read_output(RealtimeOutputDescriptor const &q, int voice, Sample
   assert(voice >= 0 && voice < voices.size());
   assert(!outputs[index].empty());
 
-  if (outputs[index].size() == 1) {
+  conduitlist_t &outs(outputs[index]);
+  if (++(outs.begin()) == outs.end()) {
+    // Only a single element.
     // Don't bother caching the only output.
     return (voices[voice]->*(q.getSampleFn()))(q, buffer);
   } else {
@@ -440,7 +451,14 @@ sampletime_t Generator::get_output_range(RandomaccessOutputDescriptor const &q, 
   }
 }
 
-void Generator::setPolyphony(int nvoices) {
+void Generator::setPolyphony(bool poly) {
+  polyphonic = poly;
+  setNumVoices(numVoices); // update the voice structures.
+}
+
+void Generator::setNumVoices(int nvoices) {
+  numVoices = nvoices;
+
   if (!polyphonic)
     nvoices = 1;
 

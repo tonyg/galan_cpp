@@ -63,7 +63,10 @@ Generator *Macro::clone() {
     Generator *child = dynamic_cast<Generator *>((*i).second);
 
     // paranoia
-    assert(child);
+    if (child == 0) {
+      throw std::logic_error(std::string("Discovered non-Generator child of Macro at path") +
+			     getFullpath());
+    }
 
     MacroInputProxy *proxy = dynamic_cast<MacroInputProxy *>(child);
     if (proxy != 0) {
@@ -225,16 +228,23 @@ sampletime_t Macro::get_output_range(RandomaccessOutputDescriptor const &q, int 
   return findChild(q.getName())->get_input_range(main, voice);
 }
 
-void Macro::setPolyphony(int nvoices) {
-  if (!isPolyphonic())
-    nvoices = 1;
+void Macro::setPolyphony(bool poly) {
+  Generator::setPolyphony(poly);
 
-  for (RegistryIterator i = children.deep_begin(); i != children.end(); i++) {
-    Generator *child = dynamic_cast<Generator *>(*i);
-    child->setPolyphony(nvoices);
+  for (Registry::iterator i = children.begin(); i != children.end(); ++i) {
+    Generator *child = dynamic_cast<Generator *>((*i).second);
+    child->setNumVoices(poly ? getNumVoices() : 1);
+    child->setPolyphony(true);
   }
+}
 
-  Generator::setPolyphony(nvoices);
+void Macro::setNumVoices(int nvoices) {
+  Generator::setNumVoices(nvoices);
+
+  for (Registry::iterator i = children.begin(); i != children.end(); ++i) {
+    Generator *child = dynamic_cast<Generator *>((*i).second);
+    child->setNumVoices(nvoices);
+  }
 }
 
 bool MacroInputProxy::read_output(RealtimeOutputDescriptor const &q,

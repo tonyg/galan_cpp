@@ -46,23 +46,22 @@ QStatusBar *MainWin::StatusBar() {
 
 MainWin::MainWin()
   : QMainWindow(0, 0, WDestructiveClose),
-    root(Macro::create(true))
+    //    root(Macro::create(true))
+    root(Macro::create(true, 1))
 {
   if (instance != 0) {
     throw std::logic_error("Already created instance of MainWin!");
   }
   instance = this;
 
+  if (!Registry::root->bind("/Sheet", root->getChildren(), false)) {
+    throw std::logic_error("Registry /Sheet path already taken");
+  }
+
   QSplitter *splitter = new QSplitter(this);
 
   QSplitter *lhs = new QSplitter(Qt::Vertical, splitter);
   lhs->setOpaqueResize(true);
-
-#ifndef NDEBUG
-  new RegistryTreeView(Registry::root,
-		       "Registry entry",
-		       lhs);
-#endif
 
   {
     Registry *r = new Registry();
@@ -71,6 +70,10 @@ MainWin::MainWin()
   }
   new RegistryTreeView(Registry::root->lookup("Controller")->toRegistry(),
 		       "Controllers",
+		       lhs);
+
+  new RegistryTreeView(Registry::root->lookup("Sheet")->toRegistry(),
+		       "Sheet",
 		       lhs);
 
   new RegistryTreeView(Registry::root->lookup("Generator")->toRegistry(),
@@ -143,10 +146,17 @@ MainWin::MainWin()
   ControlPanel *cp = new ControlPanel(tabs);
   tabs->addTab(cp, "&Controls");
 
+#ifndef NDEBUG
+  tabs->addTab(new RegistryTreeView(Registry::root,
+				    "Registry entry",
+				    tabs),
+	       "Registry [debug]");
+#endif
+
   connect(macroView, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
   selectionChanged();
 
-  setMinimumSize(400, 400);
+  //setMinimumSize(600, 400);
 
   StatusBar()->message("Ready.");
 }

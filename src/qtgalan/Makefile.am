@@ -23,7 +23,7 @@ qtgalan_SOURCES = \
 	SelectClock_base.cc SelectClock.cc \
 	IconLinkEditor_base.cc IconLinkEditor.cc
 
-qtgalan_LDFLAGS = -dlopen self
+qtgalan_LDFLAGS = -dlopen self -static
 qtgalan_LDADD = \
 	mainwin_moc.o \
 	qtio_moc.o \
@@ -86,7 +86,10 @@ BUILT_SOURCES= \
 %_moc.cc: %.h
 	$(MOC) -o $@ $<
 
-CXXFLAGS = -O0 -g
+#CXXFLAGS = -O0 -g
+#CXXFLAGS = -O3 -g
+CXXFLAGS = -O3 -g -pg
+#CXXFLAGS = -O0 -g -pg
 
 INCLUDES = \
 	-I$(top_srcdir)/src -I@QTDIR@/include @GLIB_CFLAGS@ \

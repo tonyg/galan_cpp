@@ -52,7 +52,7 @@ public:
   virtual bool isRegistry() const { return false; }
 
   /// Attempt to cast this to Registry. Returns 0 if not possible.
-  Registry *toRegistry();
+  virtual Registry *toRegistry() { return 0; }
   Registry const *toRegistry() const {
     return const_cast<Registrable *>(this)->toRegistry();
   }
@@ -115,6 +115,8 @@ public:
   ~Registry() {}
 
   virtual bool isRegistry() const { return true; }
+
+  virtual Registry *toRegistry() { return this; }
 
   /// Get a shallow iterator over this.
   iterator begin() { return children.begin(); }

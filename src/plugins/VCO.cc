@@ -44,12 +44,9 @@ VCO::VCO(Generator &_gen, int _voice)
 VCO::~VCO() {
 }
 
-inline Sample min(Sample a, Sample b) { return (a < b) ? a : b; }
-inline Sample max(Sample a, Sample b) { return (a > b) ? a : b; }
-
 bool VCO::MainOutput(RealtimeOutputDescriptor const &desc, SampleBuf *buf) {
-  static RealtimeInputDescriptor const &freq = pluginClass->getRealtimeInput("Frequency");
-  static RealtimeInputDescriptor const &trig = pluginClass->getRealtimeInput("PhaseResetTrigger");
+  static RealtimeInputDescriptor const &freq(pluginClass->getRealtimeInput("Frequency"));
+  static RealtimeInputDescriptor const &trig(pluginClass->getRealtimeInput("PhaseResetTrigger"));
 
   SampleBuf trigger(buf->getLength());
   read_input(trig, &trigger);
@@ -59,7 +56,7 @@ bool VCO::MainOutput(RealtimeOutputDescriptor const &desc, SampleBuf *buf) {
   //
   if (read_input(freq, buf)) {
     for (int i = 0; i < buf->getLength(); i++) {
-      Sample phaseDelta = min(max((*buf)[i], 0), Sample::rate >> 1);
+      Sample phaseDelta = (*buf)[i].clip(0, Sample::rate >> 1);
       (*buf)[i] = table[(int) phase];
 
       if (trigger[i]) {

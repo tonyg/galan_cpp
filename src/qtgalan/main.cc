@@ -82,7 +82,7 @@ public:
 			 Galan::Controller *&controller,
 			 QWidget *&buddy) const
   {
-    Galan::RealtimeController *rtc = new RealtimeController(name);
+    Galan::RealtimeController *rtc = new RealtimeController(name); // should be "fizzbots/"+name
     controller = rtc;
     buddy = new MyWidget(parent, rtc);
   }

@@ -61,6 +61,13 @@ class Sample {
     return Sample(value > max ? max : (value < min ? min : value));
   }
 
+  /// Clips this sample to lie between the passed-in min and max (inclusive).
+  Sample clip(Sample mi, Sample ma) {
+    if (value < mi.value) return mi;
+    if (value > ma.value) return ma;
+    return *this;
+  }
+
  private:
   value_t value;			///< Value of this sample
 };
@@ -229,6 +236,16 @@ private:
  * Representation of our internal timing unit.
  **/
 typedef gint32 sampletime_t;
+
+/**
+ * Returns the lowest-valued sample of its arguments.
+ **/
+inline Sample min(Sample a, Sample b) { return (a < b) ? a : b; }
+
+/**
+ * Returns the highest-valued sample of its arguments.
+ **/
+inline Sample max(Sample a, Sample b) { return (a > b) ? a : b; }
 
 GALAN_END_NAMESPACE
 

@@ -436,9 +436,10 @@ public:
   bool isPolyphonic() const { return polyphonic; }	///< "Is this object polyphonic?"
 
   /**
-   * Returns the number of voices that this object supports. %%%
+   * Returns the number of voices that this object has (or would have,
+   * if it's not polyphonic at the moment). %%%
    **/
-  int getNumVoices() const { return voices.size(); }
+  int getNumVoices() const { return numVoices; }
 
   /**
    * Creates a link between this and 'dst', between the named output
@@ -498,12 +499,21 @@ public:
   virtual sampletime_t get_output_range(RandomaccessOutputDescriptor const &q, int voice);
 
   /**
-   * Commands this Generator to become 'n'-phonic. %%%
+   * Sets this Generator to polyphonic (if poly==true) or monophonic
+   * (aggregating, if poly==false) mode.
+   *
+   * @param poly true if should use many voices; false to use only one
+   **/
+  virtual void setPolyphony(bool poly);
+
+  /**
+   * Commands this Generator to become 'n'-phonic (when it is in
+   * polyphonic mode). %%%
    *
    * @param nvoices the new number of voices this Generator should
-   * support
+   * support when polyphonic
    **/
-  virtual void setPolyphony(int nvoices);
+  virtual void setNumVoices(int nvoices);
 
   /**
    * Internal - Pulls samples from all Generators connected to one of
@@ -592,10 +602,11 @@ private:
   bool muted;				///< If true, we are (until told otherwise) silent.
 
   /**
-   * All voices in this instance. degree of polyphony
-   * is implicit in the length of the vector.
+   * All voices in this instance. Degree of actual polyphony is
+   * implicit in the length of the vector.
    **/
   statevec_t voices;
+  int numVoices;			///< If made polyphonic, would have this many voices.
 
   cachevec_t caches;			///< Matrix of cached outputs, one array per voice.
 

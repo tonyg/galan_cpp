@@ -15,10 +15,13 @@ plugin_PROGRAMS = \
 	OssOutput.la \
 	VCO.la \
 	Gain.la \
+	Delay.la \
+	Vorbis.la \
 	Controllers.la \
 	@OPTIONAL_PLUGINS@
 
-CXXFLAGS = -O0 -g
+#CXXFLAGS = -O0 -g
+CXXFLAGS = -O3 -g
 
 LDFLAGS = -module -rpath $(plugindir) -avoid-version -export-symbols-regex init_plugin_.*
 #LIBADD = ../src/libgalan.la
@@ -31,5 +34,10 @@ Test_la_SOURCES = Test.cc
 OssOutput_la_SOURCES = OssOutput.cc
 VCO_la_SOURCES = VCO.cc
 Gain_la_SOURCES = Gain.cc
+Delay_la_SOURCES = Delay.cc
+
+Vorbis_la_SOURCES = Vorbis.cc
+Vorbis_la_CFLAGS = $(VORBIS_CFLAGS)
+Vorbis_la_LDADD = $(VORBISFILE_LIBS) $(VORBIS_LIBS)
 
 Controllers_la_SOURCES = Controllers.cc

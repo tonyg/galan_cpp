@@ -22,7 +22,10 @@ libgalan_la_SOURCES = \
 libgalan_la_LIBADD = @GLIB_LIBS@
 libgalan_la_LDFLAGS = -version-info 0:0:0
 
-CXXFLAGS = -O0 -g
+#CXXFLAGS = -O0 -g
+#CXXFLAGS = -O3 -g
+CXXFLAGS = -O3 -g -pg
+#CXXFLAGS = -O0 -g -pg
 
 INCLUDES = \
 	-I$(top_srcdir)/src @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
