@@ -11,9 +11,13 @@ qtgalan_SOURCES = \
 	qtio.cc \
 	defaultclock.cc \
 	macroview.cc \
+	regsel.cc \
+	itemicon.cc \
+	itemlink.cc \
 	\
 	PluginInfo_base.cc PluginInfo.cc \
-	SelectClock_base.cc SelectClock.cc
+	SelectClock_base.cc SelectClock.cc \
+	IconLinkEditor_base.cc IconLinkEditor.cc
 
 qtgalan_LDFLAGS = -dlopen self
 qtgalan_LDADD = \
@@ -21,9 +25,11 @@ qtgalan_LDADD = \
 	qtio_moc.o \
 	defaultclock_moc.o \
 	macroview_moc.o \
+	regsel_moc.o \
 	\
 	PluginInfo_base_moc.o PluginInfo_moc.o \
 	SelectClock_base_moc.o SelectClock_moc.o \
+	IconLinkEditor_base_moc.o IconLinkEditor_moc.o \
 	\
 	../galan/libgalan.la -L@QTDIR@/lib -lqt
 
@@ -32,19 +38,34 @@ noinst_HEADERS = \
 	qtio.h \
 	defaultclock.h \
 	macroview.h \
+	regsel.h \
+	itemicon.h \
+	itemlink.h \
 	\
 	PluginInfo.h \
-	SelectClock.h
+	SelectClock.h \
+	IconLinkEditor.h
 
 BUILT_SOURCES= \
 	PluginInfo_base.h \
-	SelectClock_base.h
+	SelectClock_base.h \
+	IconLinkEditor_base.h
 
 %_base.cc %_base.h: %.ui
 	$(UIC) -o $*_base.h $*.ui
 	$(UIC) -o $*_base.cc -i $*_base.h $*.ui
 
-# Use this target to generate implementation stubs for a new .ui file.
+# Use this target (by hand) to generate implementation stubs for a new
+# .ui file. For example, say you create foo.ui, and want to work with
+# foo_base.{cc,h} (which will already be automatically generated for
+# you) and foo.{cc,h} (which won't). Then you would:
+#
+# make foo.impl
+#
+# ...which would create the stub foo.cc and foo.h for you then to
+# customise and fill in. You shouldn't really have to do this more
+# than once per .ui file.
+#
 %.impl: %_base.h
 	$(UIC) -o $*.h -subdecl $*Impl $*_base.h $*.ui
 	$(UIC) -o $*.cc -subimpl $*Impl $*.h $*.ui

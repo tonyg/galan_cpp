@@ -32,8 +32,18 @@ public:
   virtual void contentsMouseReleaseEvent(QMouseEvent *evt);
   //@}
 
+  enum ItemDepth {
+    LINK_HEIGHT = 0,
+    ITEM_HEIGHT = 1,
+    HALO_HEIGHT = 2,
+    SELECTION_HEIGHT = 3
+  };
+
 signals:
   void selectionChanged();
+
+private slots:
+  void createPrimitive(Galan::Registrable const *generatorClass);
 
 private:
   QCanvasItemList itemsAt(QPoint p);
@@ -59,13 +69,7 @@ private:
     DRAGGING_VIEW	///< User is scrolling the whole view
   };
 
-  enum ItemDepth {
-    LINK_HEIGHT = 0,
-    ITEM_HEIGHT = 1,
-    HALO_HEIGHT = 2,
-    SELECTION_HEIGHT = 3
-  };
-
+  int nextItemNumber;
   Galan::Macro *macro;
   QCanvas *c;
 
@@ -76,6 +80,8 @@ private:
   QCanvasLine *linkLine;	///< Item representing a link being built
 
   EditState editState;
+
+  QPoint popupPos;		///< Position (local coords) of the context menu
 };
 
 #endif

@@ -18,6 +18,9 @@ SelectClockImpl::SelectClockImpl( QWidget* parent,  const char* name, bool modal
 {
   for (unsigned int i = 0; i < allClocks.size(); i++) {
     ClockList->insertItem(allClocks[i]->getName().c_str());
+    if (ClockManager::instance()->getSelected() == allClocks[i]) {
+      ClockList->setSelected(ClockList->count() - 1, true);
+    }
   }
 }
 

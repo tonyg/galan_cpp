@@ -85,7 +85,13 @@ MainWin::MainWin()
 }
 
 MainWin::~MainWin() {
-  delete root;
+  // Don't delete root here. This causes the generators inside the
+  // macro to be removed, and then when it comes time to delete the
+  // main QCanvas, and all the ItemIcon objects contained within it,
+  // they complain (fatally) that the Generator they represent is no
+  // longer present. And fair enough, too.
+  //
+  //delete root;
 }
 
 void MainWin::closeEvent(QCloseEvent *evt) {
@@ -96,7 +102,7 @@ void MainWin::closeEvent(QCloseEvent *evt) {
 void MainWin::about() {
   QString msg;
   msg.sprintf("gAlan %s\n"
-	      "Copyright Tony Garnock-Jones (C) 1999-2001\n"
+	      "Copyright Tony Garnock-Jones (C) 1999-2002\n"
 	      "A modular sound-processing tool\n(Graphical Audio LANguage)\n"
 	      "\n"
 	      "gAlan comes with ABSOLUTELY NO WARRANTY; for details, see the file\n"

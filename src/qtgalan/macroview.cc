@@ -2,7 +2,11 @@
 #include <string.h>
 #include <stdio.h>
 
+#include <strstream>
+
 #include "macroview.h"
+#include "regsel.h"
+#include "itemicon.h"
 
 #include <qpopupmenu.h>
 
@@ -10,12 +14,14 @@ GALAN_USE_NAMESPACE
 
 MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   : QCanvasView(0, parent, name, f),
+    nextItemNumber(0),
     macro(_macro),
     c(new QCanvas(2048, 2048)),
     halo(new QCanvasRectangle(c)),
     selection(0),
     linkLine(0),
-    editState(IDLE)
+    editState(IDLE),
+    popupPos()
 {
   c->setBackgroundColor(Qt::black);
 
@@ -24,6 +30,7 @@ MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   halo->setZ(HALO_HEIGHT);
   // Keep the halo hidden until a selection comes along.
 
+#if 0
   QCanvasPolygonalItem *r = new QCanvasRectangle(10, 10, 30, 20, c);	// %%% remove
   r->setBrush(Qt::yellow);
   r->setPen(Qt::white);
@@ -35,6 +42,11 @@ MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   r->setPen(Qt::white);
   r->setZ(ITEM_HEIGHT);
   r->show();
+
+  ItemIcon *ii = new ItemIcon(QPoint(100, 50), "dummy", c);
+  ii->setZ(ITEM_HEIGHT);
+  ii->show();
+#endif
 
   setCanvas(c);
 }
@@ -106,8 +118,42 @@ void MacroView::createLink(QMouseEvent *evt) {
     delete linkLine;
   } else {
     // Dropped on something else.
-    cerr << "Would connect to " << (void *) endpoint << " if we could." << endl;
-    // %%% Must use up linkLine here! (and of course actually create a link...)
+    ItemIcon *source = dynamic_cast<ItemIcon *>(selection);
+    ItemIcon *target = dynamic_cast<ItemIcon *>(endpoint);
+
+    if (source == 0) qFatal("Source of link is not an ItemIcon!");
+    if (target == 0) qFatal("Target of link is not an ItemIcon!");
+
+    Qt::ButtonState state = evt->state();
+
+    // Test to see if we can shortcircuit the connection process.
+    //%%% should use status bar to let the user see what's happening here
+
+    if (state & ControlButton) {
+      // Want detailed connection.
+      IFDEBUG(cerr << "ControlButton on link --> detailed connection" << endl);
+      source->editLinksTo(target);
+    } else {
+      // Maybe shortcircuit.
+      Generator *src = source->getGenerator();
+      Generator *dst = target->getGenerator();
+      OutputDescriptor const *src_q = src->getClass().getDefaultOutput();
+      InputDescriptor const *dst_q = dst->getClass().getDefaultInput();
+
+      IFDEBUG(cerr << "Link: src " << src << " dst " << dst
+	           << " src_q " << src_q << " dst_q " << dst_q << endl);
+
+      if (src_q && dst_q && src_q->compatibleWith(dst_q)) {
+	IFDEBUG(cerr << "Shortcircuit linking" << endl);
+	src->link(*src_q, dst, *dst_q);
+	source->findLinkTo(target, true);	// we ignore result here.
+      } else {
+	// Not compatible, or no defaults. Use detailed connection.
+	IFDEBUG(cerr << "Not compatible or no defaults --> detailed connection" << endl);
+	source->editLinksTo(target);
+      }
+    }
+
     delete linkLine;
   }
 
@@ -122,14 +168,19 @@ void MacroView::moveItem(QMouseEvent *evt) {
 }
 
 void MacroView::popupMenu(QMouseEvent *evt) {
-  QCanvasItemList items = itemsAt(evt->pos());
+  popupPos = evt->pos();
 
-  QPopupMenu newMenu(this);
-  newMenu.insertItem("Placeholder", 0, "");	// %%% new class for New Primitive menu
+  QCanvasItemList items = itemsAt(popupPos);
 
   QPopupMenu menu(this);
   menu.insertItem("New macro...", 0, "");	// %%% new class for New Macro dialog etc.
-  menu.insertItem("New primitive", &newMenu);
+
+  RegistrySelectionMenu *regSel = 
+    new RegistrySelectionMenu(Registry::root->lookup("Generator")->toRegistry(), &menu);
+  menu.insertItem("New primitive", regSel);
+  connect(regSel, SIGNAL(itemSelected(Galan::Registrable const *)),
+	  this, SLOT(createPrimitive(Galan::Registrable const *)));
+
   menu.insertSeparator();
 
   int counter = 0;
@@ -140,11 +191,36 @@ void MacroView::popupMenu(QMouseEvent *evt) {
     itemMenu->insertItem("Placeholder", 0, "");	// %%% new class for per-item popup menu
 
     QString msg;
-    msg.sprintf("Item %d", counter++);	// %%% names instead of numbers??
+    msg.sprintf("Item %d", counter++);	// %%% names instead of numbers?? (yes please)
     menu.insertItem(msg, itemMenu);
   }
 
   menu.exec(evt->globalPos(), 2);
+}
+
+void MacroView::createPrimitive(Registrable const *generatorClass) {
+  IFDEBUG(cerr << "createPrimitive: fullpath " << generatorClass->getFullpath() << endl);
+
+  GeneratorClass *cls = dynamic_cast<GeneratorClass *>(const_cast<Registrable *>(generatorClass));
+  if (cls == 0) {
+    qWarning("Non-GeneratorClass found in Registry! Ignoring createPrimitive request.");
+    return;
+  }
+
+  Generator *prim = new Generator(*cls, true /*%%%*/);
+
+  ostrstream name;
+  name << generatorClass->getLocalname() << nextItemNumber++ << ends;
+
+  if (!macro->addChild(name.str(), prim)) {
+    qWarning("Name already taken! Eeek");
+    delete prim;
+    return;
+  }
+
+  ItemIcon *ii = new ItemIcon(macro, popupPos, name.str(), c);
+
+  c->update();
 }
 
 void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
