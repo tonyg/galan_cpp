@@ -45,7 +45,4 @@ PUBLIC_SYMBOL void init_plugin_Test(Plugin &plugin) {
   pluginClass->register_desc(new RealtimeOutputDescriptor("Main",
 							  (RealtimeOutputDescriptor::samplefn_t)
 							  &Test::MainOutput));
-
-  cout << "Test.cc: ClockManager is " << (void *) ClockManager::instance() << endl;
-  cout << "Test.cc: &Registry::root is " << (void *) &Registry::root << endl;
 }
