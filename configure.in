@@ -1,7 +1,7 @@
 dnl -*- shell-script -*-
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/galan/global.h)
-AM_INIT_AUTOMAKE(galan, 0.4.0)
+AM_INIT_AUTOMAKE(galan, 0.4.0pre)
 AM_CONFIG_HEADER(config.h)
 
 dnl Program checks
