@@ -1,5 +1,6 @@
-- clean up directory structure
+- make various things clone()able
 - add file-readiness-notification API for plugins to use
+- clean up directory structure
 - pull out the little stub main
 - clean up API so that it uses more pimpl/bridge/whatever to hide
   symbols and implementation details so we can improve binary compatibility
