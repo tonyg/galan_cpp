@@ -42,6 +42,9 @@ public:
 protected:
   virtual void drawShape(QPainter &p);
 
+private slots:
+  void deleteIcon();
+
 private:
   void refreshLinks();
   

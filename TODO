@@ -1,12 +1,9 @@
 - don't let a link be drawn if either the source has no outputs, or
   the target has no inputs
-- find out why VCO0 -> OSS1 makes a nasty noise when simultaneous
-  with VCO0 -> OSS2...
-	- caches not working, maybe???
 - get rid of nasty clicking! prebuffer?
 
-- popup menu (over handles) for links - allow "disconnect all" and "edit links..."
-	- use rtti()?
+- pattern editor
+- control windows
 - simple prefs system
 	- for prefs editing
 - simple object-store system - use XML?

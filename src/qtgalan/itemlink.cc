@@ -64,14 +64,11 @@ void ItemLink::reposition() {
   setPoints(p1.x(), p1.y(),
 	    p2.x(), p2.y());
 
-  QPoint center = p1;
-  center += p2;
-  center /= 2;
-  handle->move(center.x(), center.y());
+  QPoint v = p2 - p1;
+  QPoint handleLoc = p1 + v / 2;
 
-  QPoint v = p2;
-  v -= p1;
   handle->rotateTo(atan2(v.y(), v.x()));
+  handle->move(handleLoc.x(), handleLoc.y());
 }
 
 #if 0

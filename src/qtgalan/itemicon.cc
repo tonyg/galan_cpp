@@ -85,6 +85,8 @@ void ItemIcon::editLinksTo(ItemIcon *target) {
 }
 
 void ItemIcon::disconnectFrom(ItemIcon *target) {
+  ItemLink *link = findLinkTo(target, true);
+
   Generator *src = getGenerator();
   Generator *dst = target->getGenerator();
 
@@ -92,20 +94,32 @@ void ItemIcon::disconnectFrom(ItemIcon *target) {
 
   std::vector<OutputDescriptor *> src_qs = srcClass.getOutputs();
   for (unsigned int i = 0; i < src_qs.size(); i++) {
-    Generator::conduitlist_t const &linksFrom(src->outboundLinks(*src_qs[i]));
+    // Make a copy of the reference returned, since we'll probably be
+    // modifying the underlying object, so we want to keep an
+    // untouched copy locally.
+    Generator::conduitlist_t linksFrom = src->outboundLinks(*src_qs[i]);
+
     for (Generator::conduitlist_t::const_iterator j = linksFrom.begin();
 	 j != linksFrom.end();
 	 j++) {
+
       if ((*j)->dst == dst) {
 	(*j)->unlink();
       }
+
     }
   }
+
+  link->refresh();
 }
 
 QString ItemIcon::buildMenu(QPopupMenu *menu) {
-  menu->insertItem("Placeholder", 0, "");
+  menu->insertItem("Delete", this, SLOT(deleteIcon()));
   return ("Generator " + name).c_str();
+}
+
+void ItemIcon::deleteIcon() {
+  delete this;
 }
 
 void ItemIcon::refreshLinks() {

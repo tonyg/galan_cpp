@@ -40,19 +40,19 @@ static void rotate(QPointArray &a, double radians) {
 
 void ItemHandle::rotateTo(double radians) {
   QPointArray pa(3);
-  pa[0] = QPoint(7, 0);
-  pa[1] = QPoint(-5, -5);
-  pa[2] = QPoint(-5, 5);
+  pa[0] = QPoint(0, 0);
+  pa[1] = QPoint(-12, -6);
+  pa[2] = QPoint(-12, 6);
   rotate(pa, radians);
   setPoints(pa);
 }
 
 QString ItemHandle::buildMenu(QPopupMenu *menu) {
-  menu->insertItem("Disconnect &all links", this, SIGNAL(disconnectAll()));
-  menu->insertItem("&Edit links...", this, SIGNAL(editLinks()));
+  menu->insertItem("&Edit links...", this, SLOT(editLinks()));
+  menu->insertItem("&Disconnect", this, SLOT(disconnectAll()));
 
-  return ("Link between " + link->getSource()->getItemName() +
-	  " and " + link->getTarget()->getItemName()
+  return ("Link from " + link->getSource()->getItemName() +
+	  " to " + link->getTarget()->getItemName()
 	  ).c_str();
 }
 

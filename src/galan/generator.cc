@@ -102,6 +102,7 @@ OutputDescriptor const *GeneratorClass::getDefaultOutput() const {
 
 bool SampleCache::read(GeneratorState *voice, RealtimeOutputDescriptor const &output,
 		       SampleBuf *buffer) {
+  //IFDEBUG(cerr << "SampleCache::read of " << voice << " at " << Clock::now() << endl);
   sampletime_t now = Clock::now();
   int last_end = last_sampletime + (last_buffer == 0 ? 0 : last_buffer->getLength());
 
@@ -112,6 +113,10 @@ bool SampleCache::read(GeneratorState *voice, RealtimeOutputDescriptor const &ou
     // no cache, or
     // first call to read, or
     // cache completely expired
+    //IFDEBUG(if (last_buffer == 0) cerr << "no cache" << endl);
+    //IFDEBUG(if (last_sampletime == -1) cerr << "first call to read" << endl);
+    //IFDEBUG(if (last_sampletime < now && last_end <= now)
+    //           cerr << "cache completely expired" << endl);
 
     if (last_buffer != 0)
       delete last_buffer;
@@ -127,11 +132,15 @@ bool SampleCache::read(GeneratorState *voice, RealtimeOutputDescriptor const &ou
     // it may be partially expired, or
     //		 all valid but too short, or
     //		 all valid and just right.
+    //IFDEBUG(cerr << "have cache, has already been used: ");
 
     if (last_sampletime < now) {
       // partially expired.
+      //IFDEBUG(cerr << "partially expired." << endl);
       last_buffer->delete_front(now - last_sampletime);
       last_sampletime = now;
+    } else {
+      //IFDEBUG(cerr << "no expired samples." << endl);
     }
 
     // Now the first sample in the cache is valid.
@@ -141,6 +150,7 @@ bool SampleCache::read(GeneratorState *voice, RealtimeOutputDescriptor const &ou
 
     if (oldlen < newlen) {
       // ... but the cache is too short. Fill up the remainder.
+      //IFDEBUG(cerr << "cache too short, so filling remainder." << endl);
 
       if (!last_result)
 	last_buffer->clear();
@@ -150,6 +160,8 @@ bool SampleCache::read(GeneratorState *voice, RealtimeOutputDescriptor const &ou
       last_buffer->wind(oldlen);	// urrk
       last_result = (voice->*(output.getSampleFn()))(output, last_buffer);
       last_buffer->wind(-oldlen);
+    } else {
+      //IFDEBUG(cerr << "cache just right, or longer than needed." << endl);
     }
 
   }

@@ -260,7 +260,18 @@ void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
       } else if (((button == LeftButton) && (state & ControlButton)) ||
 		 (button == RightButton)) {
 	// Popup menu. (C-left or ANY-right)
+
+	// Clear selection first (the selected icon may be deleted by
+	// a menu action).
+	setSelection(0);
+
+	// Now run the menu.
 	popupMenu(evt);
+
+	// Update the display, since a menu action may have altered
+	// it.
+	c->update();
+
       } else if (button == LeftButton) {
 	// Plain old left-click (shift and control are filtered out
 	// above).
