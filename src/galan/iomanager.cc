@@ -19,6 +19,3 @@ void IOManager::setInstance(IOManager *inst) {
   }
   _instance = inst;
 }
-
-IOManager::~IOManager() {
-}

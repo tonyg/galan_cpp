@@ -179,7 +179,8 @@ Generator::Generator(GeneratorClass &_cls, bool _polyphonic, int _nvoices = DEFA
   : cls(_cls),
     inputs(cls.getNumInputs()),
     outputs(cls.getNumOutputs()),
-    polyphonic(_polyphonic)
+    polyphonic(_polyphonic),
+    _userdata(0)
 {
   setPolyphony(_nvoices);
 }
@@ -199,6 +200,8 @@ Generator::~Generator() {
   for (statevec_t::iterator i = voices.begin(); i != voices.end(); i++) {
     delete (*i);
   }
+
+  delete _userdata;
 }
 
 Generator *Generator::clone() {

@@ -16,7 +16,6 @@
 #include "galan/sample.h"
 #include "galan/clock.h"
 #include "galan/registry.h"
-#include "galan/ref.h"
 
 GALAN_BEGIN_NAMESPACE
 
@@ -41,7 +40,7 @@ class			RandomaccessOutputDescriptor;
  * Generator. Essentially, describes a single input to or output from
  * a Generator.
  **/
-class ConnectionDescriptor {
+class ConnectionDescriptor: public Destructable {
 public:
   /**
    * Create a ConnectionDescriptor with the passed-in human-readable name.
@@ -49,7 +48,6 @@ public:
    * @param _name the name of this connection, to be displayed to the user
    **/
   ConnectionDescriptor(std::string const &_name);
-  virtual ~ConnectionDescriptor() {}
 
   /// Retrieve the display name for this ConnectionDescriptor
   std::string const &getName() const { return name; }
@@ -527,6 +525,23 @@ public:
    **/
   sampletime_t get_input_range(RandomaccessInputDescriptor const &q, int voice);
 
+  /**
+   * Retrieves generator-wide user state variable. This is useful for
+   * information that needs to be shared between all voices in a
+   * polyphonic generator.
+   **/
+  Destructable *userdata() const {
+    return _userdata;
+  }
+
+  /**
+   * Updates generator-wide user state variable. See userdata().
+   **/
+  void userdata(Destructable *newdata) {
+    delete _userdata;
+    _userdata = newdata;
+  }
+
 protected:
   // Mostly for use by Macro.
   void addInput();			///< Internal: extends 'inputs' by one
@@ -554,6 +569,8 @@ private:
   statevec_t voices;
 
   cachevec_t caches;			///< Matrix of cached outputs, one array per voice.
+
+  Destructable *_userdata;		///< Generator-wide subclass data.
 
   Generator();						// unimpl
   Generator(Generator const &from);			// unimpl
@@ -594,7 +611,7 @@ private:
  * @see RandomaccessOutputDescriptor::samplefn_t
  * @see RandomaccessOutputDescriptor::rangefn_t
  **/
-class GeneratorState {
+class GeneratorState: public Destructable {
 private:
   Generator &gen;			///< the generator instance we hold state for a voice of.
   int voice;				///< which voice in my Generator do I represent? %%%
@@ -646,7 +663,6 @@ public:
    * voice number.
    **/
   GeneratorState(Generator &_gen, int _voice): gen(_gen), voice(_voice) {}
-  virtual ~GeneratorState() {}
 
   Generator &getInstance() const { return gen; }	///< Get our associated Generator
   int getVoice() const { return voice; }		///< Get our associated voice number

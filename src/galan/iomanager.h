@@ -18,7 +18,7 @@ class IOManager;
  * the library should implement a concrete subclass of this class, and
  * register a single instance of it using IOManager::setInstance().
  **/
-class IOManager {
+class IOManager: public Destructable {
 public:
   /**
    * Direction of I/O a client is interested in.
@@ -59,8 +59,6 @@ public:
    * @param userdata the datum passed in when add() was called
    **/
   typedef void (*handler_t)(int fd, Direction direction, token_t token, void *userdata);
-
-  virtual ~IOManager();
 
   /**
    * Adds an interested client to this IOManager.

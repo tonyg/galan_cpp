@@ -21,7 +21,7 @@ class Registry;		// a node in the tree (has child cells)
 /**
  * A cell in a registry-tree - may be either a leaf or a node.
  **/
-class Registrable {
+class Registrable: public Destructable {
 private:
   friend class Registry;
 

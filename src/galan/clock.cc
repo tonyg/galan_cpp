@@ -6,6 +6,9 @@ sampletime_t Clock::time_now = 0;
 sampletime_t Clock::max_realtime_step = 1024;
 list<RealtimeHandler *> Clock::realtime_fns;
 
+Clock::Clock() {
+}
+
 void Clock::register_realtime_fn(RealtimeHandler *handler) {
   IFDEBUG(cerr << "Registering realtime fn " << ((void *) handler) << endl);
   realtime_fns.push_back(handler);

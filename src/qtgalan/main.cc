@@ -23,24 +23,30 @@
 GALAN_USE_NAMESPACE
 
 int main(int argc, char *argv[]) {
-  printf("gAlan version " VERSION ", Copyright (C) 1999-2001 Tony Garnock-Jones\n"
-	 "gAlan comes with ABSOLUTELY NO WARRANTY; for details, see the file\n"
-	 "\"COPYING\" that came with the gAlan distribution.\n"
-	 "This is free software, distributed under the GNU General Public\n"
-	 "License. Please see \"COPYING\" or http://www.gnu.org/copyleft/gpl.txt\n\n");
+  try {
+    printf("gAlan version " VERSION ", Copyright (C) 1999-2001 Tony Garnock-Jones\n"
+	   "gAlan comes with ABSOLUTELY NO WARRANTY; for details, see the file\n"
+	   "\"COPYING\" that came with the gAlan distribution.\n"
+	   "This is free software, distributed under the GNU General Public\n"
+	   "License. Please see \"COPYING\" or http://www.gnu.org/copyleft/gpl.txt\n\n");
 
-  QApplication app(argc, argv);
+    QApplication app(argc, argv);
 
-  DefaultClock defaultClock;
+    DefaultClock defaultClock;
 
-  Macro::initialise();
-  QtIOManager::initialise();
-  Plugin::loadPlugins();
+    Macro::initialise();
+    QtIOManager::initialise();
+    Plugin::loadPlugins();
 
-  MainWin mainwin;
-  mainwin.setCaption("QtGalan (" PACKAGE " " VERSION ")");
-  mainwin.show();
+    MainWin mainwin;
+    mainwin.setCaption("QtGalan (" PACKAGE " " VERSION ")");
+    mainwin.show();
 
-  app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
-  return app.exec();
+    app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
+    return app.exec();
+  } catch (std::exception &e) {
+    cerr << "Uncaught std::exception: " << e.what() << endl;
+  } catch (...) {
+    cerr << "Uncaught unknown exception!" << endl;
+  }
 }

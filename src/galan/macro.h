@@ -174,13 +174,10 @@ private:
  * Generator specialization that implements a subgraph's view of an
  * input channel.
  **/
-class MacroInputProxy: public Generator, public Model {
+class MacroInputProxy: public Generator {
 public:
   /// Sets up our static GeneratorClass instances.
   static void initialise();
-
-  /// Handles an incoming IntEvent (if trackable, eventually)
-  //virtual void handle_event(IntEvent &event);
 
 private:
   friend class Macro;

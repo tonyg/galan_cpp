@@ -2,6 +2,15 @@
 
 GALAN_USE_NAMESPACE
 
+View::View() {
+}
+
+void View::modelChanged(Model &model) {
+}
+
+Model::Model() {
+}
+
 void Model::addDependent(View &v) {
   dependents.insert(&v);
 }
@@ -14,6 +23,10 @@ bool Model::hasDependent(View &v) const {
   return (dependents.find(&v) != dependents.end());
 }
 
+bool Model::hasDependents() const {
+  return !dependents.empty();
+}
+
 Model::dependents_t const &Model::getDependents() const {
   return dependents;
 }
@@ -21,15 +34,18 @@ Model::dependents_t const &Model::getDependents() const {
 void Model::notifyViews() {
   dependents_t::iterator i = dependents.begin();
   while (i != dependents.end()) {
-    (*i)->modelChanged();
+    (*i)->modelChanged(*this);
     i++;
   }
 }
 
-View::View(Model &_model): model(_model) {
-  model.addDependent(*this);
+ModelLink::ModelLink(Model &m, View &v)
+  : model(m),
+    view(v)
+{
+  model.addDependent(view);
 }
 
-View::~View() {
-  model.removeDependent(*this);
+ModelLink::~ModelLink() {
+  model.removeDependent(view);
 }

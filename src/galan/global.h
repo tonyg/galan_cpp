@@ -1,4 +1,4 @@
-/* gAlan - Graphical Audio Language
+/* gAlan - Graphical Audio Language -*- c++ -*-
  * Copyright (C) 1999 Tony Garnock-Jones
  *
  * This program is free software; you can redistribute it and/or modify
@@ -21,6 +21,8 @@
 
 #include <glib.h>
 #include <gmodule.h>
+
+#include <stdexcept>
 
 #define GALAN_BEGIN_NAMESPACE		namespace Galan {
 #define GALAN_END_NAMESPACE		}
@@ -72,5 +74,14 @@
 #else
 #define IFDEBUG(expr)
 #endif
+
+GALAN_BEGIN_NAMESPACE
+
+class Destructable {
+public:
+  virtual ~Destructable() {}
+};
+
+GALAN_END_NAMESPACE
 
 #endif

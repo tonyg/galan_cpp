@@ -1,12 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_PROGRAMS = testref testreg testfns
+EXTRA_PROGRAMS = testreg testfns
 
 LDADD = @GLIB_LIBS@
 INCLUDES = -I$(top_srcdir)/src @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
-
-testref_SOURCES = testref.cc
-testref_LDADD =
 
 testreg_SOURCES = testreg.cc
 testreg_LDADD = ../src/galan/registry.o -lglib

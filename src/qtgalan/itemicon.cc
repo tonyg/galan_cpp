@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "mainwin.h"
 #include "macroview.h"
 #include "itemicon.h"
 #include "IconLinkEditor.h"
@@ -46,6 +47,10 @@ ItemIcon::~ItemIcon() {
        i++) {
     delete (*i);
   }
+
+  QString msg;
+  msg.sprintf("Removed item %s.", name.c_str());
+  MainWin::StatusBar()->message(msg);
 }
 
 void ItemIcon::moveBy(double dx, double dy) {

@@ -5,6 +5,9 @@ GALAN_USE_NAMESPACE
 
 priority_queue<Event *> Event::event_q;
 
+Event::Event() {
+}
+
 sampletime_t Event::mainloop() {
   while (event_q.size()) {
     Event *e = event_q.top();
@@ -48,12 +51,18 @@ void Event::send() {
   }
 }
 
-void IntEvent::send() {
-  IntEventHandler *target = dynamic_cast<IntEventHandler *>(getTarget());
+void EventHandler::handle_event(Event const &event) {
+}
+
+void SampleEvent::send() {
+  SampleEventHandler *target = dynamic_cast<SampleEventHandler *>(getTarget());
 
   if (target) {
     target->handle_event(*this);
   } else {
     Event::send();
   }
+}
+
+void SampleEventHandler::handle_event(SampleEvent const &event) {
 }

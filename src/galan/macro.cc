@@ -246,10 +246,3 @@ bool MacroInputProxy::read_output(RandomaccessOutputDescriptor const &q, int voi
 sampletime_t MacroInputProxy::get_output_range(RandomaccessOutputDescriptor const &q, int voice) {
   return macro.get_input_range(*ra, voice);
 }
-
-#if 0
-void MacroInputProxy::handle_event(IntEvent &event) {
-  value = event.getValue();
-  notifyViews();
-}
-#endif

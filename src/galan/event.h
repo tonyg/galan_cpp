@@ -16,8 +16,8 @@ GALAN_BEGIN_NAMESPACE
 class Event;
 class EventHandler;
 
-class IntEvent;
-class IntEventHandler;
+class SampleEvent;
+class SampleEventHandler;
 
 ///////////////////////////////////////////////////////////////////////////
 
@@ -26,7 +26,7 @@ class IntEventHandler;
  * between Generator instances etc. More generally, Events can be
  * targetted at instances of EventHandler.
  **/
-class Event {
+class Event: public Destructable {
 public:
   /**
    * The master event dispatcher. Processes all events in the event_q
@@ -64,7 +64,6 @@ public:
       time(_time) {
   }
   virtual Event *clone() const = 0;	///< Subclasses must override
-  virtual ~Event() {}
 
   /// Retrieve the target of this event.
   EventHandler *getTarget() const { return target; }
@@ -82,12 +81,10 @@ public:
   bool operator <(Event const &right) const { return time >= right.time; }
 
 private:
-  friend ostream &operator<<(ostream &o, Event &e);
-
   EventHandler *target;		///< Which EventHandler this event is destined for
   sampletime_t time;		///< Time at which the event should be delivered by mainloop()
 
-  Event() {}
+  Event();
 
   // No copying.
   Event(Event const &other);
@@ -97,8 +94,8 @@ private:
   static std::priority_queue<Event *> event_q;	///< The global event queue
 };
 
-inline ostream &operator<<(ostream &o, Event &e) {
-  return o << "Event(" << e.target << "@" << e.time << ")";
+inline ostream &operator<<(ostream &o, Event const &e) {
+  return o << "Event(" << e.getTarget() << "@" << e.getTime() << ")";
 }
 
 /**
@@ -110,39 +107,43 @@ public:
   /**
    * Implement this to handle incoming events.
    **/
-  virtual void handle_event(Event const &event) {}
+  virtual void handle_event(Event const &event);
 };
 
 ///////////////////////////////////////////////////////////////////////////
 
 /**
- * Subclass of Event that carries a single int as payload.
+ * Subclass of Event that carries a single sample as payload.
  **/
-class IntEvent: public Event {
+class SampleEvent: public Event {
 private:
-  int value;		///< Our payload
+  Sample value;		///< Our payload
 
 public:
-  virtual IntEvent *clone() const { return new IntEvent(getTarget(), getTime(), value); }
+  virtual SampleEvent *clone() const { return new SampleEvent(getTarget(), getTime(), value); }
 
-  IntEvent(EventHandler *_target, sampletime_t _time, int _value): Event(_target, _time) {
+  SampleEvent(EventHandler *_target, sampletime_t _time, Sample _value): Event(_target, _time) {
     value = _value;
   }
 
-  int getValue() const { return value; }
+  Sample getValue() const { return value; }
 
-  /// Overridden to support instances of IntEventHandler specially.
+  /// Overridden to support instances of SampleEventHandler specially.
   virtual void send();
 };
 
+inline ostream &operator<<(ostream &o, SampleEvent const &e) {
+  return o << "SampleEvent(" << e.getTarget() << "@" << e.getTime() << ":" << e.getValue() << ")";
+}
+
 /**
- * Implement this interface if you'll be taking delivery of IntEvent
+ * Implement this interface if you'll be taking delivery of SampleEvent
  * instances often.
  **/
-class IntEventHandler: public EventHandler {
+class SampleEventHandler: public EventHandler {
 public:
-  /// Overloaded method specialized for IntEvent processing.
-  virtual void handle_event(IntEvent &event) {}
+  /// Overloaded method specialized for SampleEvent processing.
+  virtual void handle_event(SampleEvent const &event);
 };
 
 GALAN_END_NAMESPACE

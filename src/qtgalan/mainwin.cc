@@ -22,6 +22,9 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qcheckbox.h>
+#include <qstatusbar.h>
+#include <qtabwidget.h>
+#include <qscrollview.h>
 
 #include "galan/global.h"
 #include "galan/clock.h"
@@ -30,10 +33,21 @@
 GALAN_USE_NAMESPACE
 using namespace std;
 
+MainWin *MainWin::instance = 0;
+
+QStatusBar *MainWin::StatusBar() {
+  return instance->statusBar();
+}
+
 MainWin::MainWin()
   : QMainWindow(),
     root(Macro::create(true))
 {
+  if (instance != 0) {
+    throw std::logic_error("Already created instance of MainWin!");
+  }
+  instance = this;
+
   QPopupMenu *fileMenu = new QPopupMenu(this);
   fileMenu->insertItem("&New workspace", 0, ""); // %%% clear main
 	// macroview, delete aux. windows and controls - check if
@@ -56,8 +70,6 @@ MainWin::MainWin()
   editMenu->insertItem("&Preferences...", 0, "");	// %%% new class for Prefs editing
 
   QPopupMenu *windowMenu = new QPopupMenu(this);
-  windowMenu->insertItem("&Show Control Panel", 0, "");	// %%% new class for control panel
-  windowMenu->insertItem("&Hide Control Panel", 0, "");
   windowMenu->insertItem("Show &Pattern Panel", 0, "");	// %%% new class for pattern panel (?)
   windowMenu->insertItem("Hide Patter&n Panel", 0, "");
 
@@ -74,14 +86,26 @@ MainWin::MainWin()
   menuBar()->insertItem("&Timing", timingMenu);
   menuBar()->insertSeparator();
   menuBar()->insertItem("&Help", helpMenu);	// %%% need more and better help and tooltips
-  // %%% also a status bar wouldn't go amiss
 
-  MacroView *macroView = new MacroView(root, this);
-  setCentralWidget(macroView);
+  QTabWidget *tabs = new QTabWidget(this);
+  setCentralWidget(tabs);
+
+  MacroView *macroView = new MacroView(root, tabs);
+  tabs->addTab(macroView, "&Graph");
+
+  QScrollView *sv = new QScrollView(tabs);
+  sv->resizeContents(2048, 2048);
+  sv->enableClipper(true);
+  tabs->addTab(sv, "&Controls");
+
+  sv->addChild(new QPushButton("Hello", sv->viewport()), 10, 10);
+  sv->addChild(new QPushButton("Aloha", sv->viewport()), 1000, 50);
 
   connect(macroView, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 
   setMinimumSize(400, 400);
+
+  StatusBar()->message("Ready.");
 }
 
 MainWin::~MainWin() {

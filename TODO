@@ -1,13 +1,23 @@
-- don't let a link be drawn if either the source has no outputs, or
-  the target has no inputs
 - get rid of nasty clicking! prebuffer?
+- more sensible display of names
+	- short names?
+	- user comments on icons?
+- tooltips
+- cursor changes during drag-scroll etc
+
+- remove ref.h and dependencies.
 
 - pattern editor
+	- use RANDOM-ACCESS human-interaction plugin
 - control windows
+	- use REALTIME human-interaction plugin
 - simple prefs system
 	- for prefs editing
 - simple object-store system - use XML?
 	- for load/store of workspaces and macros
+- allow creation/editing/import/export of Macros
+- tie in with Brahms?
+	- REALTIME MIDI plugin
 
 - clean up API so that it uses more pimpl/bridge/whatever to hide
   symbols and implementation details so we can improve binary compatibility

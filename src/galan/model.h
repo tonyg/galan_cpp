@@ -6,6 +6,7 @@
 // Interface
 
 #include <set>
+#include <utility>
 
 #include "galan/global.h"
 
@@ -13,27 +14,44 @@ GALAN_BEGIN_NAMESPACE
 
 class Model;
 class View;
+class ModelLink;
 
 ///////////////////////////////////////////////////////////////////////////
+
+/**
+ * Observer type. May depend on one or more Model instances. Notified
+ * of changes to Models through calls to Model::notifyViews(), which
+ * call modelChanged() with the changed model.
+ **/
+class View: public Destructable {
+ public:
+  View();
+
+  virtual void modelChanged(Model &model);
+
+ private:
+  View(View const &from);		//unimpl
+  View &operator =(View const &from);	//unimpl
+};
 
 /**
  * Observable object. Has dependent View instances, which are notified
  * of (abstract) changes in thie object's state by calls to
  * notifyViews().
  **/
-class Model {
+class Model: public Destructable {
  public:
   typedef std::set<View *> dependents_t;
 
-  Model() {}
-  virtual ~Model() {}
+  Model();
 
-  virtual void addDependent(View &v);			///< Install a new dependent
-  virtual void removeDependent(View &v);		///< Remove a dependent
-  virtual bool hasDependent(View &v) const;		///< "Is v a dependent of this?"
-  virtual dependents_t const &getDependents() const;	///< Retrieve all dependents of this
+  void addDependent(View &v);			///< Install a new dependent
+  void removeDependent(View &v);		///< Remove a dependent
+  bool hasDependent(View &v) const;		///< "Is v a dependent of this?"
+  bool hasDependents() const;			///< "Does this have *any* deps?"
+  dependents_t const &getDependents() const;	///< Retrieve all deps of this
 
-  virtual void notifyViews();				///< Call View::modelChanged() on deps.
+  virtual void notifyViews();			///< Call all dependent callbacks.
 
  private:
   dependents_t dependents;		///< All dependents of this.
@@ -42,22 +60,19 @@ class Model {
   Model &operator =(Model const &from);	//unimpl
 };
 
-class View {
- public:
-  View(Model &_model);
-  virtual ~View();
+/**
+ * Manages the link between a Model and View. On construction,
+ * registers the dependency; on destruction, deregisters the
+ * dependency.
+ **/
+class ModelLink {
+public:
+  ModelLink(Model &m, View &v);
+  ~ModelLink();
 
-  /**
-   * Called whenever our Model has changed (indirectly, via
-   * Model::notifyViews()).
-   **/
-  virtual void modelChanged() = 0;
-
- private:
-  Model &model;				///< Our model.
-
-  View(View const &from);		//unimpl
-  View &operator =(View const &from);	//unimpl
+private:
+  Model &model;
+  View &view;
 };
 
 GALAN_END_NAMESPACE

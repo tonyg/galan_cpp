@@ -110,6 +110,19 @@ public:
   }
 
   /**
+   * Become identical to a part of another SampleBuf.
+   **/
+  void assign(SampleBuf const &from, int offset, int len) {
+    if (length != len)
+      resize(len);
+    if (len > (from.length - offset))
+      len = from.length - offset;
+    memcpy(buffer, from.buffer + offset, sizeof(Sample) * len);
+    if (len != length)
+      memset(buffer + len, 0, sizeof(Sample) * (length - len));
+  }
+
+  /**
    * Sick hack to make this buffer refer directly to a position
    * internal to it. Yuck! Don't use this elsewhere!
    *

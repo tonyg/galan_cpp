@@ -2,7 +2,6 @@
 #define Plugin_H
 
 #include "galan/registry.h"
-#include "galan/ref.h"
 
 #include <string>
 #include <vector>

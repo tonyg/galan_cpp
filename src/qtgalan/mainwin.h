@@ -6,10 +6,13 @@
 
 #include <qmainwindow.h>
 #include <qmenubar.h>
+#include <qstatusbar.h>
 
 class MainWin: public QMainWindow {
   Q_OBJECT
 public:
+  static QStatusBar *StatusBar();
+
   MainWin();
   virtual ~MainWin();
 
@@ -23,6 +26,8 @@ private slots:
   void selectionChanged();
 
 private:
+  static MainWin *instance;
+
   Galan::Macro *root;
 };
 

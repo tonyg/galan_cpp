@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdio.h>
 
+#include "mainwin.h"
 #include "macroview.h"
 #include "itemlink.h"
 #include "itemicon.h"
@@ -30,6 +31,12 @@ ItemLink::~ItemLink() {
   delete handle;
   source->links.erase(this);
   target->links.erase(this);
+
+  QString msg;
+  msg.sprintf("Disconnected all links between %s and %s.",
+	      source->getItemName().c_str(),
+	      target->getItemName().c_str());
+  MainWin::StatusBar()->message(msg);
 }
 
 void ItemLink::refresh() {

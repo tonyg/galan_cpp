@@ -55,6 +55,8 @@ bool VCO::MainOutput(RealtimeOutputDescriptor const &desc, SampleBuf *buf) {
   read_input(trig, &trigger);
 
 #if 0
+  // Proper code for variable frequency.
+  //
   if (read_input(freq, buf)) {
     for (int i = 0; i < buf->getLength(); i++) {
       Sample phaseDelta = min(max((*buf)[i], 0), Sample::rate >> 1);
@@ -72,6 +74,9 @@ bool VCO::MainOutput(RealtimeOutputDescriptor const &desc, SampleBuf *buf) {
     buf->fill_with(table[(int) phase]);
   }
 #else
+  // Hacky duplicate code fixed at 110Hz, 0.1 volume (for testing)
+  // (before we have proper controls available)
+  //
   for (int i = 0; i < buf->getLength(); i++) {
     Sample phaseDelta = 110;
     (*buf)[i] = table[(int) phase] * 0.1;

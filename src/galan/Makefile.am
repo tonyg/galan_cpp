@@ -4,10 +4,11 @@ lib_LTLIBRARIES = libgalan.la
 
 pkginclude_HEADERS = \
 	global.h \
-	ref.h model.h registry.h \
+	model.h registry.h \
 	sample.h generator.h macro.h \
 	clock.h event.h \
 	iomanager.h \
+	controller.h \
 	plugin.h
 
 libgalan_la_SOURCES = \
@@ -15,6 +16,7 @@ libgalan_la_SOURCES = \
 	generator.cc macro.cc \
 	clock.cc event.cc \
 	iomanager.cc \
+	controller.cc \
 	plugin.cc
 
 libgalan_la_LIBADD = @GLIB_LIBS@

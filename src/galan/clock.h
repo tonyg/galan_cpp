@@ -27,7 +27,7 @@ class ClockManager;
  * @see ClockManager
  * @see RealtimeHandler
  **/
-class Clock {
+class Clock: public Destructable {
 public:
   /**
    * Installs a RealtimeHandler in the global handler list, to be
@@ -68,9 +68,6 @@ public:
   static void advance(sampletime_t delta);
 
 public:
-  Clock() {}
-  virtual ~Clock() {}
-
   /**
    * Specific clocks must implement this method to provide a
    * human-readable name for their clock instance.
@@ -93,6 +90,9 @@ public:
    * of synchronisation.
    **/
   virtual void enable() = 0;
+
+protected:
+  Clock();
 
 private:
   // Clocks are pure reference types, and may not be copied.

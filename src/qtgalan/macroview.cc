@@ -4,6 +4,7 @@
 
 #include <strstream>
 
+#include "mainwin.h"
 #include "macroview.h"
 #include "regsel.h"
 #include "itemicon.h"
@@ -127,7 +128,6 @@ void MacroView::createLink(QMouseEvent *evt) {
     Qt::ButtonState state = evt->state();
 
     // Test to see if we can shortcircuit the connection process.
-    //%%% should use status bar to let the user see what's happening here
 
     if (state & ControlButton) {
       // Want detailed connection.
@@ -144,7 +144,14 @@ void MacroView::createLink(QMouseEvent *evt) {
 	           << " src_q " << src_q << " dst_q " << dst_q << endl);
 
       if (src_q && dst_q && src_q->compatibleWith(dst_q)) {
-	IFDEBUG(cerr << "Shortcircuit linking" << endl);
+	QString msg;
+	msg.sprintf("Connected from %s of %s to %s of %s.",
+		    src_q->getName().c_str(),
+		    source->getItemName().c_str(),
+		    dst_q->getName().c_str(),
+		    target->getItemName().c_str());
+	MainWin::StatusBar()->message(msg);
+
 	src->link(*src_q, dst, *dst_q);
 	source->findLinkTo(target, true);	// we ignore result here.
       } else {
@@ -231,7 +238,24 @@ void MacroView::createPrimitive(Registrable const *generatorClass) {
 
   ItemIcon *ii = new ItemIcon(macro, popupPos, name.str(), c);
 
+  QString msg;
+  msg.sprintf("Created primitive %s.", name.str());
+  MainWin::StatusBar()->message(msg);
+
   c->update();
+}
+
+static bool canLinkFrom(QCanvasItem *item) {
+  if (item->rtti() != ItemIcon::RTTI)
+    return false;
+
+  ItemIcon *ii = dynamic_cast<ItemIcon *>(item);
+  if (ii->getGenerator()->getClass().getOutputs().empty()) {
+    MainWin::StatusBar()->message("Can't create link from item with no outputs!");
+    return false;
+  }
+
+  return true;
 }
 
 void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
@@ -248,7 +272,7 @@ void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
       } else if ((button == LeftButton) && (state & ShiftButton)) {
 	// Connect objects - either basic or detailed (without/with ctrl)
 	setSelection(topItemAt(evt->pos()));
-	if (selection) {
+	if (selection && canLinkFrom(selection)) {
 	  QPoint startPoint = selection->boundingRect().center();
 	  linkLine = new QCanvasLine(c);
 	  linkLine->setPoints(startPoint.x(), startPoint.y(), evt->x(), evt->y());
