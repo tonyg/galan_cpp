@@ -80,7 +80,17 @@ bool Plugin::checkPluginValidity(loaderResult_t &result, string const &name) {
   if (S_ISDIR(sb.st_mode))
     loadAllPlugins(result, name);
 
-  return S_ISREG(sb.st_mode);
+  // We only attempt to load:
+  // 1. regular files,
+  // 2. that have more than three characters in their name, and
+  // 3. whose filenames end in ".so".
+  //
+  // This is, of course, a cheap hack. The libtool docs mention using
+  // a string from the ".la" file. I'll get to that later, maybe.
+  return
+    S_ISREG(sb.st_mode)
+    && name.length() > 3
+    && name.substr(name.length() - 3) == ".so";	// cheap nonportable hack
 }
 
 void Plugin::loadAllPlugins(loaderResult_t &result, string const &dir) {

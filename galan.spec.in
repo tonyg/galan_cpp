@@ -8,10 +8,9 @@ Source: galan-@VERSION@.tar.gz
 Vendor: Tony Garnock-Jones
 %description
 gAlan is an audio-processing tool (both on-line and off-line) for X
-windows and Win32. It allows you to build synthesisers, effects
-chains, mixers, sequencers, drum-machines etc. etc. in a modular
-fashion by linking together icons representing primitive
-audio-processing components.
+windows. It allows you to build synthesisers, effects chains, mixers,
+sequencers, drum-machines etc. etc. in a modular fashion by linking
+together icons representing primitive audio-processing components.
 
 %prep
 %setup
@@ -27,4 +26,6 @@ make install-strip
 %doc AUTHORS COPYING NEWS README
 
 @prefix@/bin/galan
+@prefix@/include/galan
 @prefix@/lib/galan
+@prefix@/lib/libgalan.*

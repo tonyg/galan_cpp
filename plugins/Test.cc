@@ -6,9 +6,6 @@
 #include <stdio.h>
 #include <stddef.h>
 
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
-
 #include "global.h"
 #include "generator.h"
 #include "sample.h"

@@ -11,18 +11,19 @@ plugindir = $(pkglibdir)/plugins
 EXTRA_PROGRAMS =
 
 plugin_PROGRAMS = \
-	Test.so \
+	Test.la \
 	@OPTIONAL_PLUGINS@
 
-#	OssOutput.so
+#	OssOutput.la
 
 CXXFLAGS = -O0 -g
-LDFLAGS = -shared
-LDADD = @GLIB_LIBS@
-INCLUDES = -I.. -I$(srcdir)/../include @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\" -DPIC -fPIC
+
+LDFLAGS = -module -rpath $(plugindir) -avoid-version -export-symbols-regex init_plugin_.*
+LIBADD = ../src/libgalan.la
+INCLUDES = -I.. -I$(srcdir)/../include @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
 
 #esd_output_so_INCLUDES=`esd-config --cflags`
 #esd_output_so_LDFLAGS=`esd-config --libs`
 
-Test_so_SOURCES = Test.cc
+Test_la_SOURCES = Test.cc
 #OssOutput_so_SOURCES = OssOutput.cc

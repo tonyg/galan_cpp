@@ -1,0 +1,11 @@
+- clean up directory structure
+- add file-readiness-notification API for plugins to use
+- pull out the little stub main
+- clean up API so that it uses more pimpl/bridge/whatever to hide
+  symbols and implementation details so we can improve binary compatibility
+- write a Qt frontend
+- write a simple MPS-based interface (??)
+- write a win32 frontend (maybe a GTK+ one?) - if I can be bothered -
+  otherwise use Java and use MPS to communicate
+- make plugin-loading use the correct extension for the platform (.so
+  on linux, .dll on win32, .sl on HPUX, etc. etc.)

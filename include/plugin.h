@@ -50,7 +50,7 @@ public:
 
   ~Plugin() {
     unbind();
-    g_module_close(handle->get());
+    g_module_close(handle);
   }
 
   /** @name Accessors
@@ -69,9 +69,9 @@ public:
 		      string const &_version, string const &_description);
 
 private:
-  ref< c_auto_ptr<GModule> > handle;	///< handle to the loaded plugin
-  string filename;			///< filename the plugin was loaded from
-  string pluginname;			///< shortname of the plugin
+  GModule *handle;	///< handle to the loaded plugin
+  string filename;	///< filename the plugin was loaded from
+  string pluginname;	///< shortname of the plugin
 
   string author;	///< supplied by the plugin
   string title;		///< supplied by the plugin
@@ -80,7 +80,7 @@ private:
 
   Plugin();	// unimpl.
   Plugin(GModule *h, string const &fn, string const &pn)
-    : handle(new c_auto_ptr<GModule>(h)),
+    : handle(h),
       filename(fn),
       pluginname(pn)
   {}

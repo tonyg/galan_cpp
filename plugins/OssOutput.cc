@@ -25,6 +25,8 @@
 
 #include <set>
 
+using namespace std;
+
 #define DEFAULT_FRAGMENT_EXPONENT	12
 
 class OssOutputClock;
