@@ -1,0 +1,63 @@
+#!/bin/sh
+
+usage() {
+    cat <<EOF
+Usage: galan-config <option> [<option> ...]
+
+	--version	Display version of gAlan
+	--help		Display this usage message and exit
+
+	--cflags	Print compiler build flags (includes etc.)
+	--libs		Print compiler link flags (libraries etc.)
+	--libdirs	Only print the '-L' parts of --libs
+	--libfiles	Only print the '-l' parts of --libs
+
+EOF
+    exit $1
+}
+
+if [ $# -eq 0 ]; then
+    usage 1
+fi
+
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+
+libfiles="-lgalan @LIBS@"
+
+while [ $# -gt 0 ]; do
+    arg=$1
+    shift
+
+    case $arg in
+	--version)
+	    echo "gAlan (C++) version @VERSION@"
+	    exit 0
+	    ;;
+
+	--help)
+	    usage 0
+	    ;;
+
+	--cflags)
+	    echo "-I@includedir@"
+	    ;;
+
+	--libs)
+	    echo "-L@libdir@ ${libfiles}"
+	    ;;
+
+	--libdirs)
+	    echo "-L@libdir@"
+	    ;;
+
+	--libfiles)
+	    echo "${libfiles}"
+	    ;;
+
+	*)
+	    echo "Unknown option '${arg}'..."
+	    usage 1
+	    ;;
+    esac
+done

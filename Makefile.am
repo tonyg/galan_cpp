@@ -3,6 +3,8 @@
 EXTRA_DIST = doc galan.spec TODO
 SUBDIRS = src tests
 
+bin_SCRIPTS = galan-config
+
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck
 

@@ -59,4 +59,5 @@ AC_OUTPUT(
     src/qtgalan/Makefile
     tests/Makefile
     galan.spec
+    galan-config
 )
