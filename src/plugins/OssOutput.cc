@@ -48,7 +48,7 @@ public:
   virtual ~OssOutputClock();
 
   virtual string const &getName() const {
-    static string const &name = "OSS Output Clock";
+    static string const name = "OSS Output Clock";
     return name;
   }
 
@@ -80,9 +80,11 @@ OssOutputClock::OssOutputClock(string const &dsppath)
   }
 
   ClockManager::instance()->register_clock(this);
+  Clock::register_realtime_fn(this);
 }
 
 OssOutputClock::~OssOutputClock() {
+  Clock::deregister_realtime_fn(this);
   ClockManager::instance()->deregister_clock(this);
   close(audiofd);
 }
