@@ -32,6 +32,9 @@ public:
   virtual void contentsMouseReleaseEvent(QMouseEvent *evt);
   //@}
 
+signals:
+  void selectionChanged();
+
 private:
   QCanvasItemList itemsAt(QPoint p);
   QCanvasItem *topItemAt(QPoint p);

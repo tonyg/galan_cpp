@@ -3,6 +3,7 @@
 #include <qlistbox.h>
 #include <qlabel.h>
 #include <qtextview.h>
+#include <qmultilineedit.h>
 #include <qstring.h>
 GALAN_USE_NAMESPACE
 
@@ -24,7 +25,8 @@ PluginInfoImpl::PluginInfoImpl( QWidget* parent,  const char* name, bool modal, 
     Plugin *p = dynamic_cast<Plugin *>(*i);
     if (p == 0) continue;	// hmm.
     allPlugins.push_back(p);
-    PluginList->insertItem(p->getFullpath().c_str());
+    // Strip off the leading slash before insertion.
+    PluginList->insertItem(p->getFullpath().substr(1).c_str());
     counter++;
   }
 
@@ -55,5 +57,9 @@ void PluginInfoImpl::selectionChanged()
   TitleLabel->setText(p->getTitle().c_str());
   AuthorLabel->setText(p->getAuthor().c_str());
   VersionLabel->setText(p->getVersion().c_str());
-  DescriptionText->setText(p->getDescription().c_str());
+  DescriptionText->setText((p->getDescription() +
+			    "\n\n(filename: " +
+			    p->getFilename() +
+			    "; pluginname: " +
+			    p->getPluginname() + ")").c_str());
 }

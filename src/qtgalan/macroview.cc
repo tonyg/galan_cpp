@@ -69,9 +69,16 @@ QCanvasItem *MacroView::topItemAt(QPoint p) {
 }
 
 void MacroView::setSelection(QCanvasItem *sel) {
+  QCanvasItem *oldSel = selection;
+
   if (selection) selection->setZ(ITEM_HEIGHT);
   selection = sel;
   if (selection) selection->setZ(SELECTION_HEIGHT);
+
+  if (oldSel != selection) {
+    selectionChanged();
+  }
+
   updateHalo();
 }
 
@@ -121,11 +128,9 @@ void MacroView::popupMenu(QMouseEvent *evt) {
   newMenu.insertItem("Placeholder", 0, "");
 
   QPopupMenu menu(this);
-  menu.insertItem("New", &newMenu);
-
-  if (!items.isEmpty()) {
-    menu.insertSeparator();
-  }
+  menu.insertItem("New macro...", 0, "");
+  menu.insertItem("New primitive", &newMenu);
+  menu.insertSeparator();
 
   int counter = 0;
   for (QCanvasItemList::Iterator i = items.begin();
@@ -139,7 +144,7 @@ void MacroView::popupMenu(QMouseEvent *evt) {
     menu.insertItem(msg, itemMenu);
   }
 
-  menu.exec(evt->globalPos(), items.isEmpty() ? 0 : 2);
+  menu.exec(evt->globalPos(), 2);
 }
 
 void MacroView::contentsMousePressEvent(QMouseEvent *evt) {

@@ -20,6 +20,7 @@ private slots:
   void about();
   void aboutPlugins();
   void selectClock();
+  void selectionChanged();
 
 private:
   Galan::Macro *root;

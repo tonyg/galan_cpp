@@ -35,15 +35,22 @@ MainWin::MainWin()
     root(Macro::create(true))
 {
   QPopupMenu *fileMenu = new QPopupMenu(this);
-  fileMenu->insertItem("&New", 0, "");
-  fileMenu->insertItem("&Open...", 0, "", CTRL+Key_O);
+  fileMenu->insertItem("&New workspace", 0, "");
+  fileMenu->insertItem("&Open workspace...", 0, "", CTRL+Key_O);
   fileMenu->insertSeparator();
-  fileMenu->insertItem("&Save", 0, "", CTRL+Key_S);
-  fileMenu->insertItem("Save &as...", 0, "");
+  fileMenu->insertItem("&Save workspace", 0, "", CTRL+Key_S);
+  fileMenu->insertItem("Save workspace &as...", 0, "");
   fileMenu->insertSeparator();
   fileMenu->insertItem("E&xit", qApp, SLOT(quit()), CTRL+Key_Q);
 
   QPopupMenu *editMenu = new QPopupMenu(this);
+  editMenu->insertItem("&Undo", 0, "", CTRL+Key_Z);
+  editMenu->insertSeparator();
+  editMenu->insertItem("Cu&t", 0, "", CTRL+Key_X);
+  editMenu->insertItem("&Copy", 0, "", CTRL+Key_C);
+  editMenu->insertItem("&Paste", 0, "", CTRL+Key_V);
+  editMenu->insertItem("De&lete", 0, "", Key_Delete);
+  editMenu->insertSeparator();
   editMenu->insertItem("&Preferences...", 0, "");
 
   QPopupMenu *windowMenu = new QPopupMenu(this);
@@ -66,7 +73,10 @@ MainWin::MainWin()
   menuBar()->insertSeparator();
   menuBar()->insertItem("&Help", helpMenu);
 
-  setCentralWidget(new MacroView(root, this));
+  MacroView *macroView = new MacroView(root, this);
+  setCentralWidget(macroView);
+
+  connect(macroView, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 
   setMinimumSize(400, 400);
 }
@@ -108,4 +118,8 @@ void MainWin::aboutPlugins() {
 void MainWin::selectClock() {
   SelectClock *dlg = new SelectClockImpl(this, "SelectClock", true);
   dlg->exec();
+}
+
+void MainWin::selectionChanged() {
+  cerr << "Selection changed!" << endl;
 }
