@@ -1,7 +1,6 @@
 manualdir = $(pkgdatadir)/manual
 
-figures = \
-	ug_motif01.png
+figures =
 
 manual_DATA = \
 	galan-style.css \
