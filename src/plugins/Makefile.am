@@ -13,6 +13,7 @@ EXTRA_PROGRAMS =
 plugin_PROGRAMS = \
 	Test.la \
 	OssOutput.la \
+	VCO.la \
 	@OPTIONAL_PLUGINS@
 
 CXXFLAGS = -O0 -g
@@ -26,3 +27,4 @@ INCLUDES = -I$(top_srcdir)/src @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
 
 Test_la_SOURCES = Test.cc
 OssOutput_la_SOURCES = OssOutput.cc
+VCO_la_SOURCES = VCO.cc
