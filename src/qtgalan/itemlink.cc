@@ -5,6 +5,7 @@
 #include "macroview.h"
 #include "itemlink.h"
 #include "itemicon.h"
+#include "itemhandle.h"
 
 GALAN_USE_NAMESPACE
 
@@ -12,18 +13,21 @@ ItemLink::ItemLink(ItemIcon *_source,
 		   ItemIcon *_target,
 		   QCanvas *_canvas)
   : QCanvasLine(_canvas),
+    handle(new ItemHandle(this, _canvas)),
     source(_source),
     target(_target)
 {
-  reposition();
   setPen(Qt::white);
   source->links.insert(this);
   target->links.insert(this);
   setZ(MacroView::LINK_HEIGHT);
+
+  reposition();
   show();
 }
 
 ItemLink::~ItemLink() {
+  delete handle;
   source->links.erase(this);
   target->links.erase(this);
 }
@@ -59,6 +63,15 @@ void ItemLink::reposition() {
   QPoint p2 = target->boundingRect().center();
   setPoints(p1.x(), p1.y(),
 	    p2.x(), p2.y());
+
+  QPoint center = p1;
+  center += p2;
+  center /= 2;
+  handle->move(center.x(), center.y());
+
+  QPoint v = p2;
+  v -= p1;
+  handle->rotateTo(atan2(v.y(), v.x()));
 }
 
 #if 0

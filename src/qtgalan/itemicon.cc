@@ -6,6 +6,9 @@
 #include "itemicon.h"
 #include "IconLinkEditor.h"
 
+#include <qstring.h>
+#include <qpopupmenu.h>
+
 GALAN_USE_NAMESPACE
 
 ItemIcon::ItemIcon(Macro *_macro,
@@ -79,6 +82,30 @@ void ItemIcon::editLinksTo(ItemIcon *target) {
     qDebug("Accepted new links (in ItemIcon::editLinks)!");
   }
   link->refresh();
+}
+
+void ItemIcon::disconnectFrom(ItemIcon *target) {
+  Generator *src = getGenerator();
+  Generator *dst = target->getGenerator();
+
+  GeneratorClass &srcClass(src->getClass());
+
+  std::vector<OutputDescriptor *> src_qs = srcClass.getOutputs();
+  for (unsigned int i = 0; i < src_qs.size(); i++) {
+    Generator::conduitlist_t const &linksFrom(src->outboundLinks(*src_qs[i]));
+    for (Generator::conduitlist_t::const_iterator j = linksFrom.begin();
+	 j != linksFrom.end();
+	 j++) {
+      if ((*j)->dst == dst) {
+	(*j)->unlink();
+      }
+    }
+  }
+}
+
+QString ItemIcon::buildMenu(QPopupMenu *menu) {
+  menu->insertItem("Placeholder", 0, "");
+  return ("Generator " + name).c_str();
 }
 
 void ItemIcon::refreshLinks() {

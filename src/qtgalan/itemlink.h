@@ -9,7 +9,8 @@
 
 #include "galan/generator.h"
 
-class ItemIcon;	// from itemicon.h
+class ItemIcon;		// from itemicon.h
+class ItemHandle;	// from itemhandle.h
 
 class ItemLink: public QCanvasLine {
 public:
@@ -22,7 +23,11 @@ public:
   ItemIcon *getSource() const { return source; }
   ItemIcon *getTarget() const { return target; }
 
+  static int const RTTI = 14642;
+  virtual int rtti() const { return RTTI; }
+
 private:
+  ItemHandle *handle;
   ItemIcon *source;
   ItemIcon *target;
 };

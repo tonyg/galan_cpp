@@ -4,7 +4,7 @@
 #include "IconLinkEditor_base.h"
 
 #include <map>
-#include <vector>
+#include <set>
 
 #include "galan/generator.h"
 
@@ -23,16 +23,17 @@ public:
   ~IconLinkEditorImpl();
 
 protected slots:
-  virtual void inputSelected(const QString&);
-  virtual void outputSelected(const QString&);
+  virtual void inputSelected(QListBoxItem*);
+  virtual void outputSelected(QListBoxItem*);
   virtual void accept();
 
 private:
   ItemLink *link;
 
-  typedef std::vector<Galan::InputDescriptor *> inputVec_t;
-  typedef std::map<Galan::OutputDescriptor *, inputVec_t> outputMap_t;
+  typedef std::set<Galan::InputDescriptor const *> inputSet_t;
+  typedef std::map<Galan::OutputDescriptor const *, inputSet_t> outputMap_t;
 
+  outputMap_t originalMap;
   outputMap_t outputMap;
 };
 

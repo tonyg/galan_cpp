@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>503</width>
+            <width>508</width>
             <height>286</height>
         </rect>
     </property>
@@ -125,26 +125,6 @@
         </property>
     </widget>
     <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>TextLabel2</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>260</x>
-                <y>10</y>
-                <width>230</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Available inputs (select one or more):</string>
-        </property>
-    </widget>
-    <widget>
         <class>QListBox</class>
         <property stdset="1">
             <name>name</name>
@@ -167,6 +147,10 @@
             <cstring>InputsList</cstring>
         </property>
         <property stdset="1">
+            <name>enabled</name>
+            <bool>false</bool>
+        </property>
+        <property stdset="1">
             <name>geometry</name>
             <rect>
                 <x>260</x>
@@ -174,6 +158,30 @@
                 <width>230</width>
                 <height>200</height>
             </rect>
+        </property>
+        <property stdset="1">
+            <name>selectionMode</name>
+            <enum>Multi</enum>
+        </property>
+    </widget>
+    <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>TextLabel2</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>260</x>
+                <y>10</y>
+                <width>230</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Available inputs (select zero or more):</string>
         </property>
     </widget>
 </widget>
@@ -192,17 +200,17 @@
     </connection>
     <connection>
         <sender>OutputsList</sender>
-        <signal>selected(const QString&amp;)</signal>
+        <signal>selectionChanged(QListBoxItem*)</signal>
         <receiver>IconLinkEditor</receiver>
-        <slot>outputSelected(const QString&amp;)</slot>
+        <slot>outputSelected(QListBoxItem*)</slot>
     </connection>
     <connection>
         <sender>InputsList</sender>
-        <signal>selected(const QString&amp;)</signal>
+        <signal>clicked(QListBoxItem*)</signal>
         <receiver>IconLinkEditor</receiver>
-        <slot>inputSelected(const QString&amp;)</slot>
+        <slot>inputSelected(QListBoxItem*)</slot>
     </connection>
-    <slot access="protected">inputSelected(const QString&amp;)</slot>
-    <slot access="protected">outputSelected(const QString&amp;)</slot>
+    <slot access="protected">inputSelected(QListBoxItem*)</slot>
+    <slot access="protected">outputSelected(QListBoxItem*)</slot>
 </connections>
 </UI>

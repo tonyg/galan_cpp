@@ -7,6 +7,7 @@
 #include "macroview.h"
 #include "regsel.h"
 #include "itemicon.h"
+#include "itemhandle.h"
 
 #include <qpopupmenu.h>
 
@@ -30,28 +31,22 @@ MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   halo->setZ(HALO_HEIGHT);
   // Keep the halo hidden until a selection comes along.
 
-#if 0
-  QCanvasPolygonalItem *r = new QCanvasRectangle(10, 10, 30, 20, c);	// %%% remove
-  r->setBrush(Qt::yellow);
-  r->setPen(Qt::white);
-  r->setZ(ITEM_HEIGHT);
-  r->show();
-
-  r = new QCanvasRectangle(12, 12, 30, 20, c);	// %%% remove
-  r->setBrush(Qt::blue);
-  r->setPen(Qt::white);
-  r->setZ(ITEM_HEIGHT);
-  r->show();
-
-  ItemIcon *ii = new ItemIcon(QPoint(100, 50), "dummy", c);
-  ii->setZ(ITEM_HEIGHT);
-  ii->show();
-#endif
-
   setCanvas(c);
 }
 
 MacroView::~MacroView() {
+  // First, clear out all the ItemIcon instances. Otherwise things get
+  // deleted in the wrong order, and iterators get invalidated,
+  // causing SEGV deep inside ~QCanvas.
+  //
+  QCanvasItemList l = c->allItems();
+  for (QCanvasItemList::Iterator i = l.begin(); i != l.end(); i++) {
+    // We only want items (so exclude lines and the halo)
+    if ((*i)->rtti() == ItemIcon::RTTI) {
+      delete (*i);
+    }
+  }
+
   delete c;
 }
 
@@ -59,9 +54,15 @@ QCanvasItemList MacroView::itemsAt(QPoint p) {
   QCanvasItemList l = c->collisions(p);
   QCanvasItemList r;
   for (QCanvasItemList::Iterator i = l.begin(); i != l.end(); i++) {
-    if ((*i)->z() == ITEM_HEIGHT || (*i)->z() == SELECTION_HEIGHT) {
-      // We only want items (so exclude lines and the halo)
-      r.append(*i);
+    // We only want items and handles (so exclude lines and the halo)
+    switch ((*i)->rtti()) {
+      case ItemIcon::RTTI:
+      case ItemHandle::RTTI:
+	r.append(*i);
+	break;
+
+      default:
+	break;
     }
   }
   return r;
@@ -69,11 +70,9 @@ QCanvasItemList MacroView::itemsAt(QPoint p) {
 
 QCanvasItem *MacroView::topItemAt(QPoint p) {
   QCanvasItemList l = c->collisions(p);
-  for (QCanvasItemList::Iterator i = l.begin();
-       i != l.end();
-       i++) {
-    if ((*i)->z() == ITEM_HEIGHT || (*i)->z() == SELECTION_HEIGHT) {
-      // We only want items (so exclude lines and the halo)
+  for (QCanvasItemList::Iterator i = l.begin(); i != l.end(); i++) {
+    // We only want items (so exclude lines and the halo)
+    if ((*i)->rtti() == ItemIcon::RTTI) {
       return (*i);
     }
   }
@@ -109,13 +108,14 @@ void MacroView::updateHalo() {
 void MacroView::createLink(QMouseEvent *evt) {
   QCanvasItem *endpoint = topItemAt(evt->pos());
 
+  delete linkLine;
+  c->update();
+
   if (endpoint == 0) {
     // Dropped in space. This is a cancel.
-    delete linkLine;
   } else if (endpoint == selection) {
     // Dropped on originating object!
     IFDEBUG(cerr << "Ignoring link from thing to itself." << endl);
-    delete linkLine;
   } else {
     // Dropped on something else.
     ItemIcon *source = dynamic_cast<ItemIcon *>(selection);
@@ -153,11 +153,10 @@ void MacroView::createLink(QMouseEvent *evt) {
 	source->editLinksTo(target);
       }
     }
-
-    delete linkLine;
   }
 
-  // If we removed the line, we need to update here to refresh the display.
+  // We need to update here to refresh the display, just in case we
+  // added a link above.
   c->update();
 }
 
@@ -188,11 +187,23 @@ void MacroView::popupMenu(QMouseEvent *evt) {
        i != items.end();
        i++) {
     QPopupMenu *itemMenu = new QPopupMenu(&menu);
-    itemMenu->insertItem("Placeholder", 0, "");	// %%% new class for per-item popup menu
+    QString itemCaption;
 
-    QString msg;
-    msg.sprintf("Item %d", counter++);	// %%% names instead of numbers?? (yes please)
-    menu.insertItem(msg, itemMenu);
+    switch ((*i)->rtti()) {
+      case ItemIcon::RTTI:
+	itemCaption = dynamic_cast<ItemIcon *>(*i)->buildMenu(itemMenu);
+	break;
+
+      case ItemHandle::RTTI:
+	itemCaption = dynamic_cast<ItemHandle *>(*i)->buildMenu(itemMenu);
+	break;
+
+      default:
+	qWarning("Unknown RTTI %d in MacroView::popupMenu", (*i)->rtti());
+	break;
+    }
+
+    menu.insertItem(itemCaption, itemMenu);
   }
 
   menu.exec(evt->globalPos(), 2);
@@ -229,8 +240,6 @@ void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
       Qt::ButtonState button = evt->button();
       Qt::ButtonState state = evt->state();
 
-      setSelection(topItemAt(evt->pos()));
-
       if (button == MidButton) {
 	// Drag the view around.
 	moveOffset = QPoint(contentsX() + evt->globalX(),
@@ -238,6 +247,7 @@ void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
 	editState = DRAGGING_VIEW;
       } else if ((button == LeftButton) && (state & ShiftButton)) {
 	// Connect objects - either basic or detailed (without/with ctrl)
+	setSelection(topItemAt(evt->pos()));
 	if (selection) {
 	  QPoint startPoint = selection->boundingRect().center();
 	  linkLine = new QCanvasLine(c);
@@ -254,6 +264,7 @@ void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
       } else if (button == LeftButton) {
 	// Plain old left-click (shift and control are filtered out
 	// above).
+	setSelection(topItemAt(evt->pos()));
 	if (selection) {
 	  moveOffset = QPoint(evt->x() - selection->x(),
 			      evt->y() - selection->y());

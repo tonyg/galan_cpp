@@ -1,11 +1,19 @@
-- clean up API so that it uses more pimpl/bridge/whatever to hide
-  symbols and implementation details so we can improve binary compatibility
-- write a Qt frontend
-	- test qtio
+- don't let a link be drawn if either the source has no outputs, or
+  the target has no inputs
+- find out why VCO0 -> OSS1 makes a nasty noise when simultaneous
+  with VCO0 -> OSS2...
+	- caches not working, maybe???
+- get rid of nasty clicking! prebuffer?
+
+- popup menu (over handles) for links - allow "disconnect all" and "edit links..."
+	- use rtti()?
 - simple prefs system
 	- for prefs editing
 - simple object-store system - use XML?
 	- for load/store of workspaces and macros
+
+- clean up API so that it uses more pimpl/bridge/whatever to hide
+  symbols and implementation details so we can improve binary compatibility
 - write a simple MPS-based interface (??)
 - write a win32 frontend (maybe a GTK+ one?) - if I can be bothered -
   otherwise use Java and use MPS to communicate

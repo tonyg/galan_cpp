@@ -43,7 +43,7 @@ class Sample {
     return Sample(value + other.value);
   }
 
-  Sample operator +(value_t &other) const {
+  Sample operator +(value_t other) const {
     return Sample(value + other);
   }
 
@@ -51,7 +51,7 @@ class Sample {
     return Sample(value * other.value);
   }
 
-  Sample operator *(value_t &other) const {
+  Sample operator *(value_t other) const {
     return Sample(value * other);
   }
   //@}

@@ -14,6 +14,7 @@ qtgalan_SOURCES = \
 	regsel.cc \
 	itemicon.cc \
 	itemlink.cc \
+	itemhandle.cc \
 	\
 	PluginInfo_base.cc PluginInfo.cc \
 	SelectClock_base.cc SelectClock.cc \
@@ -26,6 +27,8 @@ qtgalan_LDADD = \
 	defaultclock_moc.o \
 	macroview_moc.o \
 	regsel_moc.o \
+	itemicon_moc.o \
+	itemhandle_moc.o \
 	\
 	PluginInfo_base_moc.o PluginInfo_moc.o \
 	SelectClock_base_moc.o SelectClock_moc.o \
@@ -41,6 +44,7 @@ noinst_HEADERS = \
 	regsel.h \
 	itemicon.h \
 	itemlink.h \
+	itemhandle.h \
 	\
 	PluginInfo.h \
 	SelectClock.h \

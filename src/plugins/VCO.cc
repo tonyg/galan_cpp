@@ -49,18 +49,42 @@ inline Sample max(Sample a, Sample b) { return (a > b) ? a : b; }
 
 bool VCO::MainOutput(RealtimeOutputDescriptor const &desc, SampleBuf *buf) {
   static RealtimeInputDescriptor const &freq = pluginClass->getRealtimeInput("Frequency");
+  static RealtimeInputDescriptor const &trig = pluginClass->getRealtimeInput("PhaseResetTrigger");
 
+  SampleBuf trigger(buf->getLength());
+  read_input(trig, &trigger);
+
+#if 0
   if (read_input(freq, buf)) {
     for (int i = 0; i < buf->getLength(); i++) {
       Sample phaseDelta = min(max((*buf)[i], 0), Sample::rate >> 1);
       (*buf)[i] = table[(int) phase];
-      phase += phaseDelta;
-      if (phase >= Sample::rate)
-	phase -= Sample::rate;
+
+      if (trigger[i]) {
+	phase = 0;
+      } else {
+	phase += phaseDelta;
+	if (phase >= Sample::rate)
+	  phase -= Sample::rate;
+      }
     }
   } else {
     buf->fill_with(table[(int) phase]);
   }
+#else
+  for (int i = 0; i < buf->getLength(); i++) {
+    Sample phaseDelta = 110;
+    (*buf)[i] = table[(int) phase] * 0.1;
+
+    if (trigger[i]) {
+      phase = 0;
+    } else {
+      phase += phaseDelta;
+      if (phase >= Sample::rate)
+	phase -= Sample::rate;
+    }
+  }
+#endif
 
   return true;
 }
@@ -83,6 +107,7 @@ PUBLIC_SYMBOL void init_plugin_VCO(Plugin &plugin) {
 
   pluginClass = new GeneratorClass(&GeneratorStateFactory<VCO>, "Sources/Variable Sine Oscillator");
   pluginClass->register_desc(new RealtimeInputDescriptor("Frequency"));
+  pluginClass->register_desc(new RealtimeInputDescriptor("PhaseResetTrigger"));
   pluginClass->register_desc(new RealtimeOutputDescriptor("Main",
 							  (RealtimeOutputDescriptor::samplefn_t)
 							  &VCO::MainOutput));

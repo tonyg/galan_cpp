@@ -14,7 +14,8 @@
 
 #include "itemlink.h"
 
-class ItemIcon: public QCanvasRectangle {
+class ItemIcon: public QObject, public QCanvasRectangle {
+  Q_OBJECT
   friend class ItemLink;
 
 public:
@@ -29,8 +30,14 @@ public:
 
   virtual void moveBy(double dx, double dy);
 
+  static int const RTTI = 14641;
+  virtual int rtti() const { return RTTI; }
+
   void editLinksTo(ItemIcon *target);
+  void disconnectFrom(ItemIcon *target);
   ItemLink *findLinkTo(ItemIcon *target, bool create);
+
+  QString buildMenu(QPopupMenu *menu);
 
 protected:
   virtual void drawShape(QPainter &p);
