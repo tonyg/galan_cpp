@@ -90,8 +90,8 @@ PUBLIC_SYMBOL void init_plugin_Controllers(Plugin &plugin) {
   rtClass = new GeneratorClass("Realtime Controller", &GeneratorStateFactory<rtController>);
   raClass = new GeneratorClass("Randomaccess Controller", &GeneratorStateFactory<raController>);
 
-  Registry::root->bind("Controller/Plugins/Realtime", rtClass);
-  Registry::root->bind("Controller/Plugins/Randomaccess", raClass);
+  Registry::root->bind("ControllerFactory/Realtime", rtClass);
+  Registry::root->bind("ControllerFactory/Randomaccess", raClass);
 
   rtClass->register_desc
     (new RealtimeOutputDescriptor("Main",

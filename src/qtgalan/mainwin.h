@@ -8,6 +8,8 @@
 #include <qmenubar.h>
 #include <qstatusbar.h>
 
+class QListViewItem;	// in qlistview.h
+
 class MacroView;	// in macroview.h
 
 class MainWin: public QMainWindow {

@@ -22,7 +22,7 @@ class Controller;
  * instances) through to Controllers, which are then read out by
  * Generator instances.
  **/
-class Controller: public Registrable, public Model {
+class Controller: public Registrable {
 public:
   // Static protocol for safely constructing instances of class
   // Controller and passing them reliably over to GeneratorState

@@ -8,7 +8,11 @@ View::View() {
 void View::modelChanged(Model &model) {
 }
 
-Model::Model() {
+Model::Model()
+  : dependents(),
+    freezeCount(0),
+    frozenNotify(false)
+{
 }
 
 void Model::addDependent(View &v) {
@@ -32,11 +36,33 @@ Model::dependents_t const &Model::getDependents() const {
 }
 
 void Model::notifyViews() {
-  dependents_t::iterator i = dependents.begin();
-  while (i != dependents.end()) {
-    (*i)->modelChanged(*this);
-    i++;
+  if (freezeCount) {
+    frozenNotify = true;
+  } else {
+    dependents_t::iterator i = dependents.begin();
+    while (i != dependents.end()) {
+      View *v = (*i);
+      ++i;
+      v->modelChanged(*this);
+    }
   }
+}
+
+int Model::freeze() {
+  return ++freezeCount;
+}
+
+int Model::thaw() {
+  freezeCount--;
+  if (freezeCount < 0)
+    freezeCount = 0;
+
+  if ((freezeCount == 0) && frozenNotify) {
+    frozenNotify = false;
+    notifyViews();
+  }
+
+  return freezeCount;
 }
 
 ModelLink::ModelLink(Model &m, View &v)

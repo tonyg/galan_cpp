@@ -11,6 +11,7 @@
 #include "itemicon.h"
 #include "controlpanel.h"
 #include "helpwindow.h"
+#include "regtree.h"
 
 #include "PluginInfo.h"
 #include "SelectClock.h"
@@ -28,6 +29,7 @@
 #include <qstatusbar.h>
 #include <qtabwidget.h>
 #include <qaccel.h>
+#include <qsplitter.h>
 
 #include "galan/global.h"
 #include "galan/clock.h"
@@ -51,7 +53,31 @@ MainWin::MainWin()
   }
   instance = this;
 
-  QTabWidget *tabs = new QTabWidget(this);
+  QSplitter *splitter = new QSplitter(this);
+
+  QSplitter *lhs = new QSplitter(Qt::Vertical, splitter);
+  lhs->setOpaqueResize(true);
+
+#ifndef NDEBUG
+  new RegistryTreeView(Registry::root,
+		       "Registry entry",
+		       lhs);
+#endif
+
+  {
+    Registry *r = new Registry();
+    if (!Registry::root->bind("Controller", r, false))
+      delete r;
+  }
+  new RegistryTreeView(Registry::root->lookup("Controller")->toRegistry(),
+		       "Controllers",
+		       lhs);
+
+  new RegistryTreeView(Registry::root->lookup("Generator")->toRegistry(),
+		       "Plugins",
+		       lhs);
+
+  QTabWidget *tabs = new QTabWidget(splitter);
   connect(tabs, SIGNAL(currentChanged(QWidget*)), this, SLOT(tabChanged(QWidget*)));
 
   macroView = new MacroView(root, tabs);
@@ -110,7 +136,7 @@ MainWin::MainWin()
   menuBar()->insertSeparator();
   menuBar()->insertItem("&Help", helpMenu);	// %%% need more and better help and tooltips
 
-  setCentralWidget(tabs);
+  setCentralWidget(splitter);
 
   tabs->addTab(macroView, "&Graph");
 

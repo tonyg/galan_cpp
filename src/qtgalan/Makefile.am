@@ -12,6 +12,7 @@ qtgalan_SOURCES = \
 	defaultclock.cc \
 	macroview.cc \
 	regsel.cc \
+	regtree.cc \
 	itemicon.cc \
 	itemlink.cc \
 	itemhandle.cc \
@@ -29,6 +30,7 @@ qtgalan_LDADD = \
 	defaultclock_moc.o \
 	macroview_moc.o \
 	regsel_moc.o \
+	regtree_moc.o \
 	itemicon_moc.o \
 	itemhandle_moc.o \
 	controlpanel_moc.o \
@@ -46,6 +48,7 @@ noinst_HEADERS = \
 	defaultclock.h \
 	macroview.h \
 	regsel.h \
+	regtree.h \
 	itemicon.h \
 	itemlink.h \
 	itemhandle.h \

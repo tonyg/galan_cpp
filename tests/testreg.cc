@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
   delete r["Foo/Bar/Baz"];
   r.bind("Foo/Bar/Baz", new A(1010));
 
-  dynamic_cast<A *>(r["Hello/World"])->doit();
+  dynamic_cast<A *>(r["/Hello/World"])->doit();
 
   for (i = r.deep_begin(); i != r.end(); i++) {
     A *x = dynamic_cast<A *>(*i);

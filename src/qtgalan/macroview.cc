@@ -293,7 +293,7 @@ void MacroView::newControl() {
     std::string styleName = styleReg->getLocalname();
 
     Registrable *pluginClassReg =
-      Registry::root->lookup(std::string("Controller/Plugins/") + styleName);
+      Registry::root->lookup(std::string("ControllerFactory/") + styleName);
     if (pluginClassReg == 0) {
       qWarning("No controller plugin for style %s", styleName.c_str());
       return;

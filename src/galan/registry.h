@@ -10,6 +10,7 @@
 #include <string>
 
 #include "galan/global.h"
+#include "galan/model.h"
 
 GALAN_BEGIN_NAMESPACE
 
@@ -21,7 +22,7 @@ class Registry;		// a node in the tree (has child cells)
 /**
  * A cell in a registry-tree - may be either a leaf or a node.
  **/
-class Registrable: public Destructable {
+class Registrable: public Model {
 private:
   friend class Registry;
 

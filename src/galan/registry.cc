@@ -35,23 +35,23 @@ Registry *Registry::root = new Registry();
 
 Registry::leaf_t Registry::find_leaf(string const &path, bool create_missing_nodes = false)
 {
-  int pos = 0;
+  int startpos = 0;
 
-  while (path[pos] == '/')
-    pos++;
+  while (path[startpos] == '/')
+    startpos++;
 
-  pos = path.find('/', pos);
+  int pos = path.find('/', startpos);
 
   IFDEBUG(cerr << "Searching " << getFullpath() << " for " << path << "..." << endl);
 
   if (pos == path.npos) {
     // Terminal. Return the leaf.
-    leaf_t result(this, path);
+    leaf_t result(this, path.substr(startpos));
     IFDEBUG(cerr << "Terminal - returning." << endl);
     return result;
   } else {
     // Nonterminal. Recurse.
-    string nodename = path.substr(0, pos);
+    string nodename = path.substr(startpos, pos - startpos);
 
     IFDEBUG(cerr << "Nonterminal - finding child " << nodename << "." << endl);
 
@@ -65,6 +65,7 @@ Registry::leaf_t Registry::find_leaf(string const &path, bool create_missing_nod
 	par->parent = this;
 	par->localname = nodename;
 	children[nodename] = par;
+	notifyViews();
       } else {
 	IFDEBUG(cerr << "Intermediate node " << (getFullpath() + "/" + nodename)
 		<< " not found." << endl);
@@ -97,6 +98,8 @@ bool Registry::bind(string const &path, Registrable *what, bool override = false
   bool present = (i != parent->children.end());
   bool result = (!present || override);
 
+  parent->freeze();
+
   if (present && override)
     parent->unbind((*i).second);
 
@@ -104,7 +107,11 @@ bool Registry::bind(string const &path, Registrable *what, bool override = false
     parent->children[child] = what;
     what->parent = parent;
     what->localname = child;
+    what->notifyViews();
   }
+
+  parent->notifyViews();
+  parent->thaw();
 
   return result;
 }
@@ -136,6 +143,8 @@ bool Registry::unbind(Registrable *what) {
     children.erase(what->localname);
     what->parent = 0;
     what->localname.erase();
+    what->notifyViews();
+    notifyViews();
     return true;
   } else {
     return false;

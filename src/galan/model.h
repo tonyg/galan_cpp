@@ -53,8 +53,14 @@ class Model: public Destructable {
 
   virtual void notifyViews();			///< Call all dependent callbacks.
 
+ protected:
+  int freeze();
+  int thaw();
+
  private:
   dependents_t dependents;		///< All dependents of this.
+  int freezeCount;  ///< Number of times freeze() has been called without a corresponding thaw()
+  bool frozenNotify;///< If frozen and notifyViews called, this is set to true for the thaw
 
   Model(Model const &from);		//unimpl
   Model &operator =(Model const &from);	//unimpl

@@ -6,8 +6,8 @@ LDADD = @GLIB_LIBS@
 INCLUDES = -I$(top_srcdir)/src @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
 
 testreg_SOURCES = testreg.cc
-testreg_LDADD = ../src/galan/registry.o -lglib
-testreg_DEPENDENCIES = ../src/galan/registry.o
+testreg_LDADD = ../src/galan/registry.o ../src/galan/model.o -lglib
+testreg_DEPENDENCIES = ../src/galan/registry.o ../src/galan/model.o
 
 testfns_SOURCES = testfns.cc
 
