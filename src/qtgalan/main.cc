@@ -37,9 +37,9 @@ int main(int argc, char *argv[]) {
   QtIOManager::initialise();
   Plugin::loadPlugins();
 
-  MainWin *mainwin = new MainWin();
-  mainwin->setCaption("QtGalan (" PACKAGE " " VERSION ")");
-  mainwin->show();
+  MainWin mainwin;
+  mainwin.setCaption("QtGalan (" PACKAGE " " VERSION ")");
+  mainwin.show();
 
   app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
   return app.exec();

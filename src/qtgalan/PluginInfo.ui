@@ -14,7 +14,7 @@ galan plugins.</comment>
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>497</width>
+            <width>488</width>
             <height>302</height>
         </rect>
     </property>
@@ -29,222 +29,168 @@ galan plugins.</comment>
         <name>caption</name>
         <string>About Plugins</string>
     </property>
-    <widget>
-        <class>QLabel</class>
+    <grid>
         <property stdset="1">
-            <name>name</name>
-            <cstring>TextLabel12</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>180</x>
-                <y>50</y>
-                <width>68</width>
-                <height>20</height>
-            </rect>
+            <name>margin</name>
+            <number>11</number>
         </property>
         <property stdset="1">
-            <name>text</name>
-            <string>Version:</string>
+            <name>spacing</name>
+            <number>6</number>
         </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>TextLabel11</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>180</x>
-                <y>30</y>
-                <width>68</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Author:</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>TextLabel13</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>180</x>
-                <y>70</y>
-                <width>68</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Description:</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QPushButton</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>OkButton</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>380</x>
-                <y>260</y>
-                <width>108</width>
-                <height>32</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>&amp;OK</string>
-        </property>
-        <property stdset="1">
-            <name>default</name>
-            <bool>true</bool>
-        </property>
-    </widget>
-    <widget>
-        <class>QListBox</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>PluginList</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>10</x>
-                <y>10</y>
-                <width>160</width>
-                <height>280</height>
-            </rect>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>TextLabel10</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>180</x>
-                <y>10</y>
-                <width>70</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Title:</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>TitleLabel</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>250</x>
-                <y>10</y>
-                <width>240</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string></string>
-        </property>
-        <property>
-            <name>toolTip</name>
-            <string>Title of the plugin</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>AuthorLabel</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>250</x>
-                <y>30</y>
-                <width>240</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string></string>
-        </property>
-        <property>
-            <name>toolTip</name>
-            <string>Name of the plugin's author</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>VersionLabel</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>250</x>
-                <y>50</y>
-                <width>240</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string></string>
-        </property>
-        <property>
-            <name>toolTip</name>
-            <string>Plugin version identifier</string>
-        </property>
-    </widget>
-    <widget>
-        <class>QTextView</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>DescriptionText</cstring>
-        </property>
-        <property stdset="1">
-            <name>enabled</name>
-            <bool>true</bool>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>180</x>
-                <y>90</y>
-                <width>310</width>
-                <height>160</height>
-            </rect>
-        </property>
-        <property>
-            <name>toolTip</name>
-            <string>Description of the plugin</string>
-        </property>
-    </widget>
+        <widget row="5"  column="2" >
+            <class>QPushButton</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>OkButton</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>&amp;OK</string>
+            </property>
+            <property stdset="1">
+                <name>default</name>
+                <bool>true</bool>
+            </property>
+        </widget>
+        <widget row="4"  column="1"  rowspan="1"  colspan="2" >
+            <class>QTextView</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>DescriptionText</cstring>
+            </property>
+            <property stdset="1">
+                <name>enabled</name>
+                <bool>true</bool>
+            </property>
+            <property>
+                <name>toolTip</name>
+                <string>Description of the plugin</string>
+            </property>
+        </widget>
+        <widget row="1"  column="1" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel11</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Author:</string>
+            </property>
+        </widget>
+        <widget row="2"  column="1" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel12</cstring>
+            </property>
+            <property stdset="1">
+                <name>frameShape</name>
+                <enum>MShape</enum>
+            </property>
+            <property stdset="1">
+                <name>frameShadow</name>
+                <enum>MShadow</enum>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Version:</string>
+            </property>
+        </widget>
+        <widget row="3"  column="1" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel13</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Description:</string>
+            </property>
+        </widget>
+        <widget row="0"  column="1" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TextLabel10</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>Title:</string>
+            </property>
+        </widget>
+        <widget row="0"  column="2" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>TitleLabel</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string></string>
+            </property>
+            <property>
+                <name>toolTip</name>
+                <string>Title of the plugin</string>
+            </property>
+        </widget>
+        <widget row="1"  column="2" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>AuthorLabel</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string></string>
+            </property>
+            <property>
+                <name>toolTip</name>
+                <string>Name of the plugin's author</string>
+            </property>
+        </widget>
+        <widget row="2"  column="2" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>VersionLabel</cstring>
+            </property>
+            <property stdset="1">
+                <name>minimumSize</name>
+                <size>
+                    <width>200</width>
+                    <height>0</height>
+                </size>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string></string>
+            </property>
+            <property>
+                <name>toolTip</name>
+                <string>Plugin version identifier</string>
+            </property>
+        </widget>
+        <widget row="1"  column="0"  rowspan="5"  colspan="1" >
+            <class>QListBox</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>PluginList</cstring>
+            </property>
+        </widget>
+        <widget row="0"  column="0" >
+            <class>QLabel</class>
+            <property stdset="1">
+                <name>name</name>
+                <cstring>PluginCountLabel</cstring>
+            </property>
+            <property stdset="1">
+                <name>text</name>
+                <string>NNN plugins installed.</string>
+            </property>
+        </widget>
+    </grid>
 </widget>
 <connections>
     <connection>
@@ -261,4 +207,9 @@ galan plugins.</comment>
     </connection>
     <slot access="protected">selectionChanged()</slot>
 </connections>
+<tabstops>
+    <tabstop>PluginList</tabstop>
+    <tabstop>OkButton</tabstop>
+    <tabstop>DescriptionText</tabstop>
+</tabstops>
 </UI>

@@ -10,6 +10,7 @@ qtgalan_SOURCES = \
 	mainwin.cc \
 	qtio.cc \
 	defaultclock.cc \
+	macroview.cc \
 	\
 	PluginInfo_base.cc PluginInfo.cc \
 	SelectClock_base.cc SelectClock.cc
@@ -19,6 +20,7 @@ qtgalan_LDADD = \
 	mainwin_moc.o \
 	qtio_moc.o \
 	defaultclock_moc.o \
+	macroview_moc.o \
 	\
 	PluginInfo_base_moc.o PluginInfo_moc.o \
 	SelectClock_base_moc.o SelectClock_moc.o \
@@ -29,6 +31,7 @@ noinst_HEADERS = \
 	mainwin.h \
 	qtio.h \
 	defaultclock.h \
+	macroview.h \
 	\
 	PluginInfo.h \
 	SelectClock.h

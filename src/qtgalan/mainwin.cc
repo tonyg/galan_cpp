@@ -7,6 +7,7 @@
 #include "config.h"
 
 #include "mainwin.h"
+#include "macroview.h"
 
 #include "PluginInfo.h"
 #include "SelectClock.h"
@@ -30,7 +31,8 @@ GALAN_USE_NAMESPACE
 using namespace std;
 
 MainWin::MainWin()
-  : QMainWindow()
+  : QMainWindow(),
+    root(Macro::create(true))
 {
   QPopupMenu *fileMenu = new QPopupMenu(this);
   fileMenu->insertItem("&New", 0, "");
@@ -47,6 +49,8 @@ MainWin::MainWin()
   QPopupMenu *windowMenu = new QPopupMenu(this);
   windowMenu->insertItem("&Show Control Panel", 0, "");
   windowMenu->insertItem("&Hide Control Panel", 0, "");
+  windowMenu->insertItem("Show &Pattern Panel", 0, "");
+  windowMenu->insertItem("Hide Patter&n Panel", 0, "");
 
   QPopupMenu *timingMenu = new QPopupMenu(this);
   timingMenu->insertItem("&Select master clock...", this, SLOT(selectClock()));
@@ -62,7 +66,13 @@ MainWin::MainWin()
   menuBar()->insertSeparator();
   menuBar()->insertItem("&Help", helpMenu);
 
+  setCentralWidget(new MacroView(root, this));
+
   setMinimumSize(400, 400);
+}
+
+MainWin::~MainWin() {
+  delete root;
 }
 
 void MainWin::closeEvent(QCloseEvent *evt) {
@@ -91,11 +101,11 @@ void MainWin::about() {
 }
 
 void MainWin::aboutPlugins() {
-  PluginInfo *dlg = new PluginInfoImpl(0, "PluginInfo", true);
+  PluginInfo *dlg = new PluginInfoImpl(this, "PluginInfo", true);
   dlg->exec();
 }
 
 void MainWin::selectClock() {
-  SelectClock *dlg = new SelectClockImpl(0, "SelectClock", true);
+  SelectClock *dlg = new SelectClockImpl(this, "SelectClock", true);
   dlg->exec();
 }

@@ -3,6 +3,7 @@
 #include <qlistbox.h>
 #include <qlabel.h>
 #include <qtextview.h>
+#include <qstring.h>
 GALAN_USE_NAMESPACE
 
 /* 
@@ -16,6 +17,7 @@ PluginInfoImpl::PluginInfoImpl( QWidget* parent,  const char* name, bool modal, 
   : PluginInfo( parent, name, modal, fl ),
     allPlugins()
 {
+  int counter = 0;
   for (Registry::RegistryIterator i = Plugin::registry->deep_begin();
        i != Plugin::registry->end();
        i++) {
@@ -23,7 +25,12 @@ PluginInfoImpl::PluginInfoImpl( QWidget* parent,  const char* name, bool modal, 
     if (p == 0) continue;	// hmm.
     allPlugins.push_back(p);
     PluginList->insertItem(p->getFullpath().c_str());
+    counter++;
   }
+
+  QString msg;
+  msg.sprintf("%d plugins installed.", counter);
+  PluginCountLabel->setText(msg);
 }
 
 /*  
