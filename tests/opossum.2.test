@@ -1,0 +1,9 @@
+[Section 1]
+key1="val1"
+key2=123
+key3={name="tony", value="/home/tonyg"}
+key4=[1, 2, 3, 4, 5]
+
+[Section 2]
+foo="bar"
+baz="blort"
