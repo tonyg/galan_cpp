@@ -2,9 +2,6 @@
 #include <string.h>
 #include <stdio.h>
 
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
-
 #include "global.h"
 #include "gmodule.h"
 #include "msgbox.h"
