@@ -6,9 +6,12 @@
 // Interface
 
 #include <queue>
+#include <iostream>
 
 #include "global.h"
 #include "sample.h"
+
+GALAN_BEGIN_NAMESPACE
 
 class Event;
 class EventHandler;
@@ -141,5 +144,7 @@ public:
   /// Overloaded method specialized for IntEvent processing.
   virtual void handle_event(IntEvent &event) {}
 };
+
+GALAN_END_NAMESPACE
 
 #endif

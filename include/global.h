@@ -22,6 +22,10 @@
 #include <glib.h>
 #include <gmodule.h>
 
+#define GALAN_BEGIN_NAMESPACE		namespace Galan {
+#define GALAN_END_NAMESPACE		}
+#define GALAN_USE_NAMESPACE		using namespace Galan;
+
 #define PUBLIC_SYMBOL extern "C" G_MODULE_EXPORT
 
 #include <math.h>

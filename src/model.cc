@@ -1,5 +1,7 @@
 #include "model.h"
 
+GALAN_USE_NAMESPACE
+
 void Model::addDependent(View &v) {
   dependents.insert(&v);
 }

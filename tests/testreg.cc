@@ -7,6 +7,8 @@
 
 #include "registry.h"
 
+GALAN_USE_NAMESPACE
+
 class A: public Registrable {
 public:
   int x;

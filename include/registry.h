@@ -11,6 +11,8 @@
 
 #include "global.h"
 
+GALAN_BEGIN_NAMESPACE
+
 class Registrable;	// a cell in the tree - may be a leaf or a node
 class Registry;		// a node in the tree (has child cells)
 
@@ -174,5 +176,7 @@ typedef class Registry::RegistryIterator RegistryIterator;
 inline void Registrable::unbind() {
   if (parent) parent->unbind(this);
 }
+
+GALAN_END_NAMESPACE
 
 #endif

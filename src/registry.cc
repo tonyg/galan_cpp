@@ -1,6 +1,8 @@
 #define NDEBUG
 #include "registry.h"
 
+GALAN_USE_NAMESPACE
+
 //////////////////////////////////////////////////////////////////////////////
 
 string Registrable::getFullpath() const {

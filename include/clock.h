@@ -13,6 +13,8 @@
 #include "sample.h"
 #include "event.h"
 
+GALAN_BEGIN_NAMESPACE
+
 class Clock;
 class RealtimeHandler;
 class ClockManager;
@@ -202,5 +204,7 @@ private:
 private:
   static ClockManager *_instance;	///< Our global/singleton instance
 };
+
+GALAN_END_NAMESPACE
 
 #endif

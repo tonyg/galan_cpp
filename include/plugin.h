@@ -10,12 +10,19 @@
 
 #include <gmodule.h>
 
+GALAN_BEGIN_NAMESPACE
+
 /**
  * Informative class about a plugin. Holds a reference to the plugin's
  * GModule along with some other useful information about it.
  **/
 class Plugin: public Registrable {
 public:
+  /**
+   * Instances of this struct are returned (as a loaderResult_t) by
+   * Plugin::loadPlugins(), for use in indicating to the user which
+   * plugins had problems loading, and what those problems were.
+   **/
   struct faultyPlugin {
     std::string pathName;	///< Path to the faulty plugin
     std::string pluginName;	///< Short name for the plugin
@@ -24,7 +31,7 @@ public:
       : pathName(_path), pluginName(_name), detail(_detail)
     {}
   };
-  typedef std::vector<faultyPlugin> loaderResult_t;
+  typedef std::vector<faultyPlugin> loaderResult_t;	///< @see Plugin::loadPlugins()
 
   /**
    * Function signature for plugin initializer entry points.
@@ -65,40 +72,42 @@ public:
   //@}
 
   /// Called by the plugin to supply needed information.
-  void registerPlugin(string const &_author, string const &_title,
-		      string const &_version, string const &_description);
+  void registerPlugin(std::string const &_author, std::string const &_title,
+		      std::string const &_version, std::string const &_description);
 
 private:
-  GModule *handle;	///< handle to the loaded plugin
-  string filename;	///< filename the plugin was loaded from
-  string pluginname;	///< shortname of the plugin
+  GModule *handle;		///< handle to the loaded plugin
+  std::string filename;		///< filename the plugin was loaded from
+  std::string pluginname;	///< shortname of the plugin
 
-  string author;	///< supplied by the plugin
-  string title;		///< supplied by the plugin
-  string version;	///< supplied by the plugin
-  string description;	///< supplied by the plugin
+  std::string author;		///< supplied by the plugin
+  std::string title;		///< supplied by the plugin
+  std::string version;		///< supplied by the plugin
+  std::string description;	///< supplied by the plugin
 
   Plugin();	// unimpl.
-  Plugin(GModule *h, string const &fn, string const &pn)
+  Plugin(GModule *h, std::string const &fn, std::string const &pn)
     : handle(h),
       filename(fn),
       pluginname(pn)
   {}
 
   /// Internal: called from loadAllPlugins
-  static void loadPlugin(loaderResult_t &result, string const &plugin, string const &leafname);
+  static void loadPlugin(loaderResult_t &result,
+			 std::string const &plugin,
+			 std::string const &leafname);
 
   /**
    * Loads all plugins in the named directory and all (non-'hidden')
    * subdirectories.
    **/
-  static void loadAllPlugins(loaderResult_t &result, string const &dir);
+  static void loadAllPlugins(loaderResult_t &result, std::string const &dir);
 
   /**
    * Checks a given path; if it's a file, returns true; if it's a
    * directory, recurses using loadAllPlugins and returns false.
    **/
-  static bool checkPluginValidity(loaderResult_t &result, string const &name);
+  static bool checkPluginValidity(loaderResult_t &result, std::string const &name);
 
   void assign(Plugin const &from) {
     handle = from.handle;
@@ -110,5 +119,7 @@ private:
     description = from.description;
   }
 };
+
+GALAN_END_NAMESPACE
 
 #endif

@@ -8,6 +8,8 @@
 #include "registry.h"
 #include "plugin.h"
 
+GALAN_USE_NAMESPACE
+
 /* %%% Win32: dirent.h seems to conflict with glib-1.3, so ignore dirent.h */
 #ifndef NATIVE_WIN32
 #include <dirent.h>

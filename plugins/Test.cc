@@ -11,6 +11,8 @@
 #include "sample.h"
 #include "plugin.h"
 
+GALAN_USE_NAMESPACE
+
 static GeneratorClass *pluginClass;
 
 class Test: public GeneratorState {

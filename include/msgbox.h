@@ -1,3 +1,4 @@
+/* -*- C++ -*- */
 /* gAlan - Graphical Audio Language
  * Copyright (C) 1999 Tony Garnock-Jones
  *
@@ -18,6 +19,8 @@
 
 #ifndef MsgBox_H
 #define MsgBox_H
+
+GALAN_BEGIN_NAMESPACE
 
 typedef enum MsgBoxResponse {
   MSGBOX_NONE = 0,
@@ -50,12 +53,15 @@ extern MsgBoxResponse popup_msgbox(char *title, MsgBoxResponse buttons,
 				   char *format, ...);
 
 #if 0
-// GTK-specific, here. May change to Qt?
+// GTK-specific, here. May change to Qt? (Besides, shouldn't be used in the lib...?) %%%
+// (What about popup_msgbox??) %%%
 extern MsgBoxResponse popup_dialog(char *title, MsgBoxResponse buttons,
 				   gint timeout_millis, MsgBoxResponse def,
 				   GtkWidget *contents,
 				   MsgBoxResponseHandler handler,
 				   gpointer userdata);
 #endif
+
+GALAN_END_NAMESPACE
 
 #endif

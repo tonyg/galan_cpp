@@ -14,6 +14,8 @@
 #include "model.h"
 #include "event.h"
 
+GALAN_BEGIN_NAMESPACE
+
 class MacroClass;
 class Macro;
 class MacroInputProxy;
@@ -213,5 +215,7 @@ private:
 };
 
 ///////////////////////////////////////////////////////////////////////////
+
+GALAN_END_NAMESPACE
 
 #endif

@@ -7,6 +7,8 @@
 
 #include "ref.h"
 
+using namespace Galan;
+
 struct hash<string> {
   size_t operator()(const string &s) const { return hash<const char *>()(s.c_str()); }
 };

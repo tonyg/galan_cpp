@@ -30,6 +30,8 @@
 #include "global.h"
 #include "msgbox.h"
 
+GALAN_USE_NAMESPACE
+
 static gboolean exit_popup_mainloop = FALSE;
 static MsgBoxResponse action_taken = MSGBOX_NONE;
 static MsgBoxResponse default_action = MSGBOX_NONE;

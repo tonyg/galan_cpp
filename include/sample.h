@@ -8,6 +8,8 @@
 
 #include "global.h"
 
+GALAN_BEGIN_NAMESPACE
+
 /**
  * Represents a single sample in the system.
  **/
@@ -214,5 +216,7 @@ private:
  * Representation of our internal timing unit.
  **/
 typedef gint32 sampletime_t;
+
+GALAN_END_NAMESPACE
 
 #endif

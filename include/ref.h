@@ -16,6 +16,8 @@
 #include <typeinfo>
 #endif
 
+namespace Galan {
+
 class InvalidDowncastException: public std::runtime_error {
 public:
   InvalidDowncastException()
@@ -158,5 +160,7 @@ template <class X> inline ostream &operator <<(ostream &o, ref<X> &r) {
     o << "norep";
   return o << ")";
 }
+
+}	// namespace Galan
 
 #endif

@@ -1,6 +1,8 @@
 #include "event.h"
 #include "clock.h"
 
+GALAN_USE_NAMESPACE
+
 priority_queue<Event *> Event::event_q;
 
 sampletime_t Event::mainloop() {

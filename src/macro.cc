@@ -1,6 +1,8 @@
 #include <string.h>
 #include "macro.h"
 
+GALAN_USE_NAMESPACE
+
 GeneratorClass *Macro::realtimeOutputProxyClass;
 GeneratorClass *Macro::randomaccessOutputProxyClass;
 

@@ -19,7 +19,7 @@ plugin_PROGRAMS = \
 CXXFLAGS = -O0 -g
 
 LDFLAGS = -module -rpath $(plugindir) -avoid-version -export-symbols-regex init_plugin_.*
-LIBADD = ../src/libgalan.la
+#LIBADD = ../src/libgalan.la
 INCLUDES = -I.. -I$(srcdir)/../include @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
 
 #esd_output_so_INCLUDES=`esd-config --cflags`

@@ -17,6 +17,8 @@
 #include "registry.h"
 #include "ref.h"
 
+GALAN_BEGIN_NAMESPACE
+
 class	GeneratorClass;
 class	Generator;
 class	GeneratorState;
@@ -625,5 +627,7 @@ inline void Conduit::unlink() {
 inline GeneratorState *GeneratorClass::instantiate(Generator &_gen, int _voice) {
   return factory_fn(_gen, _voice);
 }
+
+GALAN_END_NAMESPACE
 
 #endif

@@ -11,6 +11,8 @@
 #include "plugin.h"
 #include "macro.h"
 
+GALAN_USE_NAMESPACE
+
 class DefaultClock: public Clock {
 private:
   guint timeout_tag;

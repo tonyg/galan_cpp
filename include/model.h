@@ -5,9 +5,11 @@
 // Model-View in C++
 // Interface
 
-#include <set.h>
+#include <set>
 
 #include "global.h"
+
+GALAN_BEGIN_NAMESPACE
 
 class Model;
 class View;
@@ -21,7 +23,7 @@ class View;
  **/
 class Model {
  public:
-  typedef set<View *> dependents_t;
+  typedef std::set<View *> dependents_t;
 
   Model() {}
   virtual ~Model() {}
@@ -57,5 +59,7 @@ class View {
   View(View const &from);		//unimpl
   View &operator =(View const &from);	//unimpl
 };
+
+GALAN_END_NAMESPACE
 
 #endif

@@ -1,5 +1,7 @@
 #include "clock.h"
 
+GALAN_USE_NAMESPACE
+
 sampletime_t Clock::time_now = 0;
 sampletime_t Clock::max_realtime_step = 1024;
 list<RealtimeHandler *> Clock::realtime_fns;

@@ -1,6 +1,8 @@
 #include <string.h>
 #include "generator.h"
 
+GALAN_USE_NAMESPACE
+
 ConnectionDescriptor::ConnectionDescriptor(string const &_name)
   : name(_name)
 {
