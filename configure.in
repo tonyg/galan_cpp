@@ -11,7 +11,7 @@ AC_PROG_CXX
 
 dnl Libtool for libgalan.so and the plugin modules
 AC_LIBTOOL_DLOPEN
-AM_DISABLE_STATIC
+dnl AM_DISABLE_STATIC
 AM_PROG_LIBTOOL
 AC_SUBST(LIBTOOL_DEPS)
 
@@ -37,6 +37,8 @@ if test "x$QTDIR" = "x"; then
 fi
 AC_SUBST(QTDIR)
 AC_MSG_RESULT($QTDIR)
+
+AM_PATH_VORBIS
 
 AM_PATH_GLIB(1.2.0, , AC_MSG_ERROR(Cannot find glib: is glib-config in path?), gmodule)
 
