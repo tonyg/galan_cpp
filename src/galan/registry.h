@@ -46,6 +46,15 @@ public:
 
   /// Unbind this node from its parent.
   void unbind();
+
+  /// Is this a Registry object itself?
+  virtual bool isRegistry() const { return false; }
+
+  /// Attempt to cast this to Registry. Returns 0 if not possible.
+  Registry *toRegistry();
+  Registry const *toRegistry() const {
+    return const_cast<Registrable *>(this)->toRegistry();
+  }
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -60,6 +69,7 @@ public:
 
 public:
   typedef children_t::iterator iterator;
+  typedef children_t::const_iterator const_iterator;
 
   /**
    * Deep iterator over a registry.
@@ -103,12 +113,17 @@ public:
   Registry(): Registrable() {}
   ~Registry() {}
 
+  virtual bool isRegistry() const { return true; }
+
   /// Get a shallow iterator over this.
   iterator begin() { return children.begin(); }
+  const_iterator begin() const { return children.begin(); }
+
   /// Get a deep iterator over this.
   RegistryIterator deep_begin() { return RegistryIterator(children.begin(), children.end()); }
   /// Get the end (shallow and/or deep) iterator for this.
   iterator end() { return children.end(); }
+  const_iterator end() const { return children.end(); }
 
   /**
    * Binds a subpath to a Registrable, replacing an existing entry if
