@@ -17,14 +17,18 @@ private:
 
 public:
   DefaultClock(): Clock(), timeout_tag(0) {
-    ClockManager::instance()->register_clock(this);
-    ClockManager::instance()->set_default_clock(this);
-    ClockManager::instance()->select_clock(this);
+    ClockManager *cm = ClockManager::instance();
+    cm->register_clock(this);
+    cm->set_default_clock(this);
+    cm->select_clock(this);
+    cout << "main.cc: ClockManager is " << (void *) cm << endl;
+    cout << "main.cc: &Registry::root is " << (void *) &Registry::root << endl;
   }
 
   virtual ~DefaultClock() {
-    ClockManager::instance()->set_default_clock(NULL);
-    ClockManager::instance()->stop_clock();
+    ClockManager *cm = ClockManager::instance();
+    cm->set_default_clock(NULL);
+    cm->stop_clock();
   }
 
   virtual string const &getName() const {
