@@ -1,0 +1,3 @@
+* Requires the use of "uic" from the Qt Designer. Qt Designer is
+included with Qt v2.3.0, and probably slightly earlier versions, too -
+but I don't think it's present in Qt 2.0.x or 2.1.x.

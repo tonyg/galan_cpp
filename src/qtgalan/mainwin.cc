@@ -7,7 +7,9 @@
 #include "config.h"
 
 #include "mainwin.h"
-#include "popupdialog.h"
+
+#include "PluginInfo.h"
+#include "SelectClock.h"
 
 #include <qpopupmenu.h>
 #include <qkeycode.h>
@@ -16,9 +18,13 @@
 #include <qdialog.h>
 #include <qpushbutton.h>
 #include <qlistbox.h>
+#include <qlayout.h>
+#include <qlabel.h>
+#include <qcheckbox.h>
 
 #include "galan/global.h"
 #include "galan/clock.h"
+#include "galan/plugin.h"
 
 GALAN_USE_NAMESPACE
 using namespace std;
@@ -27,17 +33,27 @@ MainWin::MainWin()
   : QMainWindow()
 {
   QPopupMenu *fileMenu = new QPopupMenu(this);
+  fileMenu->insertItem("&New", 0, "");
+  fileMenu->insertItem("&Open...", 0, "", CTRL+Key_O);
+  fileMenu->insertSeparator();
+  fileMenu->insertItem("&Save", 0, "", CTRL+Key_S);
+  fileMenu->insertItem("Save &as...", 0, "");
+  fileMenu->insertSeparator();
   fileMenu->insertItem("E&xit", qApp, SLOT(quit()), CTRL+Key_Q);
 
   QPopupMenu *editMenu = new QPopupMenu(this);
+  editMenu->insertItem("&Preferences...", 0, "");
 
   QPopupMenu *windowMenu = new QPopupMenu(this);
+  windowMenu->insertItem("&Show Control Panel", 0, "");
+  windowMenu->insertItem("&Hide Control Panel", 0, "");
 
   QPopupMenu *timingMenu = new QPopupMenu(this);
   timingMenu->insertItem("&Select master clock...", this, SLOT(selectClock()));
 
   QPopupMenu *helpMenu = new QPopupMenu(this);
   helpMenu->insertItem("&About", this, SLOT(about()));
+  helpMenu->insertItem("About &plugins...", this, SLOT(aboutPlugins()));
 
   menuBar()->insertItem("&File", fileMenu);
   menuBar()->insertItem("&Edit", editMenu);
@@ -74,44 +90,12 @@ void MainWin::about() {
   QMessageBox::about(this, "QtGalan", msg);
 }
 
+void MainWin::aboutPlugins() {
+  PluginInfo *dlg = new PluginInfoImpl(0, "PluginInfo", true);
+  dlg->exec();
+}
+
 void MainWin::selectClock() {
-  QListBox *lb = new QListBox();
-
-  ClockManager *clockManager = ClockManager::instance();
-  vector<Clock *> v(clockManager->begin(), clockManager->end());
-
-  for (unsigned int i = 0; i < v.size(); i++) {
-    Clock *clock = v[i];
-    lb->insertItem(clock->getName().c_str());
-    if (clock == clockManager->getSelected()) {
-      lb->setCurrentItem(i);
-    }
-  }
-
-  PopupDialog dlg("Select Master Clock",
-		  PopupDialog::OK | PopupDialog::CANCEL,
-		  0, PopupDialog::NONE, lb);
-
-  dlg.resize(200, 150);
-
-  switch (dlg.runPopup()) {
-    case PopupDialog::OK: {
-      int item = lb->currentItem();
-      if (item != -1) {
-	Clock *clock = v[item];
-	IFDEBUG(cerr << "New master clock: " << clock->getName() << endl);
-	clockManager->select_clock(clock);
-      } else {
-	IFDEBUG(cerr << "No master clock selected in dialog. Ignoring." << endl);
-      }
-      break;
-    }
-
-    case PopupDialog::CANCEL:
-      IFDEBUG(cerr << "Cancelled Master Clock selection." << endl);
-      /* FALL THROUGH */
-
-    default:
-      break;
-  }
+  SelectClock *dlg = new SelectClockImpl(0, "SelectClock", true);
+  dlg->exec();
 }

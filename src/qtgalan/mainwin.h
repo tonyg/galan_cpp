@@ -15,6 +15,7 @@ protected:
 
 private slots:
   void about();
+  void aboutPlugins();
   void selectClock();
 };
 
