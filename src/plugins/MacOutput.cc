@@ -39,7 +39,7 @@ public:
   virtual ~MacOutputClock();
 
   virtual string const &getName() const {
-    static string const name = "Macintosh CoreAudio Output Clock";
+    static string const name = "CoreAudio Output Clock";
     return name;
   }
 
@@ -280,8 +280,8 @@ MacOutput::~MacOutput() {
 ///////////////////////////////////////////////////////////////////////////
 
 PUBLIC_SYMBOL void init_plugin_MacOutput(Plugin &plugin) {
-  plugin.registerPlugin("Tony Garnock-Jones", "Macintosh CoreAudio Output Plugin", "1.0",
-			"Plays sound via the Carbon CoreAudio interface");
+  plugin.registerPlugin("Tony Garnock-Jones", "CoreAudio Output Plugin", "1.0",
+			"Plays sound via the MacOS X CoreAudio interface");
 
   pluginClass = new GeneratorClass("CoreAudio Output",
 				   &GeneratorStateFactory<MacOutput>,
