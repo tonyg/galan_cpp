@@ -171,6 +171,8 @@ void RegistryIterator::assign(RegistryIterator const &from) {
     nest->assign(*from.nest);
   } else
     nest = 0;
+
+  current = from.current;
 }
 
 void RegistryIterator::assign(Registry::iterator const &from, Registry::iterator const &_end) {

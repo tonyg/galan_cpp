@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_PROGRAMS = testref testreg testopossum testfns
+EXTRA_PROGRAMS = testref testreg testfns
 
-LDADD = @GTK_LIBS@
-INCLUDES = -I.. -I$(srcdir)/../include @GTK_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
+LDADD = @GLIB_LIBS@
+INCLUDES = -I.. -I$(srcdir)/../include @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
 
 testref_SOURCES = testref.cc
 testref_LDADD = -liberty
@@ -11,10 +11,6 @@ testref_LDADD = -liberty
 testreg_SOURCES = testreg.cc
 testreg_LDADD = ../src/registry.o -lglib
 testreg_DEPENDENCIES = ../src/registry.o
-
-testopossum_SOURCES = testopossum.cc
-testopossum_LDADD = ../src/opossum.o
-testopossum_DEPENDENCIES = ../src/opossum.o
 
 testfns_SOURCES = testfns.cc
 

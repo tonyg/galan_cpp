@@ -63,14 +63,6 @@ public:
    * Deep iterator over a registry.
    **/
   class RegistryIterator {
-  private:
-    friend class Registry;
-
-    Registry::iterator position;	///< Current position at this level
-    Registry::iterator end;		///< Final position at this level
-    RegistryIterator *nest;		///< Iterator at some sublevel
-    Registry *current;			///< Registry for this level
-
   public:
     RegistryIterator(): nest(0) {}
 
@@ -94,6 +86,14 @@ public:
 
     Registrable * &operator*();
     RegistryIterator &operator++(int);	// postfix operator has a dummy int
+
+  private:
+    friend class Registry;
+
+    Registry::iterator position;	///< Current position at this level
+    Registry::iterator end;		///< Final position at this level
+    RegistryIterator *nest;		///< Iterator at some sublevel
+    Registry *current;			///< Registry for this level
   };
 
   static class Registry *root;		///< *THE* root Registry.
