@@ -1,4 +1,3 @@
-- make various things clone()able
 - clean up directory structure
 - pull out the little stub main
 - clean up API so that it uses more pimpl/bridge/whatever to hide
