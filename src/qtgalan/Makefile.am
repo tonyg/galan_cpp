@@ -33,6 +33,10 @@ noinst_HEADERS = \
 	PluginInfo.h \
 	SelectClock.h
 
+BUILT_SOURCES= \
+	PluginInfo_base.h \
+	SelectClock_base.h
+
 %_base.cc %_base.h: %.ui
 	$(UIC) -o $*_base.h $*.ui
 	$(UIC) -o $*_base.cc -i $*_base.h $*.ui
