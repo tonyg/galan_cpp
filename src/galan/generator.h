@@ -285,6 +285,11 @@ public:
   /// Retrieves an OutputDescriptor by name
   OutputDescriptor const &getOutput(std::string const &name) const;
 
+  /// Retrieves the "default" InputDescriptor, or 0 if no default
+  InputDescriptor const *getDefaultInput() const;
+  /// Retrieves the "default" OutputDescriptor, or 0 if no default
+  OutputDescriptor const *getDefaultOutput() const;
+
   /// As for getInput, but force interpretation as a RealtimeInputDescriptor.
   RealtimeInputDescriptor const &getRealtimeInput(std::string const &name) const {
     return dynamic_cast<RealtimeInputDescriptor const &>(getInput(name));
@@ -357,7 +362,12 @@ public:
   SampleCache(): last_sampletime(-1), last_buffer(0), last_result(false) {}
 
   /// Clone an existing SampleCache.
-  SampleCache(SampleCache const &other) { assign(other); }
+  SampleCache(SampleCache const &other)
+    : last_sampletime(-1), last_buffer(0), last_result(false)
+  {
+    assign(other);
+  }
+
   /// Become a copy of an existing SampleCache.
   SampleCache const &operator=(SampleCache const &other) { assign(other); return *this; }
 

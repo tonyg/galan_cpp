@@ -80,6 +80,26 @@ OutputDescriptor const &GeneratorClass::getOutput(string const &name) const {
   return *dynamic_cast<OutputDescriptor *>((*i).second);
 }
 
+InputDescriptor const *GeneratorClass::getDefaultInput() const {
+  if (inputs.size() == 1)
+    return dynamic_cast<InputDescriptor *>((*(inputs.begin())).second);
+  try {
+    return &(getInput("Main"));
+  } catch (std::logic_error &e) {
+    return 0;
+  }
+}
+
+OutputDescriptor const *GeneratorClass::getDefaultOutput() const {
+  if (outputs.size() == 1)
+    return dynamic_cast<OutputDescriptor *>((*(outputs.begin())).second);
+  try {
+    return &(getOutput("Main"));
+  } catch (std::logic_error &e) {
+    return 0;
+  }
+}
+
 bool SampleCache::read(GeneratorState *voice, RealtimeOutputDescriptor const &output,
 		       SampleBuf *buffer) {
   sampletime_t now = Clock::now();
