@@ -68,7 +68,20 @@ void Plugin::loadPlugin(loaderResult_t &result, string const &filename, string c
   }
 
   plugin = new Plugin(handle, filename, pluginname);
-  initializer(*plugin);
+
+  try {
+    initializer(*plugin);
+  } catch (std::exception &e) {
+    result.push_back(faultyPlugin(filename, pluginname,
+				  "Plugin threw unexpected exception (" + string(e.what()) + ")"));
+    g_message("Plugin %s threw std::exception: %s", leafname.c_str(), e.what());
+    return;
+  } catch (...) {
+    result.push_back(faultyPlugin(filename, pluginname,
+				  "Plugin threw unknown exception!"));
+    g_message("Plugin %s threw unknown exception!", leafname.c_str());
+    return;
+  }
 
   /* Don't g_module_close(handle) because it will unload the .so */
 }
