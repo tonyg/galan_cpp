@@ -30,7 +30,7 @@ class MacroClass: public GeneratorClass {
 private:
   friend class Macro;
 
-  MacroClass(): GeneratorClass(0) {}
+  MacroClass();
 
   // These are here because GeneratorClass doesn't trust Macro with its
   // protected methods, so we redefined them here, in a proper subclass
@@ -53,7 +53,7 @@ public:
   /**
    * Create a new Macro Generator with the specified polyphony.
    **/
-  Macro(bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY);
+  static Macro *create(bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY);
   virtual ~Macro();
 
   /// Override virtual-constructor here to clone the whole mesh.
@@ -145,6 +145,9 @@ public:
 private:
   friend class MacroInputProxy;
 
+  /// Private ctor - use Macro::create() instead!
+  Macro(MacroClass *_cls, bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY);
+
   /**
    * The generator-class of all nodes in the graph that act as proxies
    * for one of the realtime inputs to a Macro.
@@ -157,7 +160,7 @@ private:
    **/
   static GeneratorClass *randomaccessOutputProxyClass;
 
-  MacroClass cls;	///< GeneratorClass specific to this Macro
+  MacroClass *cls;	///< GeneratorClass specific to this Macro
 
   Registry children;	///< Our children; all Generators
 

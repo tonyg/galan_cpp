@@ -27,17 +27,31 @@ void MacroInputProxy::initialise() {
   randomaccessClass->register_desc(new RandomaccessOutputDescriptor("Main", 0, 0));
 }
 
-Macro::Macro(bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY)
-  : cls(),
-    Generator(cls, _polyphonic, _nvoices)
+static GeneratorState *nullStateFactory(Generator &_gen, int _voice) {
+  return 0;
+}
+
+MacroClass::MacroClass()
+  : GeneratorClass(nullStateFactory)
+{}
+
+Macro *Macro::create(bool _polyphonic, int _nvoices) {
+  MacroClass *cls = new MacroClass();
+  return new Macro(cls, _polyphonic, _nvoices);
+}
+
+Macro::Macro(MacroClass *_cls, bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY)
+  : Generator(*_cls, _polyphonic, _nvoices),
+    cls(_cls)
 {
 }
 
 Macro::~Macro() {
+  delete cls;
 }
 
 Generator *Macro::clone() {
-  Macro *m = new Macro(isPolyphonic(), getNumVoices());
+  Macro *m = Macro::create(isPolyphonic(), getNumVoices());
 
   // First copy the children themselves, then copy the links between
   // them.
@@ -94,23 +108,23 @@ Generator *Macro::clone() {
 }
 
 void Macro::register_desc(InputDescriptor *input) {
-  cls.register_desc(input);
+  cls->register_desc(input);
   Generator::addInput();
 }
 
 void Macro::register_desc(OutputDescriptor *output) {
-  cls.register_desc(output);
+  cls->register_desc(output);
   addOutput();
 }
 
 void Macro::unregister_desc(InputDescriptor *input) {
   removeInput(input->getInternalIndex());
-  cls.unregister_desc(input);
+  cls->unregister_desc(input);
 }
 
 void Macro::unregister_desc(OutputDescriptor *output) {
   removeOutput(output->getInternalIndex());
-  cls.unregister_desc(output);
+  cls->unregister_desc(output);
 }
 
 bool Macro::addChild(string const &name, Generator *child) {
