@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = galan.spec TODO
+EXTRA_DIST = doc galan.spec TODO
 SUBDIRS = src tests
 
 libtool: $(LIBTOOL_DEPS)

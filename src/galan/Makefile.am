@@ -5,6 +5,7 @@ lib_LTLIBRARIES = libgalan.la
 EXTRA_DIST =
 
 pkginclude_HEADERS = \
+	global.h \
 	ref.h model.h registry.h \
 	sample.h generator.h macro.h \
 	clock.h event.h \
