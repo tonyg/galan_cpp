@@ -16,7 +16,7 @@ void GeneratorClass::unregister_desc(InputDescriptor *input) {
   inputs.erase(inputs.find(input->getName()));
 
   for (descriptormap_t::iterator i = inputs.begin(); i != inputs.end(); i++) {
-    InputDescriptor *desc = dynamic_cast<InputDescriptor *>((*i).second.get());
+    InputDescriptor *desc = dynamic_cast<InputDescriptor *>((*i).second);
     int descIndex = desc->getInternalIndex();
 
     if (descIndex >= myIndex)
@@ -30,7 +30,7 @@ void GeneratorClass::unregister_desc(OutputDescriptor *output) {
   outputs.erase(outputs.find(output->getName()));
 
   for (descriptormap_t::iterator i = outputs.begin(); i != outputs.end(); i++) {
-    OutputDescriptor *desc = dynamic_cast<OutputDescriptor *>((*i).second.get());
+    OutputDescriptor *desc = dynamic_cast<OutputDescriptor *>((*i).second);
     int descIndex = desc->getInternalIndex();
 
     if (descIndex >= myIndex)
@@ -48,12 +48,36 @@ void GeneratorClass::register_desc(OutputDescriptor *output) {
   outputs[output->name] = output;
 }
 
+vector<InputDescriptor *> GeneratorClass::getInputs() const {
+  vector<InputDescriptor *> result;
+  for (descriptormap_t::const_iterator i = inputs.begin(); i != inputs.end(); i++) {
+    result.push_back(dynamic_cast<InputDescriptor *>((*i).second));
+  }
+  return result;
+}
+
+vector<OutputDescriptor *> GeneratorClass::getOutputs() const {
+  vector<OutputDescriptor *> result;
+  for (descriptormap_t::const_iterator i = outputs.begin(); i != outputs.end(); i++) {
+    result.push_back(dynamic_cast<OutputDescriptor *>((*i).second));
+  }
+  return result;
+}
+
 InputDescriptor const &GeneratorClass::getInput(string const &name) const {
-  return *(dynamic_cast<InputDescriptor *>(const_cast<descriptormap_t &>(inputs)[name].get()));
+  descriptormap_t::const_iterator i = inputs.find(name);
+  if (i == inputs.end()) {
+    throw std::logic_error("GeneratorClass::getInput: not found: " + name);
+  }
+  return *dynamic_cast<InputDescriptor *>((*i).second);
 }
 
 OutputDescriptor const &GeneratorClass::getOutput(string const &name) const {
-  return *(dynamic_cast<OutputDescriptor *>(const_cast<descriptormap_t &>(outputs)[name].get()));
+  descriptormap_t::const_iterator i = outputs.find(name);
+  if (i == outputs.end()) {
+    throw std::logic_error("GeneratorClass::getOutput: not found: " + name);
+  }
+  return *dynamic_cast<OutputDescriptor *>((*i).second);
 }
 
 bool SampleCache::read(GeneratorState *voice, RealtimeOutputDescriptor const &output,
@@ -133,11 +157,11 @@ Generator::~Generator() {
   int numOut = cls.getNumOutputs();
 
   for (int i = 0; i < numIn; i++) {
-    while (inputs[i].size()) inputs[i][0]->unlink();
+    while (!inputs[i].empty()) inputs[i].front()->unlink();
   }
 
   for (int i = 0; i < numOut; i++) {
-    while (outputs[i].size()) outputs[i][0]->unlink();
+    while (!outputs[i].empty()) outputs[i].front()->unlink();
   }
 
   for (statevec_t::iterator i = voices.begin(); i != voices.end(); i++) {
@@ -145,14 +169,20 @@ Generator::~Generator() {
   }
 }
 
+Generator *Generator::clone() {
+  return new Generator(cls, polyphonic, voices.size());
+}
+
 Conduit *Generator::find_link(OutputDescriptor const *src_q, Generator *dst, InputDescriptor const *dst_q) {
   // paranoia
   assert(src_q->getGeneratorClass() == &cls);
   assert(dst_q->getGeneratorClass() == &dst->cls);
+  assert(dst->cls.getNumInputs() == dst->inputs.size());
+  assert(cls.getNumOutputs() == outputs.size());
 
   Conduit templ(this, src_q, dst, dst_q);
-  vector<Conduit *> &v = outputs[src_q->getInternalIndex()];
-  vector<Conduit *>::iterator i = v.begin();
+  conduitlist_t &v = outputs[src_q->getInternalIndex()];
+  conduitlist_t::iterator i = v.begin();
 
   while (i != v.end()) {
     Conduit *c = *i;
@@ -182,33 +212,34 @@ void Generator::link(OutputDescriptor const &src_q, Generator *dst, InputDescrip
 void Generator::unlink(OutputDescriptor const &src_q,
 		       Generator *dst, InputDescriptor const &dst_q) {
   Conduit *c = find_link(&src_q, dst, &dst_q);
-  vector<Conduit *>::iterator i;
+  conduitlist_t::iterator i;
   int out_index = src_q.getInternalIndex();
   int in_index = dst_q.getInternalIndex();
 
   RETURN_UNLESS(c != NULL);
 
-  for (i = outputs[out_index].begin();
-       i < outputs[out_index].end();
-       i++)
-    if ((*i) == c)
-      outputs[out_index].erase(i, i);
-
-  for (i = dst->inputs[in_index].begin();
-       i < dst->inputs[in_index].end();
-       i++)
-    if ((*i) == c)
-      dst->inputs[in_index].erase(i, i);
+  outputs[out_index].remove(c);
+  dst->inputs[in_index].remove(c);
 
   delete c;
 }
 
+Generator::conduitlist_t const &Generator::inboundLinks(InputDescriptor const &q) {
+  assert(q.getGeneratorClass() == &cls);
+  return inputs[q.getInternalIndex()];
+}
+
+Generator::conduitlist_t const &Generator::outboundLinks(OutputDescriptor const &q) {
+  assert(q.getGeneratorClass() == &cls);
+  return outputs[q.getInternalIndex()];
+}
+
 void Generator::addInput() {
-  inputs.push_back(conduitvec_t());
+  inputs.push_back(conduitlist_t());
 }
 
 void Generator::addOutput() {
-  outputs.push_back(conduitvec_t());
+  outputs.push_back(conduitlist_t());
 
   for (cachevec_t::iterator i = caches.begin(); i != caches.end(); i++)
     (*i).push_back(SampleCache());
@@ -231,10 +262,11 @@ bool Generator::aggregate_input(RealtimeInputDescriptor const &q, int voice, Sam
   // paranoia
   RETURN_VAL_UNLESS(q.getGeneratorClass() == &cls, false);
 
-  conduitvec_t &lst = inputs[index];
+  conduitlist_t &lst = inputs[index];
 
+  // Questionable optimisation? list<>::size() is linear-time...
   if (lst.size() == 1) {
-    Conduit *c = lst[0];
+    Conduit *c = lst.front();
     RealtimeOutputDescriptor const *output =
       dynamic_cast<RealtimeOutputDescriptor const *>(c->src_q);
     return c->src->read_output(*output, voice, buffer);
@@ -243,7 +275,7 @@ bool Generator::aggregate_input(RealtimeInputDescriptor const &q, int voice, Sam
   SampleBuf tmp(buffer->getLength());
   bool result = false;
 
-  for (conduitvec_t::iterator i = lst.begin(); i != lst.end(); i++) {
+  for (conduitlist_t::iterator i = lst.begin(); i != lst.end(); i++) {
     Conduit *c = (*i);
     RealtimeOutputDescriptor const *output =
       dynamic_cast<RealtimeOutputDescriptor const *>(c->src_q);
@@ -290,10 +322,10 @@ sampletime_t Generator::get_input_range(RandomaccessInputDescriptor const &q, in
     return 0;
   }
 
-  if (inputs[index].size() == 0)
+  if (inputs[index].empty())
     return 0;
 
-  c = inputs[index][0];
+  c = inputs[index].front();
   RandomaccessOutputDescriptor const *output =
     dynamic_cast<RandomaccessOutputDescriptor const *>(c->src_q);
   return c->src->get_output_range(*output, voice);
@@ -306,10 +338,10 @@ bool Generator::read_input(RandomaccessInputDescriptor const &q, int voice,
 
   int index = q.getInternalIndex();
 
-  if (inputs[index].size() == 0)
+  if (inputs[index].empty())
     return false;
 
-  Conduit *c = inputs[index][0];
+  Conduit *c = inputs[index].front();
   RandomaccessOutputDescriptor const *output =
     dynamic_cast<RandomaccessOutputDescriptor const *>(c->src_q);
 
@@ -329,7 +361,7 @@ bool Generator::read_output(RealtimeOutputDescriptor const &q, int voice, Sample
 
   // paranoia
   assert(voice >= 0 && voice < voices.size());
-  assert(outputs[index].size() > 0);
+  assert(!outputs[index].empty());
 
   if (outputs[index].size() == 1) {
     // Don't bother caching the only output.

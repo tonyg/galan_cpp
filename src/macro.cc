@@ -36,6 +36,63 @@ Macro::Macro(bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY)
 Macro::~Macro() {
 }
 
+Generator *Macro::clone() {
+  Macro *m = new Macro(isPolyphonic(), getNumVoices());
+
+  // First copy the children themselves, then copy the links between
+  // them.
+
+  for (Registry::iterator i = children.begin();
+       i != children.end();
+       i++) {
+    string name = (*i).first;
+    Generator *child = dynamic_cast<Generator *>((*i).second);
+
+    // paranoia
+    assert(child);
+
+    MacroInputProxy *proxy = dynamic_cast<MacroInputProxy *>(child);
+    if (proxy != 0) {
+      // It's a MacroInputProxy.
+      if (proxy->rt != 0) m->addRealtimeInput(name);
+      if (proxy->ra != 0) m->addRandomaccessInput(name);
+    } else {
+      // It's a normal Generator (includes Macros, of course), or an output. Clone it!
+      m->addChild(name, child->clone());
+    }
+  }
+
+  // Now the links.
+
+  for (Registry::iterator i = children.begin();
+       i != children.end();
+       i++) {
+    string name = (*i).first;
+    Generator *child = dynamic_cast<Generator *>((*i).second);
+
+    vector<OutputDescriptor *> outputDescs = child->getClass().getOutputs();
+
+    for (unsigned int i = 0; i < outputDescs.size(); i++) {
+      conduitlist_t const &outs(child->outboundLinks(*outputDescs[i]));
+
+      for (conduitlist_t::const_iterator link = outs.begin();
+	   link != outs.end();
+	   link++) {
+	Conduit *c = (*link);
+
+	Generator *head = m->findChild(name);
+	Generator *tail = m->findChild(c->dst->getLocalname());
+
+	head->link(head->getClass().getOutput(c->src_q->getName()),
+		   tail,
+		   tail->getClass().getInput(c->dst_q->getName()));
+      }
+    }
+  }
+
+  return m;
+}
+
 void Macro::register_desc(InputDescriptor *input) {
   cls.register_desc(input);
   Generator::addInput();
@@ -68,30 +125,28 @@ bool Macro::removeChild(string const &name) {
   return children.unbind(name);
 }
 
-Generator *Macro::addInput(RealtimeInputDescriptor *input, bool trackable = true) {
-  string const &name = input->getName();
-
+Generator *Macro::addRealtimeInput(string const &name) {
   if (findChild(name))
     return 0;
 
-  register_desc(input);
+  RealtimeInputDescriptor *desc = new RealtimeInputDescriptor(name);
+  register_desc(desc);
 
   Generator *result = new MacroInputProxy(*MacroInputProxy::realtimeClass,
-					  *this, input, 0, trackable);
+					  *this, desc, 0);
   addChild(name, result);
   return result;
 }
 
-Generator *Macro::addInput(RandomaccessInputDescriptor *input) {
-  string const &name = input->getName();
-
+Generator *Macro::addRandomaccessInput(string const &name) {
   if (findChild(name))
     return 0;
 
-  register_desc(input);
+  RandomaccessInputDescriptor *desc = new RandomaccessInputDescriptor(name);
+  register_desc(desc);
 
   Generator *result = new MacroInputProxy(*MacroInputProxy::randomaccessClass,
-					  *this, 0, input, false);
+					  *this, 0, desc);
   addChild(name, result);
   return result;
 }
@@ -154,6 +209,9 @@ bool MacroInputProxy::read_output(RealtimeOutputDescriptor const &q,
 				  int voice, SampleBuf *buffer) {
   bool result = macro.read_input(*rt, voice, buffer);
 
+#if 1
+  return result;
+#else
   if (value == 0) {
     return result;
   }
@@ -163,6 +221,7 @@ bool MacroInputProxy::read_output(RealtimeOutputDescriptor const &q,
 
   buffer += value;
   return true;
+#endif
 }
 
 bool MacroInputProxy::read_output(RandomaccessOutputDescriptor const &q, int voice,
@@ -174,7 +233,9 @@ sampletime_t MacroInputProxy::get_output_range(RandomaccessOutputDescriptor cons
   return macro.get_input_range(*ra, voice);
 }
 
+#if 0
 void MacroInputProxy::handle_event(IntEvent &event) {
   value = event.getValue();
   notifyViews();
 }
+#endif

@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <list>
 
 #include "global.h"
 #include "model.h"
@@ -226,6 +227,8 @@ public:
    * instances, which represent a single voices' worth of plugin
    * state.
    *
+   * @see GeneratorStateFactory
+   *
    * @param _gen the Generator instance we are creating state for
    * @param _voice the voice number we are creating state for %%%
    **/
@@ -272,6 +275,11 @@ public:
   /// Counts the number of output connections instances will have.
   int getNumOutputs() const { return outputs.size(); }
 
+  /// Retrieve all the input descriptors for this class.
+  std::vector<InputDescriptor *> getInputs() const;
+  /// Retrieve all the output descriptors for this class.
+  std::vector<OutputDescriptor *> getOutputs() const;
+
   /// Retrieves an InputDescriptor by name
   InputDescriptor const &getInput(std::string const &name) const;
   /// Retrieves an OutputDescriptor by name
@@ -291,12 +299,12 @@ public:
   GeneratorState *instantiate(Generator &_gen, int _voice);
 
 protected:
-  typedef std::map< std::string, ref<ConnectionDescriptor> > descriptormap_t;
+  typedef std::map< std::string, ConnectionDescriptor * > descriptormap_t;
 
   descriptormap_t inputs;	///< All inbound connections
   descriptormap_t outputs;	///< All outbound connections
 
-  // Primarily of use to class Macro.
+  // Primarily of use to class Macro. Caller must delete any unregistered instances.
   void unregister_desc(InputDescriptor *input);
   void unregister_desc(OutputDescriptor *output);
 
@@ -394,8 +402,13 @@ private:
  **/
 class Generator: public Registrable {
 public:
+  typedef std::list<Conduit *> conduitlist_t;
+
   Generator(GeneratorClass &_cls, bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY);
   virtual ~Generator();
+
+  /// "Virtual-constructor" idiom. Used for cut-and-paste, Macro implementation, etc. etc.
+  virtual Generator *clone();
 
   GeneratorClass &getClass() const { return cls; }	///< Retrieve GeneratorClass of this
   bool isPolyphonic() const { return polyphonic; }	///< "Is this object polyphonic?"
@@ -420,6 +433,16 @@ public:
    * @see Generator::link()
    **/
   void unlink(OutputDescriptor const &src_q, Generator *dst, InputDescriptor const &dst_q);
+
+  /**
+   * Retrieve a list of the connections to a specific input.
+   **/
+  conduitlist_t const &inboundLinks(InputDescriptor const &q);
+
+  /**
+   * Retrieve a list of the connections from a specific output.
+   **/
+  conduitlist_t const &outboundLinks(OutputDescriptor const &q);
 
   /**
    * Pulls samples from a realtime output on this generator.
@@ -460,10 +483,9 @@ public:
    **/
   virtual void setPolyphony(int nvoices);
 
-protected:
   /**
-   * Pulls samples from all Generators connected to one of our
-   * realtime input connectors.
+   * Internal - Pulls samples from all Generators connected to one of
+   * our realtime input connectors.
    *
    * @param q the input connector to use
    * @param voice the voice (layer) to use
@@ -473,8 +495,8 @@ protected:
   bool read_input(RealtimeInputDescriptor const &q, int voice, SampleBuf *buffer);
 
   /**
-   * Pulls samples from the Generators connected to one of our
-   * random-access input connectors.
+   * Internal - Pulls samples from the Generators connected to one of
+   * our random-access input connectors.
    *
    * @param q the input connector to use
    * @param voice the voice (layer) to use
@@ -486,14 +508,16 @@ protected:
 			  sampletime_t offset, SampleBuf *buffer);
 
   /**
-   * Retrieve the width of the Generator connected to one of our
-   * random-access inputs, if any.
+   * Internal - Retrieve the width of the Generator connected to one
+   * of our random-access inputs, if any.
+   *
    * @param q our input connector
    * @param voice the voice to use
    * @return the number of available samples (may be zero)
    **/
   sampletime_t get_input_range(RandomaccessInputDescriptor const &q, int voice);
 
+protected:
   // Mostly for use by Macro.
   void addInput();			///< Internal: extends 'inputs' by one
   void addOutput();			///< Internal: extends 'outputs' by one
@@ -504,13 +528,12 @@ private:
   friend class GeneratorState;
   friend class Macro;
 
-  typedef std::vector<Conduit *> conduitvec_t;
   typedef std::vector<GeneratorState *> statevec_t;
   typedef std::vector< std::vector<SampleCache> > cachevec_t;
 
   GeneratorClass &cls;			///< where we find info about how we communicate
-  std::vector<conduitvec_t> inputs;	///< all conduits connected to our inputs
-  std::vector<conduitvec_t> outputs;	///< all conduits connected to our outputs
+  std::vector<conduitlist_t> inputs;	///< all conduits connected to our inputs
+  std::vector<conduitlist_t> outputs;	///< all conduits connected to our outputs
 
   bool polyphonic;			///< If false, we only ever have a single voice.
 
@@ -522,6 +545,7 @@ private:
 
   cachevec_t caches;			///< Matrix of cached outputs, one array per voice.
 
+  Generator();						// unimpl
   Generator(Generator const &from);			// unimpl
   Generator const &operator =(Generator const &from);	// unimpl
 
@@ -617,6 +641,14 @@ public:
   Generator &getInstance() const { return gen; }	///< Get our associated Generator
   int getVoice() const { return voice; }		///< Get our associated voice number
 };
+
+/**
+ * Template factory function for producing GeneratorState
+ * instances. Useful for passing in to GeneratorClass constructors.
+ **/
+template <class S> GeneratorState *GeneratorStateFactory(Generator &_gen, int _voice) {
+  return new S(_gen, _voice);
+}
 
 ///////////////////////////////////////////////////////////////////////////
 

@@ -12,9 +12,8 @@ EXTRA_PROGRAMS =
 
 plugin_PROGRAMS = \
 	Test.la \
+	OssOutput.la \
 	@OPTIONAL_PLUGINS@
-
-#	OssOutput.la
 
 CXXFLAGS = -O0 -g
 
@@ -26,4 +25,4 @@ INCLUDES = -I.. -I$(srcdir)/../include @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkgli
 #esd_output_so_LDFLAGS=`esd-config --libs`
 
 Test_la_SOURCES = Test.cc
-#OssOutput_so_SOURCES = OssOutput.cc
+OssOutput_la_SOURCES = OssOutput.cc

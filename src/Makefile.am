@@ -8,6 +8,7 @@ libgalan_la_SOURCES = \
 	model.cc registry.cc \
 	generator.cc macro.cc \
 	clock.cc event.cc \
+	iomanager.cc \
 	plugin.cc \
 	msgbox.cc
 

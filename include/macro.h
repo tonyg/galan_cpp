@@ -56,6 +56,9 @@ public:
   Macro(bool _polyphonic, int _nvoices = DEFAULT_POLYPHONY);
   virtual ~Macro();
 
+  /// Override virtual-constructor here to clone the whole mesh.
+  virtual Generator *clone();
+
   /**
    * Insert a child Generator node into this Macro.
    *
@@ -89,25 +92,22 @@ public:
   /**
    * Adds and returns a realtime input proxy for this Macro.
    *
-   * @param input a description of the input to add
-   * @param trackable true if this input is to be allowed to be scripted
-   *
-   * @return 0 if there's a node named the same as 'input'; a
+   * @param name a name for the input
+   * @return 0 if there's a node named the same as 'name'; a
    * Generator pointer that can be removed using removeChild()
    * otherwise
    **/
-  Generator *addInput(RealtimeInputDescriptor *input, bool trackable = true);
+  Generator *addRealtimeInput(std::string const &name);
 
   /**
-   * Adds and returns a random-access input proxy for this Macro.
+   * Adds and returns a randomaccess input proxy for this Macro.
    *
-   * @param input a description of the input to add
-   *
-   * @return 0 if there's a node named the same as 'input'; a
+   * @param name a name for the input
+   * @return 0 if there's a node named the same as 'name'; a
    * Generator pointer that can be removed using removeChild()
    * otherwise
    **/
-  Generator *addInput(RandomaccessInputDescriptor *input);
+  Generator *addRandomaccessInput(std::string const &name);
 
   /**
    * Adds and returns a realtime output proxy for this Macro.
@@ -171,13 +171,13 @@ private:
  * Generator specialization that implements a subgraph's view of an
  * input channel.
  **/
-class MacroInputProxy: public Generator, public Model, public IntEventHandler {
+class MacroInputProxy: public Generator, public Model {
 public:
   /// Sets up our static GeneratorClass instances.
   static void initialise();
 
   /// Handles an incoming IntEvent (if trackable, eventually)
-  virtual void handle_event(IntEvent &event);
+  //virtual void handle_event(IntEvent &event);
 
 private:
   friend class Macro;
@@ -188,19 +188,16 @@ private:
   Macro &macro;					///< Reference to our Macro
   RealtimeInputDescriptor const *rt;		///< The rt InputDescriptor we proxy for
   RandomaccessInputDescriptor const *ra;	///< The ra InputDescriptor we proxy for
-  bool trackable;				///< True if this input is to be trackable
-  int value;					///< Value (from event system) %%%
 
   /// Called from Macro::addInput().
-  MacroInputProxy(GeneratorClass &cls, Macro &_macro,
+  MacroInputProxy(GeneratorClass &cls,
+		  Macro &_macro,
 		  RealtimeInputDescriptor const *_rt,
-		  RandomaccessInputDescriptor const *_ra,
-		  bool _trackable)
+		  RandomaccessInputDescriptor const *_ra)
     : Generator(cls, false),
       macro(_macro),
-      rt(_rt), ra(_ra),
-      trackable(_trackable),
-      value(0)
+      rt(_rt),
+      ra(_ra)
   {}
 
   /// Overloaded to pull directly from our Macro's input.

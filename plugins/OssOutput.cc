@@ -12,19 +12,16 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include <unistd.h>
-
-#include <gdk/gdk.h>
-#include <gtk/gtk.h>
-
 #include "global.h"
 #include "generator.h"
 #include "sample.h"
 #include "plugin.h"
 #include "clock.h"
+#include "iomanager.h"
 
 #include <set>
 
+GALAN_USE_NAMESPACE
 using namespace std;
 
 #define DEFAULT_FRAGMENT_EXPONENT	12
@@ -44,11 +41,6 @@ static int audio_fragment_exponent = DEFAULT_FRAGMENT_EXPONENT;
 ///////////////////////////////////////////////////////////////////////////
 
 class OssOutputClock: public Clock, public RealtimeHandler {
-private:
-  gint input_tag;
-
-  bool open_audiofd(string const &dsppath);
-
 public:
   int audiofd;
 
@@ -65,12 +57,19 @@ public:
 
   void play_fragment(SampleBuf const &left, SampleBuf const &right);
   virtual void realtime_elapsed(sampletime_t delta);
+
+private:
+  bool registered;
+  IOManager::token_t input_tag;
+
+  bool open_audiofd(string const &dsppath);
 };
 
 OssOutputClock::OssOutputClock(string const &dsppath)
   : Clock(),
-    input_tag(-1),
-    audiofd(-1)
+    audiofd(-1),
+    registered(false),
+    input_tag()
 {
   if (!open_audiofd(dsppath)
       && audiofd != -1) {
@@ -109,21 +108,27 @@ bool OssOutputClock::open_audiofd(string const &dsppath) {
   return true;
 }
 
-static gint oss_output_clock_handler(gpointer data) {
+static void oss_output_clock_handler(int fd,
+				     IOManager::Direction direction,
+				     IOManager::token_t token,
+				     void *userdata) {
   Clock::advance(Event::mainloop());
 }
 
 void OssOutputClock::disable() {
-  if (input_tag != -1) {
-    gdk_input_remove(input_tag);
-    input_tag = -1;
+  if (registered) {
+    IOManager::instance()->remove(input_tag);
+    registered = false;
   }
 }
 
 void OssOutputClock::enable() {
-  if (input_tag == -1) {
-    input_tag = gdk_input_add(audiofd, GDK_INPUT_WRITE,
-			      (GdkInputFunction) oss_output_clock_handler, NULL);
+  if (!registered) {
+    input_tag = IOManager::instance()->add(audiofd,
+					   IOManager::OUTPUT,
+					   &oss_output_clock_handler,
+					   NULL);
+    registered = true;
   }
 }
 
@@ -184,10 +189,6 @@ class OssOutput: public GeneratorState {
 public:
   OssOutput(Generator &_gen, int _voice);
   virtual ~OssOutput();
-
-  static GeneratorState *factory(Generator &_gen, int _voice) {
-    return new OssOutput(_gen, _voice);
-  }
 };
 
 OssOutput::OssOutput(Generator &_gen, int _voice): GeneratorState(_gen, _voice) {
@@ -213,7 +214,7 @@ PUBLIC_SYMBOL void init_plugin_OssOutput(Plugin &plugin) {
   plugin.registerPlugin("Tony Garnock-Jones", "OSS Output Plugin", "1.0",
 			"Sends input data to /dev/dsp");
 
-  pluginClass = new GeneratorClass(&OssOutput::factory, "Output/OSS");
+  pluginClass = new GeneratorClass(&GeneratorStateFactory<OssOutput>, "Output/OSS");
 
   pluginClass->register_desc(new RealtimeInputDescriptor("Main"));	// mono output
   pluginClass->register_desc(new RealtimeInputDescriptor("Left"));

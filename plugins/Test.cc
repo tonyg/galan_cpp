@@ -21,10 +21,6 @@ public:
   virtual ~Test();
 
   bool MainOutput(RealtimeOutputDescriptor const &desc, SampleBuf *buf);
-
-  static GeneratorState *factory(Generator &_gen, int _voice) {
-    return new Test(_gen, _voice);
-  }
 };
 
 Test::Test(Generator &_gen, int _voice): GeneratorState(_gen, _voice) {
@@ -43,7 +39,7 @@ PUBLIC_SYMBOL void init_plugin_Test(Plugin &plugin) {
   plugin.registerPlugin("Author's Name", "Test Plugin", "1.0",
 			"This plugin is a stub, do-nothing plugin.");
 
-  pluginClass = new GeneratorClass(&Test::factory, "Main/Test Plugin");
+  pluginClass = new GeneratorClass(&GeneratorStateFactory<Test>, "Main/Test Plugin");
 
   pluginClass->register_desc(new RealtimeInputDescriptor("Main"));
   pluginClass->register_desc(new RealtimeOutputDescriptor("Main",
