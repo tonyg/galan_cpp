@@ -54,13 +54,13 @@ public:
    * interested parties.
    *
    * @param fd the file descriptor in question
-   * @param direction bitmask of events that have occurred on fd
+   * @param direction SINGLE EVENT (not bitmask) that has occurred on fd
    * @param token the token representing this handler
    * @param userdata the datum passed in when add() was called
    **/
   typedef void (*handler_t)(int fd, Direction direction, token_t token, void *userdata);
 
-  virtual ~IOManager() {}
+  virtual ~IOManager();
 
   /**
    * Adds an interested client to this IOManager.
@@ -71,13 +71,13 @@ public:
    * @param userdata datum to pass in to the handler when we call it
    * @return a token for use in deregistering or recognising this addition
    **/
-  virtual token_t add(int fd, Direction direction, handler_t handler, void *userdata);
+  virtual token_t add(int fd, Direction direction, handler_t handler, void *userdata) = 0;
 
   /**
    * Uninstalls a previously registered client.
    * @param token a token as returned by add()
    **/
-  virtual void remove(token_t token);
+  virtual void remove(token_t token) = 0;
 
 private:
   static IOManager *_instance;

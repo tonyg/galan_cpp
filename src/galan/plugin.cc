@@ -5,7 +5,6 @@
 #include <gmodule.h>
 
 #include "galan/global.h"
-#include "galan/msgbox.h"
 #include "galan/registry.h"
 #include "galan/plugin.h"
 

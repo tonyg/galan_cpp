@@ -8,16 +8,14 @@ pkginclude_HEADERS = \
 	sample.h generator.h macro.h \
 	clock.h event.h \
 	iomanager.h \
-	plugin.h \
-	msgbox.h
+	plugin.h
 
 libgalan_la_SOURCES = \
 	model.cc registry.cc \
 	generator.cc macro.cc \
 	clock.cc event.cc \
 	iomanager.cc \
-	plugin.cc \
-	msgbox.cc
+	plugin.cc
 
 libgalan_la_LIBADD = @GLIB_LIBS@
 libgalan_la_LDFLAGS = -version-info 0:0:0
