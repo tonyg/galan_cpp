@@ -232,8 +232,12 @@ public:
    **/
   typedef class GeneratorState *(*factory_fn_t)(Generator &_gen, int _voice);
 
-  /// Create an anonymous GeneratorClass, based on the supplied factory function
-  GeneratorClass(factory_fn_t _fn) : factory_fn(_fn) {}
+  /// Create an anonymous GeneratorClass, based on the supplied factory function and description
+  GeneratorClass(std::string const &desc,
+		 factory_fn_t _fn)
+    : description(desc),
+      factory_fn(_fn)
+  {}
 
   /**
    * Create a named (and listed in the GUI) GeneratorClass based on
@@ -241,6 +245,7 @@ public:
    *
    * @see Registry
    *
+   * @param desc a human-readable description for this generator class
    * @param _fn the factory function to use
    * @param path the Registry path to bind this GeneratorClass under
    *
@@ -248,8 +253,12 @@ public:
    * in the registry under our chosen name. This can be used to choose
    * between multiple plugins implementing the same general interface.
    **/
-  GeneratorClass(factory_fn_t _fn, std::string const &path, bool preferred = false)
-    : factory_fn(_fn)
+  GeneratorClass(std::string const &desc,
+		 factory_fn_t _fn,
+		 std::string const &path,
+		 bool preferred = false)
+    : description(desc),
+      factory_fn(_fn)
   {
     Registry::root->bind(std::string("Generator/") + path, this, preferred);
   }
@@ -301,6 +310,10 @@ public:
   /// Use our factory_fn to generate an instance of GeneratorState for the given voice. %%%
   GeneratorState *instantiate(Generator &_gen, int _voice);
 
+  std::string const &getDescription() const {
+    return description;
+  }
+
 protected:
   typedef std::map< std::string, ConnectionDescriptor * > descriptormap_t;
 
@@ -314,6 +327,7 @@ protected:
 private:
   friend class Generator;
 
+  std::string description;
   factory_fn_t factory_fn;	///< Our state factory
 };
 

@@ -8,6 +8,8 @@
 
 #include "mainwin.h"
 #include "macroview.h"
+#include "controlpanel.h"
+#include "helpwindow.h"
 
 #include "PluginInfo.h"
 #include "SelectClock.h"
@@ -24,7 +26,6 @@
 #include <qcheckbox.h>
 #include <qstatusbar.h>
 #include <qtabwidget.h>
-#include <qscrollview.h>
 
 #include "galan/global.h"
 #include "galan/clock.h"
@@ -40,7 +41,7 @@ QStatusBar *MainWin::StatusBar() {
 }
 
 MainWin::MainWin()
-  : QMainWindow(),
+  : QMainWindow(0, 0, WDestructiveClose),
     root(Macro::create(true))
 {
   if (instance != 0) {
@@ -57,6 +58,7 @@ MainWin::MainWin()
   fileMenu->insertItem("&Save workspace", 0, "", CTRL+Key_S);		// %%% need pickler: xml?
   fileMenu->insertItem("Save workspace &as...", 0, "");			// %%% need pickler: xml?
   fileMenu->insertSeparator();
+  fileMenu->insertItem("&Close", this, SLOT(close()), CTRL+Key_W);
   fileMenu->insertItem("E&xit", qApp, SLOT(quit()), CTRL+Key_Q);
 
   QPopupMenu *editMenu = new QPopupMenu(this);
@@ -77,6 +79,8 @@ MainWin::MainWin()
   timingMenu->insertItem("&Select master clock...", this, SLOT(selectClock()));
 
   QPopupMenu *helpMenu = new QPopupMenu(this);
+  helpMenu->insertItem("&Contents...", this, SLOT(helpContents()), Key_F1);
+  helpMenu->insertSeparator();
   helpMenu->insertItem("&About", this, SLOT(about()));
   helpMenu->insertItem("About &plugins...", this, SLOT(aboutPlugins()));
 
@@ -93,13 +97,8 @@ MainWin::MainWin()
   MacroView *macroView = new MacroView(root, tabs);
   tabs->addTab(macroView, "&Graph");
 
-  QScrollView *sv = new QScrollView(tabs);
-  sv->resizeContents(2048, 2048);
-  sv->enableClipper(true);
-  tabs->addTab(sv, "&Controls");
-
-  sv->addChild(new QPushButton("Hello", sv->viewport()), 10, 10);
-  sv->addChild(new QPushButton("Aloha", sv->viewport()), 1000, 50);
+  ControlPanel *cp = new ControlPanel(tabs);
+  tabs->addTab(cp, "&Controls");
 
   connect(macroView, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
 
@@ -121,6 +120,10 @@ MainWin::~MainWin() {
 void MainWin::closeEvent(QCloseEvent *evt) {
   // %%% Should check to see if file is saved here.
   evt->accept();
+}
+
+void MainWin::helpContents() {
+  (new HelpWindow())->show();
 }
 
 void MainWin::about() {

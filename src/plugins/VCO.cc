@@ -110,7 +110,10 @@ PUBLIC_SYMBOL void init_plugin_VCO(Plugin &plugin) {
   plugin.registerPlugin("Tony Garnock-Jones", "VCO Plugin", "1.0",
 			"This plugin is a (very) simple sine-wave oscillator.");
 
-  pluginClass = new GeneratorClass(&GeneratorStateFactory<VCO>, "Sources/Variable Sine Oscillator");
+  pluginClass = new GeneratorClass("Variable Sine Oscillator",
+				   &GeneratorStateFactory<VCO>,
+				   "Sources/Variable Sine Oscillator");
+
   pluginClass->register_desc(new RealtimeInputDescriptor("Frequency"));
   pluginClass->register_desc(new RealtimeInputDescriptor("PhaseResetTrigger"));
   pluginClass->register_desc(new RealtimeOutputDescriptor("Main",

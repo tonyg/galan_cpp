@@ -10,8 +10,8 @@ GeneratorClass *MacroInputProxy::realtimeClass;
 GeneratorClass *MacroInputProxy::randomaccessClass;
 
 void Macro::initialise() {
-  realtimeOutputProxyClass = new GeneratorClass(0);
-  randomaccessOutputProxyClass = new GeneratorClass(0);
+  realtimeOutputProxyClass = new GeneratorClass("Realtime Macro Output Proxy", 0);
+  randomaccessOutputProxyClass = new GeneratorClass("Randomaccess Macro Output Proxy", 0);
 
   realtimeOutputProxyClass->register_desc(new RealtimeInputDescriptor("Main"));
   randomaccessOutputProxyClass->register_desc(new RandomaccessInputDescriptor("Main"));
@@ -20,8 +20,8 @@ void Macro::initialise() {
 }
 
 void MacroInputProxy::initialise() {
-  realtimeClass = new GeneratorClass(0);
-  randomaccessClass = new GeneratorClass(0);
+  realtimeClass = new GeneratorClass("Realtime Macro Input Proxy", 0);
+  randomaccessClass = new GeneratorClass("Randomaccess Macro Input Proxy", 0);
 
   realtimeClass->register_desc(new RealtimeOutputDescriptor("Main", 0));
   randomaccessClass->register_desc(new RandomaccessOutputDescriptor("Main", 0, 0));
@@ -32,7 +32,7 @@ static GeneratorState *nullStateFactory(Generator &_gen, int _voice) {
 }
 
 MacroClass::MacroClass()
-  : GeneratorClass(nullStateFactory)
+  : GeneratorClass("Macro", nullStateFactory)
 {}
 
 Macro *Macro::create(bool _polyphonic, int _nvoices) {

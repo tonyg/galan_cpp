@@ -46,6 +46,9 @@ private slots:
   void createPrimitive(Galan::Registrable const *generatorClass);
 
 private:
+  class DynamicTip;	// defined in macroview.cc.
+  friend class DynamicTip;
+
   QCanvasItemList itemsAt(QPoint p);
   QCanvasItem *topItemAt(QPoint p);
 

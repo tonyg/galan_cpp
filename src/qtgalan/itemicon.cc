@@ -123,6 +123,17 @@ QString ItemIcon::buildMenu(QPopupMenu *menu) {
   return ("Generator " + name).c_str();
 }
 
+QString ItemIcon::buildTip() {
+  Generator *g = macro->findChild(name);
+
+  QString tip;
+  tip.sprintf("Class: %s\n"
+	      "Name: %s",
+	      g->getClass().getDescription().c_str(),
+	      name.c_str());
+  return tip;
+}
+
 void ItemIcon::deleteIcon() {
   delete this;
 }

@@ -38,12 +38,18 @@ int main(int argc, char *argv[]) {
     QtIOManager::initialise();
     Plugin::loadPlugins();
 
-    MainWin mainwin;
-    mainwin.setCaption("QtGalan (" PACKAGE " " VERSION ")");
-    mainwin.show();
+    // Must be a pointer here, as WDestructiveClose is set in
+    // MainWin's constructor, which causes delete to be called on
+    // window close.
+    MainWin *mainwin = new MainWin();
+    mainwin->setCaption("QtGalan (" PACKAGE " " VERSION ")");
+    mainwin->show();
 
+    app.connect(mainwin, SIGNAL(destroyed()), &app, SLOT(closeAllWindows()));
     app.connect(&app, SIGNAL(lastWindowClosed()), &app, SLOT(quit()));
+
     return app.exec();
+
   } catch (std::exception &e) {
     cerr << "Uncaught std::exception: " << e.what() << endl;
   } catch (...) {

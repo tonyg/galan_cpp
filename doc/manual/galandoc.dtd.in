@@ -1,0 +1,54 @@
+<!ENTITY galan-version CDATA "@VERSION@">
+
+<!-- Hey! This should really be @pkglibdir@ or at least @libdir@/@PACKAGE@,
+     but that doesn't work properly... -->
+<!ENTITY site-pkglib-dir CDATA "@prefix@/lib/@PACKAGE@">
+
+<!ENTITY amp CDATA "&#38;">
+<!ENTITY lt CDATA "&#60;">
+<!ENTITY gt CDATA "&#62;">
+<!ENTITY nbsp CDATA "&#160;">
+
+<!entity % div.mix "p|warning|note|pre">
+<!entity % body.mix "(%div.mix;|fig)*">
+<!entity % linking.mix "link">
+<!entity % styling.mix "b|i">
+<!entity % semantic.mix "emph|code">
+<!entity % span.mix "%linking.mix;|%styling.mix;|%semantic.mix;">
+<!entity % text.mix "#pcdata|xref|%span.mix;|br|ul|ol">
+
+<!element galandoc - - (meta, intro?, section*)>
+
+<!element meta - - (title)>
+
+<!element title - - (#pcdata)>
+
+<!element intro - - (%body.mix;)>
+
+<!element section - - (%body.mix;, section*)>
+<!attlist section
+  heading cdata #required
+  id id #implied>
+
+<!-- Deprecated tags: b, i; use a semantic tag instead! -->
+<!element (%div.mix;|%span.mix;) - - (%text.mix;)*>
+
+<!element br - - empty>
+<!element ul - - (li*)>
+<!element ol - - (li*)>
+
+<!element li - - (%text.mix;)*>
+
+<!attlist link
+  url cdata #required>
+
+<!element xref - - empty>
+<!attlist xref
+  section idref #required>
+
+<!element fig - - empty>
+<!attlist fig
+  src cdata #required
+  alt cdata #required>
+
+<!entity % DSSSLDTD PUBLIC "ISO/IEC 10179:1996//DTD DSSSL Architecture//EN">

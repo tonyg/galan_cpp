@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
 EXTRA_DIST = doc galan.spec TODO MANIFEST
-SUBDIRS = src tests
+SUBDIRS = src tests doc
 
 bin_SCRIPTS = galan-config
 

@@ -2,10 +2,8 @@
 - more sensible display of names
 	- short names?
 	- user comments on icons?
-- tooltips
-- cursor changes during drag-scroll etc
-
-- remove ref.h and dependencies.
+- online help
+	- individual plugins should have their own help contexts
 
 - pattern editor
 	- use RANDOM-ACCESS human-interaction plugin
@@ -21,6 +19,7 @@
 
 - clean up API so that it uses more pimpl/bridge/whatever to hide
   symbols and implementation details so we can improve binary compatibility
+- cursor changes during link-creation etc
 - write a simple MPS-based interface (??)
 - write a win32 frontend (maybe a GTK+ one?) - if I can be bothered -
   otherwise use Java and use MPS to communicate

@@ -53,6 +53,9 @@ fi
 
 AC_OUTPUT(
     Makefile
+    doc/Makefile
+    doc/manual/galandoc.dtd
+    doc/manual/Makefile
     src/Makefile
     src/galan/Makefile
     src/plugins/Makefile

@@ -15,6 +15,8 @@ qtgalan_SOURCES = \
 	itemicon.cc \
 	itemlink.cc \
 	itemhandle.cc \
+	controlpanel.cc \
+	helpwindow.cc \
 	\
 	PluginInfo_base.cc PluginInfo.cc \
 	SelectClock_base.cc SelectClock.cc \
@@ -29,6 +31,8 @@ qtgalan_LDADD = \
 	regsel_moc.o \
 	itemicon_moc.o \
 	itemhandle_moc.o \
+	controlpanel_moc.o \
+	helpwindow_moc.o \
 	\
 	PluginInfo_base_moc.o PluginInfo_moc.o \
 	SelectClock_base_moc.o SelectClock_moc.o \
@@ -45,6 +49,8 @@ noinst_HEADERS = \
 	itemicon.h \
 	itemlink.h \
 	itemhandle.h \
+	controlpanel.h \
+	helpwindow.h \
 	\
 	PluginInfo.h \
 	SelectClock.h \
@@ -80,7 +86,9 @@ BUILT_SOURCES= \
 CXXFLAGS = -O0 -g
 
 INCLUDES = \
-	-I$(top_srcdir)/src -I@QTDIR@/include @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
+	-I$(top_srcdir)/src -I@QTDIR@/include @GLIB_CFLAGS@ \
+	-DSITE_PKGLIB_DIR=\"$(pkglibdir)\" \
+	-DSITE_PKGDATA_DIR=\"$(pkgdatadir)\"
 
 clean distclean:
 	rm -f *_moc.cc

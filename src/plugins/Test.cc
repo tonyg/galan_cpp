@@ -57,7 +57,9 @@ PUBLIC_SYMBOL void init_plugin_Test(Plugin &plugin) {
   plugin.registerPlugin("Author's Name", "Test Plugin", "1.0",
 			"This plugin is a stub, do-nothing plugin.");
 
-  pluginClass = new GeneratorClass(&GeneratorStateFactory<Test>, "Main/Test Plugin");
+  pluginClass = new GeneratorClass("Test Dummy Passthrough",
+				   &GeneratorStateFactory<Test>,
+				   "Main/Test Plugin");
 
   pluginClass->register_desc(new RealtimeInputDescriptor("Main"));
   pluginClass->register_desc(new RealtimeInputDescriptor("Dummy"));

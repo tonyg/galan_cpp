@@ -11,8 +11,38 @@
 #include "itemhandle.h"
 
 #include <qpopupmenu.h>
+#include <qtooltip.h>
 
 GALAN_USE_NAMESPACE
+
+///////////////////////////////////////////////////////////////////////////
+
+class MacroView::DynamicTip: public QToolTip {
+public:
+  DynamicTip(MacroView *m);
+protected:
+  void maybeTip(QPoint const &p);
+private:
+  MacroView *macroView;
+};
+
+MacroView::DynamicTip::DynamicTip(MacroView *m)
+  : QToolTip(m),
+    macroView(m)
+{}
+
+void MacroView::DynamicTip::maybeTip(QPoint const &p) {
+  QCanvasItem *item = macroView->topItemAt(p);
+
+  if (!item)
+    return;
+
+  ItemIcon *ii = dynamic_cast<ItemIcon *>(item);
+
+  tip(ii->boundingRect(), ii->buildTip());
+}
+
+///////////////////////////////////////////////////////////////////////////
 
 MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   : QCanvasView(0, parent, name, f),
@@ -33,6 +63,9 @@ MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   // Keep the halo hidden until a selection comes along.
 
   setCanvas(c);
+
+  // We want a tooltip manager.
+  new DynamicTip(this);
 }
 
 MacroView::~MacroView() {
@@ -141,7 +174,7 @@ void MacroView::createLink(QMouseEvent *evt) {
       InputDescriptor const *dst_q = dst->getClass().getDefaultInput();
 
       IFDEBUG(cerr << "Link: src " << src << " dst " << dst
-	           << " src_q " << src_q << " dst_q " << dst_q << endl);
+	      << " src_q " << src_q << " dst_q " << dst_q << endl);
 
       if (src_q && dst_q && src_q->compatibleWith(dst_q)) {
 	QString msg;
@@ -268,6 +301,7 @@ void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
 	// Drag the view around.
 	moveOffset = QPoint(contentsX() + evt->globalX(),
 			    contentsY() + evt->globalY());
+	setCursor(SizeAllCursor);
 	editState = DRAGGING_VIEW;
       } else if ((button == LeftButton) && (state & ShiftButton)) {
 	// Connect objects - either basic or detailed (without/with ctrl)
@@ -368,6 +402,7 @@ void MacroView::contentsMouseReleaseEvent(QMouseEvent *evt) {
       break;
 
     case DRAGGING_VIEW:
+      setCursor(ArrowCursor);
       editState = IDLE;
       break;
 

@@ -216,7 +216,7 @@ PUBLIC_SYMBOL void init_plugin_OssOutput(Plugin &plugin) {
   plugin.registerPlugin("Tony Garnock-Jones", "OSS Output Plugin", "1.0",
 			"Sends input data to /dev/dsp");
 
-  pluginClass = new GeneratorClass(&GeneratorStateFactory<OssOutput>, "Output/OSS");
+  pluginClass = new GeneratorClass("OSS Output", &GeneratorStateFactory<OssOutput>, "Output/OSS");
 
   pluginClass->register_desc(new RealtimeInputDescriptor("Main"));	// mono output
   pluginClass->register_desc(new RealtimeInputDescriptor("Left"));

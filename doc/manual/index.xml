@@ -1,0 +1,18 @@
+<?stylesheet href="webdoc.dsl" type="text/dsssl">
+<!doctype galandoc SYSTEM "galandoc.dtd">
+<galandoc>
+  <meta>
+    <title>gAlan Documentation</title>
+  </meta>
+  <intro>
+    <p>
+      These are the manuals available for gAlan version &galan-version;:
+      <ul>
+        <li><link url="userguide.html">User Guide</link> (includes FAQ and contact details)</li>
+        <li><link url="develguide.html">Developer Guide</link></li>
+        <li><link url="reference.html">Plugin Reference</link></li>
+        <li><link url="tutorial.html">Tutorial</link></li>
+      </ul>
+    </p>
+  </intro>
+</galandoc>

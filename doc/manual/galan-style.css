@@ -1,0 +1,67 @@
+H1, H2, H3, H4 {
+	font-family: Lucida,Helvetica,Arial;
+	font-size: 24pt;
+	font-weight: bold;
+	color: #FFCC77;
+}
+
+H2 {
+	font-size: 18pt;
+	color: #884444;
+}
+
+H3 {
+	font-size: 14pt;
+}
+
+H4 { font-size: 12pt; font-style: italic; }
+
+P, LI, BODY {
+	font-family: Lucida,Helvetica,Arial;
+	font-size: 12pt;
+	background: black;
+	color: #FFEECC;
+}
+
+A {
+	color: #FFCC77;
+}
+
+A:visited {
+	color: #884444;
+}
+
+B {
+	color: #FFCC77;
+}
+
+IMG {
+}
+
+PRE {
+/*	background: #eeeeee; */
+	background: #222222;
+	padding: 1em;
+}
+
+PRE, TT {
+	font-family: Courier;
+	font-size: 12pt;
+}
+
+.code {
+/*	background: #eeeeee; */
+	background: #222222;
+}
+
+DIV.notebox {
+	border: solid black 1px;
+	padding: 1em;
+/*	background: #eeeeee; */
+	background: #222222;
+}
+
+HR {
+	border: none;
+	border-bottom: solid grey 1px;
+}

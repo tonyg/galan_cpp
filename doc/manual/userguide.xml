@@ -1,0 +1,636 @@
+<?stylesheet href="webdoc.dsl" type="text/dsssl">
+<!doctype galandoc SYSTEM "galandoc.dtd">
+<galandoc>
+
+<meta>
+  <title>gAlan User's Guide</title>
+</meta>
+
+<intro>
+<p>
+This is the user guide for gAlan version &galan-version;.
+</p>
+</intro>
+
+<section heading="Introduction">
+
+  <section heading="This document">
+
+<p>
+This document is intended to provide a reference manual for the gAlan
+system. Currently the <link url="tutorial.html">tutorial</link>
+provides a quick introduction to the actual workings of the
+program. The user guide will probably sprout some extra chapters in
+future, when I get a better feel for what topics need to be addressed.
+</p>
+
+<p>
+<xref section="inst-conf"> covers installing (and compiling) the
+system and making sure it runs as intended. <xref
+section="plugin-reference"> provides a detailed reference to the use
+and operation of the various plugins included with gAlan. <xref
+section="motifs"> provides a quick look at some common patterns that
+come up while working with gAlan.
+</p>
+
+  </section>
+
+  <section heading="About gAlan">
+<warning>
+Please note that gAlan is still very much <emph>BETA</emph> software!
+</warning>
+
+<p>
+gAlan is an audio-processing tool (both on-line and off-line) for X
+windows (and, in future, Win32). It allows you to build synthesisers,
+effects chains, mixers, sequencers, drum-machines etc. etc. in a
+modular fashion by linking together icons representing primitive
+audio-processing components.
+</p>
+
+<p>
+Using gAlan is much like setting up an effects-chain for, say, a
+guitar. You choose the effects units you wish to use, lay them out,
+and then connect them to each other, starting with the guitar,
+threading through the effects, and ending up at the amplifier (and
+ultimately the speakers).
+</p>
+
+<p>
+It's not just limited to acting as an effects-chain, though. You can
+also configure it (using the same basic principles) to act as a mixer,
+a sample-sequencer or drum machine, or a synthesiser capable of
+emulating various analogue systems. The gAlan website has links to
+some examples of sound produced by the system, and the <link
+url="tutorial.html">tutorial</link> provides some descriptions of some
+of the ways gAlan can be used. See also <xref section="motifs">.
+</p>
+
+<p>
+gAlan was written by, and is copyright to, Tony Garnock-Jones
+&lt;tonyg@kcbbs.gen.nz&gt;.
+</p>
+
+<p>
+It was developed on <link url="http://www.linux.org/">Linux</link>
+using <link url="http://www.troll.no/">Qt</link> v2.3, <link
+url="http://www.gtk.org/">GLib</link>, <link
+url="http://www.gnome.org/">ESD</link>, and <link
+url="http://www.opensound.com/">the OSS sound drivers</link>, and is
+released under the <emph><link url="http://www.gnu.org/">GNU</link>
+<link url="http://www.gnu.org/copyleft/gpl.txt">General Public
+License</link></emph> (but see <xref section="gpl-exception"> for an
+exception regarding the plugins!).
+</p>
+  </section>
+
+  <section heading="The gAlan Homepage">
+<p>
+gAlan is being developed out of <link
+url="http://sourceforge.net/">SourceForge</link>.  The main Internet
+homepage for galan is therefore <link
+url="http://galan.sourceforge.net/">http://galan.sourceforge.net/</link>.
+</p>
+  </section>
+
+  <section heading="System requirements">
+
+<warning>
+You <emph>must</emph> use GCC 2.95.2 or 2.95.3 to build gAlan. Earlier
+versions (and also RedHat's GCC 2.96) contain severe bugs in the C++
+compiler. This means (unfortunately) that you will probably also need
+to recompile Qt 2.3 if you're running RedHat 7.x, as the version
+shipped as an RPM was compiled with GCC 2.96.
+</warning>
+
+<p>
+In order to run gAlan, you will need:
+<ul>
+  <li>a working <emph>Linux</emph> system</li>
+  <li><emph>GCC 2.95.2 or 2.95.3</emph> - Note that GCC 2.96 as
+      shipped with RedHat Linux 7.x <emph>WILL NOT WORK!</emph></li>
+  <li><emph>Qt 2.3</emph> or newer</li>
+  <li><emph>GLib 1.2</emph> or newer</li>
+  <li>Michael Pruett's <link url="http://www.68k.org/~michael/audiofile/">
+      <emph>audiofile</emph></link> library</li>
+  <li>a <emph>soundcard</emph> which can manage 16-bit stereo at 44100 Hz (full
+      duplex is nice, too)</li>
+  <li>a reasonably fast <emph>Pentium</emph> processor (this is not enforced - but
+      a P166 or better is recommended. DSP is heavy going!)</li>
+  <li>some <emph>patience</emph> while development progresses</li>
+</ul>
+</p>
+
+<p>
+Currently gAlan is known to build and run on these systems (err, this system):
+<ul>
+  <li>RedHat 7.2 using GCC 2.95.3</li>
+</ul>
+</p>
+
+<p>
+If you try compiling gAlan on a different system configuration, and
+it's not on the list, please <link url="mailto:tonyg@kcbbs.gen.nz">let
+me know about it</link> - including any special action you had to take
+to get it running, any problems you couldn't surmount, and (if
+everything compiled and ran OK for you), any problems you can see or
+areas where gAlan could be improved.
+</p>
+
+<p>
+Note that gAlan currently uses floating-point internally, so a
+processor with an FPU is more-or-less mandated. Most 486s and all
+Pentiums have an FPU.
+</p>
+
+<!--
+<p>
+The <b>Win32</b> support is still very much <b>alpha</b>. Please see the
+README.w32 file in the source distribution and the <a
+href="news.shtml">news page</a> for recent announcements regarding
+Win32 support.
+</p>
+-->
+
+<p>
+gAlan currently only works with the OSS drivers on Linux - I haven't
+tried <link url="http://www.alsa-project.org/">ALSA</link> recently,
+but last time I did, the results were disappointing. Elliot Lee has
+contributed basic ESounD (ESD) support - there are still a few
+problems with latency, but that's more ESD's problem than gAlan's.
+</p>
+
+  </section>
+
+  <section heading="Show me the code!" id="gpl-exception">
+
+<p>
+You can download gAlan from <link
+url="http://galan.sourceforge.net/download.html">the main
+website</link>. Full source-code distributions are available, and
+occasionally a binary distribution is available.
+</p>
+
+<p>
+gAlan is distributed under the GNU General Public License. <emph>As a
+special exception</emph>, the plugins are <emph>not</emph> required to
+be licensed under the GPL. The writer gets to choose a license for
+each plugin he/she writes. So if any third party vendor wants to
+distribute a plugin for gAlan with a different license, that's fine -
+and if they're a little touchy about their source-code, they're
+welcome to distribute the plugin as a binary only.
+</p>
+
+  </section>
+
+  <section heading="How does it work?">
+
+<p>
+When you start the application, you are presented with a blank
+sheet. You right-click on the sheet and a menu pops up, from which you
+select the class of component you want to instantiate. You can link
+components together by dragging from one connector-handle to
+another. The handles on the top and bottom of each component are
+<i>event</i> connectors, and the handles on the sides are <i>audio</i>
+connectors, so events flow from the top of the screen to the bottom,
+and audio flows from the left to the right.
+</p>
+
+<!-- %%% helpful picture of the mesh here -->
+
+<p>
+When you have the connections set up the way you want them, you
+instruct some of the components you have placed on the sheet to
+manifest their controls (by using the pop-up menu and choosing a
+control from the "New Control" menu). The controls appear in a
+separate window - the <i>control panel</i>. (You make the control
+panel visible from the "Window" menu on the menu bar.) Drag the
+controls around until they're laid out the way you want them.
+</p>
+
+<note>
+There's a bug relating to dragging controls around the
+control panel. See <xref section="faq">.
+</note>
+
+  </section>
+
+  <section heading="Feedback">
+
+<p>
+I'd love to hear what people are doing with gAlan - if you use it, and
+produce something interesting, I'd really enjoy hearing it!
+</p>
+
+<p>
+Any improvements you can think of, or problems you can see, let me
+know. I'll need constructive feedback to shape the software for the
+next major release. Please check the main website before you email me,
+just to check that your idea is not already known to me.
+</p>
+
+    <section heading="Contact Details" id="feedback">
+
+<p>
+If you'd like to contact me:
+<ul>
+  <li>send me email at <link url="mailto:tonyg@kcbbs.gen.nz">tonyg@kcbbs.gen.nz</link></li>
+  <li>contact me via ICQ (tonyg, #25667961)</li>
+  <li>contact me via IRC (I hang out sometimes in #jrandom on Undernet
+      and <link url="irc://irc.openprojects.net/#jrandom">irc.openprojects.net</link>)</li>
+</ul>
+</p>
+
+<p>
+If you need to talk to me (voice, I mean) then ask me for the number
+via email. If you want to send me stuff, ask me for my mailing-address
+the same way.
+</p>
+
+    </section>
+    <section heading="New ports">
+
+<p>
+If you're building on a system not mentioned in the list of known-good
+systems above, I'd like to hear about any problems you have, and
+whether you make it to a running system in the end.
+</p>
+
+    </section>
+    <section heading="New plugins">
+
+<p>
+If you develop a plugin for gAlan, I'd love to hear from you!  I'd
+like to collect more plugins that I can either include with future
+releases or link to from these pages for gAlan users to download.
+</p>
+
+    </section>
+  </section>
+
+</section>
+
+<section heading="Installation and Configuration" id="inst-conf">
+
+  <section heading="Installation and Compile-time Configuration">
+
+<p>
+Please see the various <code>README</code> and <code>INSTALL</code>
+files included with the source distribution - installation and
+compilation of the code is already covered in some detail there.
+</p>
+
+  </section>
+  <section heading="Runtime Configuration">
+
+<p>
+There are two environment variables gAlan listens to:
+<code>GALAN_PLUGIN_DIR</code> and <code>HOME</code>. Both are used in
+the search for plugins at startup time.
+</p>
+
+<p>
+gAlan also has a <emph>preferences</emph> file. It's stored in
+<code>~/.galan/prefs</code>.
+</p>
+
+    <section heading="Environment Variables">
+
+<p>
+Setting GALAN_PLUGIN_DIR to a directory name overrides the built-in
+#define of <code>SITE_PKGLIB_DIR</code> for the case of searching for
+plugins. (SITE_PKGLIB_DIR is still used to search for pixmaps. I'll
+fix this eventually, when pixmaps become more important.) All the
+files and directories under either the compiled-in default or the
+value of GALAN_PLUGIN_DIR are searched for plugins.
+</p>
+
+<p>
+The other place that is searched is the directory
+<code>~/.galan/plugins</code> (aka $HOME/.galan/plugins). You can put
+any plugins you personally want to experiment with here without
+disrupting the installation on the rest of the system.
+</p>
+
+<p>
+For further details about how plugins are found, you'd do best to go
+straight to the source - the relevant file is
+<code>src/plugin.c</code>.
+</p>
+
+    </section>
+    <section heading="Preferences File">
+
+<p>
+This is a text file that is read in every time gAlan is started, and
+<emph>written out every time gAlan exits</emph> - so don't put
+comments or things that gAlan doesn't care about in there!
+</p>
+
+<p>
+The format of the file is:
+</p>
+
+<pre>
+option_1=value string
+option_2=another value string
+option_3=etcetera
+</pre>
+
+<p>
+Order doesn't matter, but whitespace sometimes does. Basically, it's
+best not to edit the preferences file by hand unless you really have
+to - use the <emph>Edit/Preferences...</emph> menu option instead!
+</p>
+
+    </section>
+  </section>
+
+</section>
+
+<section heading="Plugin Reference" id="plugin-reference">
+<p>%%% To be filled in later.</p>
+</section>
+
+<section heading="Common Motifs in Mesh Design" id="motifs">
+
+<p>
+This section deals with themes that occur frequently when laying out a
+gAlan mesh and describes how to build some useful subsystems of
+interacting components. Eventually gAlan will support proper nesting
+of worksheets, which will enable abstraction of these ideas into a
+library of meshes, each of which can be inserted into another (like
+subroutines in a programming language versus cut-and-paste
+programming).
+</p>
+
+  <section heading="Multiple-voice Drum Machine">
+
+<p>
+This topic is covered by the <link url="tutorial.html">tutorial</link>.
+</p>
+
+  </section>
+  <section heading="Multiplexing many inputs">
+
+<fig src="ug_motif01.png" alt="Illustration">
+
+<p>
+This image illustrates mixing many audio signals into a single audio
+signal using a Gain component with its internal gain factor set to
+1.0.
+</p>
+
+  </section>
+
+<!--
+<h4>Building an LFO (Low-frequency Oscillator)<hr></h4>
+<p>
+<div align="center"><img src="ug_motif02.png"></div><br>
+
+This image illustrates an LFO attached to the cutoff parameter of a
+low-pass filter. Note how an evtadd plugin is used to shift the
+sine-wave from being centred about zero to being centred about one,
+and then an evtmul plugin is used to scale the whole thing to the
+depth of sweep that is desired (anywhere between, say, 250 and 3000
+are useful factors). Note that the rate of the clock plugin determines
+how often the cutoff frequency of the filter is updated - every time
+the clock sends an event to the sig2evt plugin, the oscillator is read
+and the result sent down the pipeline to the filter.
+</p>
+
+<h4>Building a tuned instrument from a sample<hr></h4>
+<p>
+<div align="center"><img src="ug_motif03.png"></div><br>
+
+This image illustrates a Note Sequencer controlling the pitch and
+triggering of a Sampled Voice. Note that the <b>right-hand</b> output
+connector from the seqnote is used, because the <b>resample</b> plugin
+expects a MIDI note. Sending a frequency to the resample plugin is not
+possible - it expects either a resampling factor, or a MIDI note
+(where it assumes that its input signal is tuned to middle C, C4, note
+48).
+</p>
+
+<h4>Building an instrument from an oscillator<hr></h4>
+<p>
+<div align="center"><img src="ug_motif04.png"></div><br>
+
+This image illustrates a Note Sequencer controlling the pitch and
+triggering of a simple tone shaped by an ADSR volume envelope. Notice
+that the output from the seqnote is used in two ways: twice as a
+trigger (resetting the phase on the oscillator and triggering the ADSR
+envelope) and once specifying the frequency of the tone to generate.
+</p>
+
+<h4>A more complicated oscillator-based instrument<hr></h4>
+<p>
+<div align="center"><img src="ug_motif05.png"></div><br>
+
+Here we have taken the simple oscillator instrument from above, and
+have added in an envelope-controlled filter. The signal from the
+filter envelope is sampled periodically by a sig2evt converter, and
+cascades through a multiplication <b>by the frequency of the note
+itself</b> - this makes the filter cutoff frequency move proportional
+to the frequency of the note - followed by a further multiplication
+(so that the filter frequency is some constant factor <b>larger</b>
+than the base note frequency) and an add, to make sure that the cutoff
+frequency doesn't descend below a fixed floor value.
+</p>
+
+<p>
+This is, in essence, an integration of the simple instruments above
+with the LFO motif detailed further up.
+</p>
+-->
+
+</section>
+
+<section heading="Known bugs, and other problems">
+
+<p>
+The Win32 version is not very stable. This is in part due to the
+underlying GTK+ libraries. The situation will slowly
+improve. Code/patch contributions are always welcome!
+</p>
+
+<p>
+Besides the Win32-specific problems, we have:
+<ul>
+  <li>Not enough bounds-checking is being done by the components. This
+      can lead to SEGVs or FPU errors crashing the program.</li>
+  <li>There are some problems with GTK+ (I think) which cause incorrect
+      display updates in the control-panel.</li>
+  <li>There are problems dragging controls about within the control-panel.
+      Somehow the events aren't getting through to the correct widgets :-(</li>
+</ul>
+</p>
+
+</section>
+
+<section heading="FAQ" id="faq">
+
+  <section heading="I like this program, and want to send you money! What should I do?">
+
+<p>
+This question gets asked a lot. Naturally, you should send me some
+money (or interesting beer, or flash new hardware, or book vouchers,
+or anything you like, really). You can find my contact details in
+<xref section="feedback">.
+</p>
+
+  </section>
+  <section heading="I'm getting Gtk-CRITICAL errors and warnings when I run gAlan!">
+
+<p>
+If you're seeing messages like this:
+</p>
+
+<pre>
+	Gtk-CRITICAL **: file gtkwindow.c: line 992: (gtk_window_realize):
+	assertion !GTK_WIDGET_REALIZED (widget)' failed.
+</pre>
+
+<p>
+then you are seeing something which is harmless, but which I don't
+know how to fix. I've spent a couple of hours trying to get rid of
+these messages, but with no luck. Perhaps a later version of GTK+ will
+make them go away. Ignore them in the meantime, however. (Reported by
+drkforce@berkeley)
+</p>
+
+  </section>
+  <section heading="Hey! There are no plugins listed under the New menu!">
+
+<p>
+gAlan needs to know where to look on your filesystem to find the
+plugin files (which end in .so, on most systems). They are expected,
+by default, to be in the directory <emph>&site-pkglib-dir;</emph>, and
+must have both read and execute permissions set (<code>chmod
+a+rx *.so</code>).
+</p>
+
+<p>
+If you don't want to (or don't have the permissions to) put them
+there, you can instead put them in a directory of your own choosing,
+and set the environment variable <code>GALAN_PLUGIN_DIR</code> before
+invoking gAlan, like this:
+</p>
+
+<pre>
+	$ GALAN_PLUGIN_DIR=/my/dir/containing/all/the/plugins
+	$ export GALAN_PLUGIN_DIR
+	$ galan
+</pre>
+
+<p>
+or the equivalent, if you're a c-shell user.
+</p>
+
+<p>
+The other option is to place the plugins in the directory
+.galan/plugins off your home directory, that is
+</p>
+
+<pre>
+	$ cd &lt;wherever the distributed plugins are kept&gt;
+	$ mkdir ~/.galan
+	$ mkdir ~/.galan/plugins
+	$ cp *.so ~/.galan/plugins
+</pre>
+
+<p>
+If this problem occurs with the downloaded sources, after you've done
+all three of <code>./configure</code>, <code>make</code>, and
+<code>make install</code>, then I don't know what's gone wrong, and
+you should contact the author. (Reported by Erwan Le Bras)
+</p>
+
+  </section>
+  <section heading="I'm having trouble dragging the controls around the control panel. What's going on?">
+
+<p>
+This is a known problem (see above). It's something I'm doing wrong
+with regard to the flow of events that GDK is letting me see. I've
+tried to fix it, and I'm stuck, for now. Any help anyone can give to
+solve this one would be appreciated...
+</p>
+
+  </section>
+  <section heading="The controls in the control panel sometimes display incorrectly, or stop showing updates. How can I correct this?">
+
+<p>
+A workaround is to force the window to redisplay itself - you could
+<ul>
+  <li>iconise the window and then restore it</li>
+  <li>drag the window off the edge of the desktop and back</li>
+  <li>shade/unshade the window</li>
+</ul>
+</p>
+
+  </section>
+  <section heading="gAlan sounds TERRIBLE when running on Win32. What's going wrong?">
+
+<p>
+Win32 audio output is a new feature (one day old, as of this
+writing). It's currently just a very quick hack. There are some
+problems with it, notably that the latency is enormous (about 400 ms!)
+because I can't make Windows tell me that it's ready for more output
+in time unless I use lots of double-buffering.
+</p>
+
+<p>
+Anyone with Win32 audio output experience... I need some help with
+it. It works (barely) but it could be much, much better. DirectSound,
+perhaps?
+</p>
+
+<p>
+<emph>Update:</emph> I've spoken with a friend of mine who did some
+rudimentary profiling of gAlan on Win32 - and it turns out it is
+spending an unacceptable amout of CPU time, (around 50%!) mostly I
+assume in the mmsystem audio parts of the program. As WinAMP etc use
+very little (~3%) CPU time, there has to be a good way around this.
+</p>
+
+  </section>
+  <section heading="The Win32 version of gAlan is missing features/keeps crashing/is buggy!">
+
+<p>
+This is most likely to do with the incomplete status of the port of
+GTK+ to Win32. You can either wait until it gets a little better, or
+help make it better yourself. Other possible sources of problems
+include Windows' inherent instability and my primary development
+platform being a Linux box.
+</p>
+
+<p>
+Note that sometimes loading gAlan files created on an earlier
+development version of gAlan will not load properly in more recent
+versions. This affects both the Linux and Win32 builds of gAlan. I'm
+working on making the file-loading code more robust.
+</p>
+
+  </section>
+  <section heading="I've found a bug/I want a feature. What should I do?">
+
+<p>
+If you can fix it, or write it yourself, please, do so! (And then send
+me the patch.) Otherwise, please check the documentation <emph>and the
+web site</emph> to make sure it's not already known/being worked
+on. If you are convinced you've really found a new bug, please send as
+much information about the bug as you can gather (within reason) to
+me, and I'll take a look.
+</p>
+
+<p>
+I'm not going to guarantee I'll have time to work on improvements or
+fixes to gAlan instantly, but I will try. I am a student and working
+part-time to support myself, so my spare time can be somewhat limited.
+</p>
+
+  </section>
+
+</section>
+
+</galandoc>

@@ -87,8 +87,8 @@ PUBLIC_SYMBOL void init_plugin_Controllers(Plugin &plugin) {
 			"Provides glue between user-interface controls and "
 			"inputs to the synthesiser mesh.");
 
-  rtClass = new GeneratorClass(&GeneratorStateFactory<rtController>);
-  raClass = new GeneratorClass(&GeneratorStateFactory<raController>);
+  rtClass = new GeneratorClass("Realtime Controller", &GeneratorStateFactory<rtController>);
+  raClass = new GeneratorClass("Randomaccess Controller", &GeneratorStateFactory<raController>);
 
   Registry::root->bind("Controller/Plugins/Realtime", rtClass);
   Registry::root->bind("Controller/Plugins/Randomaccess", raClass);

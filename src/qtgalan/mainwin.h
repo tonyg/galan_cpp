@@ -20,6 +20,7 @@ protected:
   void closeEvent(QCloseEvent *evt);
 
 private slots:
+  void helpContents();
   void about();
   void aboutPlugins();
   void selectClock();

@@ -38,6 +38,7 @@ public:
   ItemLink *findLinkTo(ItemIcon *target, bool create);
 
   QString buildMenu(QPopupMenu *menu);
+  QString buildTip();
 
 protected:
   virtual void drawShape(QPainter &p);

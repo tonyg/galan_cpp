@@ -1,3 +1,5 @@
+SUBDIRS = manual
+
 doc:
 	doxygen Doxyfile
 
