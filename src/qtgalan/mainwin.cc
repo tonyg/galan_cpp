@@ -8,6 +8,7 @@
 
 #include "mainwin.h"
 #include "macroview.h"
+#include "itemicon.h"
 #include "controlpanel.h"
 #include "helpwindow.h"
 
@@ -26,6 +27,7 @@
 #include <qcheckbox.h>
 #include <qstatusbar.h>
 #include <qtabwidget.h>
+#include <qaccel.h>
 
 #include "galan/global.h"
 #include "galan/clock.h"
@@ -49,6 +51,11 @@ MainWin::MainWin()
   }
   instance = this;
 
+  QTabWidget *tabs = new QTabWidget(this);
+  connect(tabs, SIGNAL(currentChanged(QWidget*)), this, SLOT(tabChanged(QWidget*)));
+
+  macroView = new MacroView(root, tabs);
+
   QPopupMenu *fileMenu = new QPopupMenu(this);
   fileMenu->insertItem("&New workspace", 0, ""); // %%% clear main
 	// macroview, delete aux. windows and controls - check if
@@ -58,16 +65,28 @@ MainWin::MainWin()
   fileMenu->insertItem("&Save workspace", 0, "", CTRL+Key_S);		// %%% need pickler: xml?
   fileMenu->insertItem("Save workspace &as...", 0, "");			// %%% need pickler: xml?
   fileMenu->insertSeparator();
-  fileMenu->insertItem("&Close", this, SLOT(close()), CTRL+Key_W);
+  fileMenu->insertItem("&Import bundle...", 0, "");
+  fileMenu->insertItem("&Export bundle...", 0, "");
+  fileMenu->insertSeparator();
   fileMenu->insertItem("E&xit", qApp, SLOT(quit()), CTRL+Key_Q);
 
-  QPopupMenu *editMenu = new QPopupMenu(this);
+  editMenu = new QPopupMenu(this);
   editMenu->insertItem("&Undo", 0, "", CTRL+Key_Z);	// %%% depends on selection. Multi-undo?
   editMenu->insertSeparator();
-  editMenu->insertItem("Cu&t", 0, "", CTRL+Key_X);	// %%% depends on selection.
-  editMenu->insertItem("&Copy", 0, "", CTRL+Key_C);	// %%% depends on selection.
-  editMenu->insertItem("&Paste", 0, "", CTRL+Key_V);	// %%% depends on selection.
-  editMenu->insertItem("De&lete", 0, "", Key_Delete);	// %%% depends on selection.
+  cutMenuItem = editMenu->insertItem("Cu&t", 0, "", CTRL+Key_X);	//%%%
+  copyMenuItem = editMenu->insertItem("&Copy", 0, "", CTRL+Key_C);	//%%%
+  pasteMenuItem = editMenu->insertItem("&Paste", 0, "", CTRL+Key_V);	//%%%
+  editMenu->insertSeparator();
+  muteMenuItem = editMenu->insertItem("&Mute", macroView, SLOT(muteSelectedIcon()),
+				      CTRL+Key_M);
+  renameMenuItem = editMenu->insertItem("&Rename...", macroView, SLOT(renameSelectedIcon()),
+					Key_F2);
+  deleteMenuItem = editMenu->insertItem("De&lete", macroView, SLOT(deleteSelectedIcon()),
+					Key_Delete);
+  editMenu->insertSeparator();
+  newControlMenuItem = editMenu->insertItem("New control", macroView, SLOT(newControl()),
+					    CTRL+Key_N);
+  editMenu->setItemEnabled(newControlMenuItem, false);
   editMenu->insertSeparator();
   editMenu->insertItem("&Preferences...", 0, "");	// %%% new class for Prefs editing
 
@@ -91,16 +110,15 @@ MainWin::MainWin()
   menuBar()->insertSeparator();
   menuBar()->insertItem("&Help", helpMenu);	// %%% need more and better help and tooltips
 
-  QTabWidget *tabs = new QTabWidget(this);
   setCentralWidget(tabs);
 
-  MacroView *macroView = new MacroView(root, tabs);
   tabs->addTab(macroView, "&Graph");
 
   ControlPanel *cp = new ControlPanel(tabs);
   tabs->addTab(cp, "&Controls");
 
   connect(macroView, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
+  selectionChanged();
 
   setMinimumSize(400, 400);
 
@@ -117,6 +135,11 @@ MainWin::~MainWin() {
   //delete root;
 }
 
+void MainWin::allowNewControl(bool allow) {
+  // There's almost certainly a better way of achieving this. Signals/slots...?
+  instance->editMenu->setItemEnabled(instance->newControlMenuItem, allow);
+}
+
 void MainWin::closeEvent(QCloseEvent *evt) {
   // %%% Should check to see if file is saved here.
   evt->accept();
@@ -129,7 +152,7 @@ void MainWin::helpContents() {
 void MainWin::about() {
   QString msg;
   msg.sprintf("gAlan %s\n"
-	      "Copyright Tony Garnock-Jones (C) 1999-2002\n"
+	      "Copyright Tony Garnock-Jones (C) 1999-2003\n"
 	      "A modular sound-processing tool\n(Graphical Audio LANguage)\n"
 	      "\n"
 	      "gAlan comes with ABSOLUTELY NO WARRANTY; for details, see the file\n"
@@ -157,5 +180,28 @@ void MainWin::selectClock() {
 }
 
 void MainWin::selectionChanged() {
-  cerr << "Selection changed!" << endl;	// %%% need to do something sensible here
+  ItemIcon *selection = dynamic_cast<ItemIcon *>(macroView->getSelection());
+  bool enabled = (selection != 0);
+
+  editMenu->setItemEnabled(cutMenuItem, false);		//%%%
+  editMenu->setItemEnabled(copyMenuItem, false);	//%%%
+  editMenu->setItemEnabled(pasteMenuItem, false);	//%%%
+
+  editMenu->setItemEnabled(muteMenuItem, enabled);
+  editMenu->setItemChecked(muteMenuItem, enabled && selection->mute());
+
+  editMenu->setItemEnabled(renameMenuItem, enabled);
+  editMenu->setItemEnabled(deleteMenuItem, enabled);
+}
+
+void MainWin::tabChanged(QWidget *w) {
+  if (w == macroView) {
+    selectionChanged();
+    editMenu->setItemEnabled(newControlMenuItem, Controller::have_active_instance()); //%%%
+  } else {
+    editMenu->setItemEnabled(muteMenuItem, false);
+    editMenu->setItemEnabled(renameMenuItem, false);
+    editMenu->setItemEnabled(deleteMenuItem, false);
+    editMenu->setItemEnabled(newControlMenuItem, false);
+  }
 }

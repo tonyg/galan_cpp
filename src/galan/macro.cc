@@ -139,6 +139,24 @@ bool Macro::removeChild(string const &name) {
   return children.unbind(name);
 }
 
+bool Macro::renameChild(string const &name,
+			string const &newName)
+{
+  if (children.lookup(newName) != 0) {
+    // New name already taken.
+    return false;
+  }
+
+  Generator *child = findChild(name);
+  if (child == 0) {
+    // Old name not present.
+    return false;
+  }
+
+  child->unbind();
+  return children.bind(newName, child, false);
+}
+
 Generator *Macro::addRealtimeInput(string const &name) {
   if (findChild(name))
     return 0;

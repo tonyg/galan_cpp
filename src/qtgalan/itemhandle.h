@@ -24,7 +24,7 @@ public:
 
   QString buildMenu(QPopupMenu *menu);
 
-private slots:
+public slots:
   void editLinks();
   void disconnectAll();
 

@@ -14,6 +14,7 @@ plugin_PROGRAMS = \
 	Test.la \
 	OssOutput.la \
 	VCO.la \
+	Gain.la \
 	Controllers.la \
 	@OPTIONAL_PLUGINS@
 
@@ -29,5 +30,6 @@ INCLUDES = -I$(top_srcdir)/src @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
 Test_la_SOURCES = Test.cc
 OssOutput_la_SOURCES = OssOutput.cc
 VCO_la_SOURCES = VCO.cc
+Gain_la_SOURCES = Gain.cc
 
 Controllers_la_SOURCES = Controllers.cc

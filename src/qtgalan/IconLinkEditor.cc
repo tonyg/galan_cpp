@@ -137,21 +137,30 @@ void IconLinkEditorImpl::outputSelected(QListBoxItem *item) {
   InputsList->setEnabled(InputsList->count() > 0);
 }
 
-void IconLinkEditorImpl::inputSelected(QListBoxItem *item) {
+void IconLinkEditorImpl::recomputeInputSelection() {
   std::string outputName((char const *) OutputsList->currentText());
-  std::string itemName(item->text());
-  //IFDEBUG(cerr << "Chose input " << itemName << endl);
 
   OutputDescriptor const &src_q
     (link->getSource()->getGenerator()->getClass().getOutput(outputName));
 
-  InputDescriptor const &dst_q
-    (link->getTarget()->getGenerator()->getClass().getInput(itemName));
-
   inputSet_t &actives(outputMap[&src_q]);
 
-  if (InputsList->isSelected(item))
-    actives.insert(&dst_q);
-  else
-    actives.erase(&dst_q);
+  //IFDEBUG(cerr << "Output " << outputName << " connects to:" << endl);
+
+  for (int i = 0; i < InputsList->count(); i++) {
+    QListBoxItem *item = InputsList->item(i);
+    std::string itemName(item->text());
+
+    InputDescriptor const &dst_q
+      (link->getTarget()->getGenerator()->getClass().getInput(itemName));
+
+    if (InputsList->isSelected(item)) {
+      //IFDEBUG(cerr << " - " << itemName << endl);
+      actives.insert(&dst_q);
+    } else {
+      actives.erase(&dst_q);
+    }
+  }
+
+  //IFDEBUG(cerr << "----------------------------------------" << endl);
 }

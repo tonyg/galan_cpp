@@ -556,6 +556,20 @@ public:
     _userdata = newdata;
   }
 
+  /**
+   * Returns true if this generator is currently muted; false otherwise.
+   **/
+  bool mute() const {
+    return muted;
+  }
+
+  /**
+   * Mute or unmute a generator - pass in true to mute it, false to unmute.
+   **/
+  void mute(bool m) {
+    muted = m;
+  }
+
 protected:
   // Mostly for use by Macro.
   void addInput();			///< Internal: extends 'inputs' by one
@@ -575,6 +589,7 @@ private:
   std::vector<conduitlist_t> outputs;	///< all conduits connected to our outputs
 
   bool polyphonic;			///< If false, we only ever have a single voice.
+  bool muted;				///< If true, we are (until told otherwise) silent.
 
   /**
    * All voices in this instance. degree of polyphony

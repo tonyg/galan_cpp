@@ -8,11 +8,14 @@
 #include <qcanvas.h>
 #include <qpoint.h>
 #include <qpainter.h>
+#include <qpopupmenu.h>
 
 #include "galan/macro.h"
 #include "galan/generator.h"
 
 #include "itemlink.h"
+
+// Defined in this header: ItemIcon, LinksMenu
 
 class ItemIcon: public QObject, public QCanvasRectangle {
   Q_OBJECT
@@ -28,23 +31,30 @@ public:
   std::string const &getItemName() const { return name; }
   Galan::Generator *getGenerator() const { return macro->findChild(name); }
 
+  bool mute() const { return getGenerator()->mute(); }
+
   virtual void moveBy(double dx, double dy);
 
   static int const RTTI = 14641;
   virtual int rtti() const { return RTTI; }
 
-  void editLinksTo(ItemIcon *target);
-  void disconnectFrom(ItemIcon *target);
   ItemLink *findLinkTo(ItemIcon *target, bool create);
 
   QString buildMenu(QPopupMenu *menu);
   QString buildTip();
 
+  void disconnectFrom(ItemIcon *target, ItemLink *whichLink);
+  void disconnectFrom(ItemIcon *target);
+  void editLinksTo(ItemIcon *target);
+
+public slots:
+  void muteIcon();
+  void renameIcon();
+  void deleteIcon();
+  void deleteIconLinks();
+
 protected:
   virtual void drawShape(QPainter &p);
-
-private slots:
-  void deleteIcon();
 
 private:
   void refreshLinks();
@@ -54,6 +64,23 @@ private:
 
   typedef std::set<ItemLink *> links_t;
   links_t links;
+};
+
+///////////////////////////////////////////////////////////////////////////
+
+class LinksMenu: public QPopupMenu {
+public:
+  LinksMenu(QWidget *parent,
+	    ItemIcon *_subject,
+	    std::set<ItemLink *> const &_links);
+
+  void insertLinkItems(char const *slotName);
+
+private:
+  void insertLinkItem(char const *slotName, ItemLink *link, std::string const &title);
+
+  ItemIcon *subject;
+  std::vector<ItemLink *> links;
 };
 
 #endif

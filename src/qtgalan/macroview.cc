@@ -10,6 +10,8 @@
 #include "itemicon.h"
 #include "itemhandle.h"
 
+#include "galan/controller.h"
+
 #include <qpopupmenu.h>
 #include <qtooltip.h>
 
@@ -46,14 +48,13 @@ void MacroView::DynamicTip::maybeTip(QPoint const &p) {
 
 MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   : QCanvasView(0, parent, name, f),
-    nextItemNumber(0),
     macro(_macro),
     c(new QCanvas(2048, 2048)),
     halo(new QCanvasRectangle(c)),
     selection(0),
     linkLine(0),
     editState(IDLE),
-    popupPos()
+    focusPos()
 {
   c->setBackgroundColor(Qt::black);
 
@@ -63,6 +64,7 @@ MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   // Keep the halo hidden until a selection comes along.
 
   setCanvas(c);
+  viewport()->setMouseTracking(true);
 
   // We want a tooltip manager.
   new DynamicTip(this);
@@ -207,12 +209,15 @@ void MacroView::moveItem(QMouseEvent *evt) {
 }
 
 void MacroView::popupMenu(QMouseEvent *evt) {
-  popupPos = evt->pos();
+  focusPos = evt->pos();
 
-  QCanvasItemList items = itemsAt(popupPos);
+  QCanvasItemList items = itemsAt(focusPos);
 
   QPopupMenu menu(this);
   menu.insertItem("New macro...", 0, "");	// %%% new class for New Macro dialog etc.
+
+  menu.setItemEnabled(menu.insertItem("New control", this, SLOT(newControl()), CTRL+Key_N),
+		      Controller::have_active_instance());
 
   RegistrySelectionMenu *regSel = 
     new RegistrySelectionMenu(Registry::root->lookup("Generator")->toRegistry(), &menu);
@@ -246,10 +251,65 @@ void MacroView::popupMenu(QMouseEvent *evt) {
     menu.insertItem(itemCaption, itemMenu);
   }
 
-  menu.exec(evt->globalPos(), 2);
+  menu.exec(evt->globalPos(), 3);
+}
+
+void MacroView::muteSelectedIcon() {
+  if (selection) {
+    ItemIcon *ii = dynamic_cast<ItemIcon *>(selection);
+    if (ii) {
+      ii->muteIcon();
+      selectionChanged();	// force update of Edit menu
+      c->update();
+    }
+  }
+}
+
+void MacroView::renameSelectedIcon() {
+  if (selection) {
+    ItemIcon *ii = dynamic_cast<ItemIcon *>(selection);
+    if (ii) {
+      ii->renameIcon();
+      c->update();
+    }
+  }
+}
+
+void MacroView::deleteSelectedIcon() {
+  if (selection) {
+    ItemIcon *ii = dynamic_cast<ItemIcon *>(selection);
+    if (ii) {
+      setSelection(0);
+      ii->deleteIcon();
+      c->update();
+    }
+  }
+}
+
+void MacroView::newControl() {
+  if (Controller::have_active_instance()) {
+    Controller *c = Controller::active_instance();
+    Registry *styleReg = c->getParent();
+    std::string styleName = styleReg->getLocalname();
+
+    Registrable *pluginClassReg =
+      Registry::root->lookup(std::string("Controller/Plugins/") + styleName);
+    if (pluginClassReg == 0) {
+      qWarning("No controller plugin for style %s", styleName.c_str());
+      return;
+    }
+
+    createPrimitive(pluginClassReg, c->getLocalname());
+  }
 }
 
 void MacroView::createPrimitive(Registrable const *generatorClass) {
+  createPrimitive(generatorClass, generatorClass->getLocalname());
+}
+
+void MacroView::createPrimitive(Registrable const *generatorClass,
+				std::string const &name)
+{
   IFDEBUG(cerr << "createPrimitive: fullpath " << generatorClass->getFullpath() << endl);
 
   GeneratorClass *cls = dynamic_cast<GeneratorClass *>(const_cast<Registrable *>(generatorClass));
@@ -260,21 +320,27 @@ void MacroView::createPrimitive(Registrable const *generatorClass) {
 
   Generator *prim = new Generator(*cls, true /*%%%*/);
 
-  ostrstream name;
-  name << generatorClass->getLocalname() << nextItemNumber++ << ends;
+  int counter = 1;
+  std::string newName = name;
 
-  if (!macro->addChild(name.str(), prim)) {
-    qWarning("Name already taken! Eeek");
-    delete prim;
-    return;
+ retry:
+  if (!macro->addChild(newName, prim)) {
+    qWarning("Name %s already taken! Eeek", newName.c_str());
+
+    ostrstream n;
+    n << name << '-' << ++counter << ends;
+    newName = n.str();
+
+    goto retry;
   }
 
-  ItemIcon *ii = new ItemIcon(macro, popupPos, name.str(), c);
+  ItemIcon *ii = new ItemIcon(macro, focusPos, newName, c);
 
   QString msg;
-  msg.sprintf("Created primitive %s.", name.str());
+  msg.sprintf("Created primitive %s.", newName.c_str());
   MainWin::StatusBar()->message(msg);
 
+  setSelection(ii);
   c->update();
 }
 
@@ -359,7 +425,7 @@ void MacroView::contentsMousePressEvent(QMouseEvent *evt) {
 void MacroView::contentsMouseMoveEvent(QMouseEvent *evt) {
   switch (editState) {
     case IDLE:
-      // Ignore.
+      focusPos = evt->pos();
       break;
 
     case DRAGGING_LINK:

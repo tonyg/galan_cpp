@@ -86,6 +86,19 @@ public:
    **/
   bool removeChild(std::string const &name);
 
+  /**
+   * Rename a child Generator node (by name).
+   * @param name name of the child to rename
+   * @param newName the new name for the child
+   *
+   * @return true if the child existed and was renamed; false if
+   * either there is no child with that name, or the new name was
+   * already taken. If false is returned, no change has been made to
+   * our internal state - no rename ever happened.
+   **/
+  bool renameChild(std::string const &name,
+		   std::string const &newName);
+
   // These next four methods return 0 if they fail.
   // Remove the resulting generators using removeChild() above.
 

@@ -168,6 +168,9 @@ void OssOutputClock::realtime_elapsed(sampletime_t delta) {
        i++) {
     Generator *gen = (*i);
 
+    if (gen->mute())
+      continue;
+
     if (gen->read_input(Main, 0, &temp)) {
       left += temp;
       right += temp;

@@ -18,9 +18,10 @@ sampletime_t Event::mainloop() {
       return delta;
     }
 
-    IFDEBUG(cerr << "Sending event " << *e << endl);
+    //IFDEBUG(cerr << "Sending event " << *e << endl);
     e->send();
     delete e;
+    event_q.pop();
   }
 
   return Clock::max_step();
@@ -41,7 +42,7 @@ void Event::purge_references_to(EventHandler *handler) {
 }
 
 void Event::post() {
-  IFDEBUG(cerr << "Posting event " << *this << endl);
+  //IFDEBUG(cerr << "Posting event " << *this << endl);
   event_q.push(this);
 }
 

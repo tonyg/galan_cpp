@@ -23,7 +23,7 @@ public:
   ~IconLinkEditorImpl();
 
 protected slots:
-  virtual void inputSelected(QListBoxItem*);
+  virtual void recomputeInputSelection();
   virtual void outputSelected(QListBoxItem*);
   virtual void accept();
 

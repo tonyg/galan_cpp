@@ -1,27 +1,36 @@
-- get rid of nasty clicking! prebuffer?
+- get rid of nasty clicking! prebuffer? threading?
+
 - more sensible display of names
 	- short names?
 	- user comments on icons?
+
 - online help
 	- individual plugins should have their own help contexts
 
 - pattern editor
 	- use RANDOM-ACCESS human-interaction plugin
+	- support 2D input (sliders across an area)
+
 - control windows
 	- use REALTIME human-interaction plugin
+	- support 2D input (sliders across an area)
+
 - simple prefs system
 	- for prefs editing
+
 - simple object-store system - use XML?
 	- for load/store of workspaces and macros
+
 - allow creation/editing/import/export of Macros
+
 - tie in with Brahms?
 	- REALTIME MIDI plugin
 
 - clean up API so that it uses more pimpl/bridge/whatever to hide
   symbols and implementation details so we can improve binary compatibility
+
 - cursor changes during link-creation etc
+
 - write a simple MPS-based interface (??)
 - write a win32 frontend (maybe a GTK+ one?) - if I can be bothered -
   otherwise use Java and use MPS to communicate
-- make plugin-loading use the correct extension for the platform (.so
-  on linux, .dll on win32, .sl on HPUX, etc. etc.)

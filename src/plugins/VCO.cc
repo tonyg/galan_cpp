@@ -54,7 +54,7 @@ bool VCO::MainOutput(RealtimeOutputDescriptor const &desc, SampleBuf *buf) {
   SampleBuf trigger(buf->getLength());
   read_input(trig, &trigger);
 
-#if 0
+#if 1
   // Proper code for variable frequency.
   //
   if (read_input(freq, buf)) {

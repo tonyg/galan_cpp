@@ -180,6 +180,7 @@ Generator::Generator(GeneratorClass &_cls, bool _polyphonic, int _nvoices = DEFA
     inputs(cls.getNumInputs()),
     outputs(cls.getNumOutputs()),
     polyphonic(_polyphonic),
+    muted(false),
     _userdata(0)
 {
   setPolyphony(_nvoices);
@@ -387,6 +388,9 @@ bool Generator::read_output(RealtimeOutputDescriptor const &q, int voice, Sample
   // paranoia
   RETURN_VAL_UNLESS(q.getGeneratorClass() == &cls, false);
 
+  if (muted)
+    return false;
+
   int index = q.getInternalIndex();
 
   if (!polyphonic) {
@@ -410,6 +414,9 @@ bool Generator::read_output(RandomaccessOutputDescriptor const &q, int voice,
 			    sampletime_t offset, SampleBuf *buffer) {
   // paranoia
   RETURN_VAL_UNLESS(q.getGeneratorClass() == &cls, false);
+
+  if (muted)
+    return false;
 
   RandomaccessOutputDescriptor::samplefn_t fn = q.getSampleFn();
 

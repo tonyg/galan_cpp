@@ -39,8 +39,16 @@ public:
     SELECTION_HEIGHT = 3
   };
 
+  QCanvasItem *getSelection() const { return selection; }
+
 signals:
   void selectionChanged();
+
+public slots:
+  void muteSelectedIcon();
+  void renameSelectedIcon();
+  void deleteSelectedIcon();
+  void newControl();
 
 private slots:
   void createPrimitive(Galan::Registrable const *generatorClass);
@@ -65,6 +73,9 @@ private:
   void popupMenu(QMouseEvent *evt);
   //@}
 
+  void createPrimitive(Galan::Registrable const *generatorClass,
+		       std::string const &name);
+
   enum EditState {
     IDLE = 0,		///< User is not interacting with this object
     DRAGGING_LINK,	///< User is dragging out a new connection
@@ -72,7 +83,6 @@ private:
     DRAGGING_VIEW	///< User is scrolling the whole view
   };
 
-  int nextItemNumber;
   Galan::Macro *macro;
   QCanvas *c;
 
@@ -84,7 +94,7 @@ private:
 
   EditState editState;
 
-  QPoint popupPos;		///< Position (local coords) of the context menu
+  QPoint focusPos;		///< Position (local coords) of the mouse focus
 };
 
 #endif

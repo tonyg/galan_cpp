@@ -20,6 +20,7 @@ public:
   void refresh();
   void reposition();
 
+  ItemHandle *getHandle() const { return handle; }
   ItemIcon *getSource() const { return source; }
   ItemIcon *getTarget() const { return target; }
 

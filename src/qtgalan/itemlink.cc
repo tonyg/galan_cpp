@@ -74,7 +74,12 @@ void ItemLink::reposition() {
   QPoint v = p2 - p1;
   QPoint handleLoc = p1 + v / 2;
 
-  handle->rotateTo(atan2(v.y(), v.x()));
+  int vx = v.x();
+  int vy = v.y();
+
+  // Avoid division-by-zero when atan2's 2nd argument is zero.
+  // (This apparently can happen on some systems. Sigh.)
+  handle->rotateTo(vx ? atan2(vy, vx) : ( vy > 0 ? M_PI/2 : -M_PI/2 ));
   handle->move(handleLoc.x(), handleLoc.y());
 }
 

@@ -11,7 +11,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>508</width>
+            <width>496</width>
             <height>286</height>
         </rect>
     </property>
@@ -125,6 +125,26 @@
         </property>
     </widget>
     <widget>
+        <class>QLabel</class>
+        <property stdset="1">
+            <name>name</name>
+            <cstring>TextLabel2</cstring>
+        </property>
+        <property stdset="1">
+            <name>geometry</name>
+            <rect>
+                <x>260</x>
+                <y>10</y>
+                <width>230</width>
+                <height>20</height>
+            </rect>
+        </property>
+        <property stdset="1">
+            <name>text</name>
+            <string>Available inputs (select zero or more):</string>
+        </property>
+    </widget>
+    <widget>
         <class>QListBox</class>
         <property stdset="1">
             <name>name</name>
@@ -164,26 +184,6 @@
             <enum>Multi</enum>
         </property>
     </widget>
-    <widget>
-        <class>QLabel</class>
-        <property stdset="1">
-            <name>name</name>
-            <cstring>TextLabel2</cstring>
-        </property>
-        <property stdset="1">
-            <name>geometry</name>
-            <rect>
-                <x>260</x>
-                <y>10</y>
-                <width>230</width>
-                <height>20</height>
-            </rect>
-        </property>
-        <property stdset="1">
-            <name>text</name>
-            <string>Available inputs (select zero or more):</string>
-        </property>
-    </widget>
 </widget>
 <connections>
     <connection>
@@ -199,6 +199,18 @@
         <slot>reject()</slot>
     </connection>
     <connection>
+        <sender>InputsList</sender>
+        <signal>returnPressed(QListBoxItem*)</signal>
+        <receiver>buttonOk</receiver>
+        <slot>animateClick()</slot>
+    </connection>
+    <connection>
+        <sender>OutputsList</sender>
+        <signal>returnPressed(QListBoxItem*)</signal>
+        <receiver>buttonOk</receiver>
+        <slot>animateClick()</slot>
+    </connection>
+    <connection>
         <sender>OutputsList</sender>
         <signal>selectionChanged(QListBoxItem*)</signal>
         <receiver>IconLinkEditor</receiver>
@@ -206,11 +218,17 @@
     </connection>
     <connection>
         <sender>InputsList</sender>
-        <signal>clicked(QListBoxItem*)</signal>
+        <signal>selectionChanged()</signal>
         <receiver>IconLinkEditor</receiver>
-        <slot>inputSelected(QListBoxItem*)</slot>
+        <slot>recomputeInputSelection()</slot>
     </connection>
-    <slot access="protected">inputSelected(QListBoxItem*)</slot>
     <slot access="protected">outputSelected(QListBoxItem*)</slot>
+    <slot access="protected">recomputeInputSelection()</slot>
 </connections>
+<tabstops>
+    <tabstop>OutputsList</tabstop>
+    <tabstop>InputsList</tabstop>
+    <tabstop>buttonOk</tabstop>
+    <tabstop>buttonCancel</tabstop>
+</tabstops>
 </UI>

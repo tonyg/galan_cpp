@@ -31,6 +31,10 @@ Controller *Controller::active_instance() {
   return _active_instance;
 }
 
+bool Controller::have_active_instance() {
+  return (_active_instance != 0);
+}
+
 void Controller::activate() {
   if (_active_instance != 0) {
     throw std::logic_error("Controller::activate called with instance already active!");
@@ -53,12 +57,12 @@ void Controller::deactivate() {
 ///////////////////////////////////////////////////////////////////////////
 
 RealtimeController::RealtimeController(std::string const &name)
-  : Controller("RealtimeController", name),
+  : Controller("Realtime", name),
     current_value()
 {}
 
 void RealtimeController::handle_event(SampleEvent const &event) {
-  IFDEBUG(cerr << "RealtimeController " << this << " received " << event << endl);
+  //IFDEBUG(cerr << "RealtimeController " << this << " received " << event << endl);
   current_value = event.getValue();
 }
 
@@ -69,7 +73,7 @@ Sample RealtimeController::value() {
 ///////////////////////////////////////////////////////////////////////////
 
 RandomaccessController::RandomaccessController(std::string const &name)
-  : Controller("RandomaccessController", name),
+  : Controller("Randomaccess", name),
     buf(new SampleBuf())
 {}
 

@@ -37,6 +37,12 @@ public:
   static Controller *active_instance();
 
   /**
+   * Returns true if there is a currently active instance; false
+   * otherwise.
+   **/
+  static bool have_active_instance();
+
+  /**
    * Call this to activate this instance of Controller. There can only
    * be one active at a time. Throws std::logic_error if there's
    * already an active object.
@@ -44,9 +50,9 @@ public:
   void activate();
 
   /**
-   * Call this to deactivate the currently active instance of
-   * Controller. There can only be one active at a time. Throws
-   * std::logic_error if instance is not equal to this.
+   * Call this to deactivate this instance of Controller. There can
+   * only be one active at a time. Throws std::logic_error if instance
+   * is not equal to this.
    **/
   void deactivate();
 

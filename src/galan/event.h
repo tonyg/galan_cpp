@@ -31,7 +31,7 @@ public:
   /**
    * The master event dispatcher. Processes all events in the event_q
    * until the next event in the queue is due to be processed in the
-   * future. Returns the number of sample ticks until the next event
+   * future. Returns the number of sample ticks until that next event
    * is due to occur. If the next event in the future is more than
    * Clock::max_step() sample ticks away, returns Clock::max_step().
    * Expects to be called again when the returned number of ticks have
@@ -46,9 +46,9 @@ public:
   static sampletime_t mainloop();
 
   /**
-   * Filters the event queue, removing all event targetted at the
-   * passed-in event handler.  Runs in time linear with the current
-   * length of the event queue.
+   * Filters the event queue, removing all events targetted at the
+   * passed-in event handler.  Rebuilds the entire pending-event queue
+   * (which is a heap)!
    *
    * @param handler the EventHandler that is now an unperson
    **/

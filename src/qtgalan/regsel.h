@@ -6,7 +6,6 @@
 #include <map>
 
 #include "galan/registry.h"
-#include "macroview.h"
 
 #include <qpopupmenu.h>
 #include <qpoint.h>
