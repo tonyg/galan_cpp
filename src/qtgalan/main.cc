@@ -29,7 +29,7 @@ public:
   MyWidget(QWidget *parent, Galan::RealtimeController *_c)
     : QWidget(parent),
       c(_c),
-      freq(110)
+      freq(1)
   {
     resize(sizeHint());
   }
@@ -48,6 +48,7 @@ public:
     freq = ((double) evt->x() / width());
     Galan::SampleEvent *e = new Galan::SampleEvent(c, Clock::now(), freq);
     e->post();
+    update();
   }
 
   virtual void paintEvent(QPaintEvent *evt) {
@@ -59,7 +60,10 @@ public:
 
     p.setBrush(Qt::NoBrush);
     p.setPen(Qt::white);
-    p.drawText(rect(), AlignCenter, "whee");
+
+    QString l;
+    l.sprintf("(%.6g)", freq);
+    p.drawText(rect(), AlignCenter, l);
   }
 
 private:
@@ -70,7 +74,7 @@ private:
 class MyFactory: public ControlFactory {
 public:
   MyFactory()
-    : ControlFactory("fizzbot")
+    : ControlFactory("Simple slider")
   {}
 
   virtual void construct(QWidget *parent,
