@@ -188,7 +188,7 @@ void MainWin::helpContents() {
 void MainWin::about() {
   QString msg;
   msg.sprintf("gAlan %s\n"
-	      "Copyright Tony Garnock-Jones (C) 1999-2003\n"
+	      "Copyright Tony Garnock-Jones (C) 1999-2004\n"
 	      "A modular sound-processing tool\n(Graphical Audio LANguage)\n"
 	      "\n"
 	      "gAlan comes with ABSOLUTELY NO WARRANTY; for details, see the file\n"

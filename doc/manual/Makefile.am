@@ -1,3 +1,4 @@
+pkgdatadir = @PKGDATA_DIRECTORY@
 manualdir = $(pkgdatadir)/manual
 
 figures =
@@ -22,7 +23,8 @@ EXTRA_DIST = \
 	userguide.xml
 
 %.html: %.xml webdoc.dsl xform-classes.dsl galandoc.dtd
-	jade -V '%base-filename%=$*' -t xml $<
+	-cp galandoc.dtd $(srcdir)
+	openjade -V '%base-filename%=$*' -t xml $<
 
 clean:
 	rm -f *.html

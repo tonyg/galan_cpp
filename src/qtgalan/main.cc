@@ -94,7 +94,7 @@ public:
 
 int main(int argc, char *argv[]) {
   try {
-    printf("gAlan version " VERSION ", Copyright (C) 1999-2003 Tony Garnock-Jones\n"
+    printf("gAlan version " VERSION ", Copyright (C) 1999-2004 Tony Garnock-Jones\n"
 	   "gAlan comes with ABSOLUTELY NO WARRANTY; for details, see the file\n"
 	   "\"COPYING\" that came with the gAlan distribution.\n"
 	   "This is free software, distributed under the GNU General Public\n"
