@@ -57,6 +57,6 @@ CXXFLAGS = -O0 -g
 INCLUDES = \
 	-I$(top_srcdir)/src -I@QTDIR@/include @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
 
-clean:
+clean distclean:
 	rm -f *_moc.cc
 	for d in PluginInfo SelectClock ; do rm -f $${d}_base.cc $${d}_base.h ; done

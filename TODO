@@ -1,8 +1,11 @@
 - clean up API so that it uses more pimpl/bridge/whatever to hide
   symbols and implementation details so we can improve binary compatibility
 - write a Qt frontend
+	- test qtio
 - simple prefs system
-- simple object-store system
+	- for prefs editing
+- simple object-store system - use XML?
+	- for load/store of workspaces and macros
 - write a simple MPS-based interface (??)
 - write a win32 frontend (maybe a GTK+ one?) - if I can be bothered -
   otherwise use Java and use MPS to communicate

@@ -24,13 +24,13 @@ MacroView::MacroView(Macro *_macro, QWidget *parent, char const *name, WFlags f)
   halo->setZ(HALO_HEIGHT);
   // Keep the halo hidden until a selection comes along.
 
-  QCanvasPolygonalItem *r = new QCanvasRectangle(10, 10, 30, 20, c);
+  QCanvasPolygonalItem *r = new QCanvasRectangle(10, 10, 30, 20, c);	// %%% remove
   r->setBrush(Qt::yellow);
   r->setPen(Qt::white);
   r->setZ(ITEM_HEIGHT);
   r->show();
 
-  r = new QCanvasRectangle(12, 12, 30, 20, c);
+  r = new QCanvasRectangle(12, 12, 30, 20, c);	// %%% remove
   r->setBrush(Qt::blue);
   r->setPen(Qt::white);
   r->setZ(ITEM_HEIGHT);
@@ -107,7 +107,7 @@ void MacroView::createLink(QMouseEvent *evt) {
   } else {
     // Dropped on something else.
     cerr << "Would connect to " << (void *) endpoint << " if we could." << endl;
-    // %%% Must use up linkLine here!
+    // %%% Must use up linkLine here! (and of course actually create a link...)
     delete linkLine;
   }
 
@@ -125,10 +125,10 @@ void MacroView::popupMenu(QMouseEvent *evt) {
   QCanvasItemList items = itemsAt(evt->pos());
 
   QPopupMenu newMenu(this);
-  newMenu.insertItem("Placeholder", 0, "");
+  newMenu.insertItem("Placeholder", 0, "");	// %%% new class for New Primitive menu
 
   QPopupMenu menu(this);
-  menu.insertItem("New macro...", 0, "");
+  menu.insertItem("New macro...", 0, "");	// %%% new class for New Macro dialog etc.
   menu.insertItem("New primitive", &newMenu);
   menu.insertSeparator();
 
@@ -137,10 +137,10 @@ void MacroView::popupMenu(QMouseEvent *evt) {
        i != items.end();
        i++) {
     QPopupMenu *itemMenu = new QPopupMenu(&menu);
-    itemMenu->insertItem("Placeholder", 0, "");
+    itemMenu->insertItem("Placeholder", 0, "");	// %%% new class for per-item popup menu
 
     QString msg;
-    msg.sprintf("Item %d", counter++);
+    msg.sprintf("Item %d", counter++);	// %%% names instead of numbers??
     menu.insertItem(msg, itemMenu);
   }
 
