@@ -25,7 +25,7 @@ make install-strip
 %files
 %doc AUTHORS COPYING NEWS README
 
-@prefix@/bin/galan
+@prefix@/bin/qtgalan
 @prefix@/include/galan
 @prefix@/lib/galan
 @prefix@/lib/libgalan.*
