@@ -9,7 +9,9 @@ plugindir = $(pkglibdir)/plugins
 # empty) whitespace-separated list of names from the list just
 # below. (The optional plugins HAVE to be defined in EXTRA_PROGRAMS -
 # see the infopages for automake.)
-EXTRA_PROGRAMS = OssOutput.la
+EXTRA_PROGRAMS = \
+	OssOutput.la \
+	MacOutput.la
 
 plugin_PROGRAMS = \
 	Test.la \
@@ -36,6 +38,9 @@ OssOutput_la_SOURCES = OssOutput.cc
 VCO_la_SOURCES = VCO.cc
 Gain_la_SOURCES = Gain.cc
 Delay_la_SOURCES = Delay.cc
+
+MacOutput_la_SOURCES = MacOutput.cc
+MacOutput_la_LDFLAGS = -framework CoreAudio
 
 #Vorbis_la_SOURCES = Vorbis.cc
 #Vorbis_la_CFLAGS = $(VORBIS_CFLAGS)

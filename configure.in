@@ -35,6 +35,9 @@ OPTIONAL_PLUGINS=
 dnl AC_CHECK_HEADER(esd.h, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} esd_output.la")
 AC_CHECK_HEADER(sys/soundcard.h, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} OssOutput.la")
 
+# MacOS X audio hardware.
+AC_CHECK_HEADER(CoreAudio/AudioHardware.h, OPTIONAL_PLUGINS="${OPTIONAL_PLUGINS} MacOutput.la")
+
 dnl Feature tests
 dnl ===========================================================================
 
