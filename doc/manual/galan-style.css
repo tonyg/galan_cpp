@@ -40,7 +40,7 @@ IMG {
 
 PRE {
 /*	background: #eeeeee; */
-	background: #222222;
+	background: #333333;
 	padding: 1em;
 }
 
@@ -51,14 +51,14 @@ PRE, TT {
 
 .code {
 /*	background: #eeeeee; */
-	background: #222222;
+	background: #333333;
 }
 
 DIV.notebox {
 	border: solid black 1px;
 	padding: 1em;
 /*	background: #eeeeee; */
-	background: #222222;
+	background: #333333;
 }
 
 HR {
