@@ -1,8 +1,8 @@
 #ifndef Plugin_H	/* -*- c++ -*- */
 #define Plugin_H
 
-#include "registry.h"
-#include "ref.h"
+#include "galan/registry.h"
+#include "galan/ref.h"
 
 #include <string>
 #include <vector>

@@ -1,5 +1,5 @@
 #include <string.h>
-#include "generator.h"
+#include "galan/generator.h"
 
 GALAN_USE_NAMESPACE
 

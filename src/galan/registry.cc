@@ -1,5 +1,5 @@
 #define NDEBUG
-#include "registry.h"
+#include "galan/registry.h"
 
 GALAN_USE_NAMESPACE
 

@@ -11,12 +11,12 @@
 #include <vector>
 #include <list>
 
-#include "global.h"
-#include "model.h"
-#include "sample.h"
-#include "clock.h"
-#include "registry.h"
-#include "ref.h"
+#include "galan/global.h"
+#include "galan/model.h"
+#include "galan/sample.h"
+#include "galan/clock.h"
+#include "galan/registry.h"
+#include "galan/ref.h"
 
 GALAN_BEGIN_NAMESPACE
 

@@ -1,4 +1,4 @@
-#include "model.h"
+#include "galan/model.h"
 
 GALAN_USE_NAMESPACE
 

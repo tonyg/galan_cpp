@@ -1,5 +1,5 @@
 #include <string.h>
-#include "macro.h"
+#include "galan/macro.h"
 
 GALAN_USE_NAMESPACE
 

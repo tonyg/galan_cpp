@@ -1,4 +1,4 @@
-#include "clock.h"
+#include "galan/clock.h"
 
 GALAN_USE_NAMESPACE
 

@@ -1,5 +1,5 @@
-#include "event.h"
-#include "clock.h"
+#include "galan/event.h"
+#include "galan/clock.h"
 
 GALAN_USE_NAMESPACE
 

@@ -12,12 +12,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-#include "global.h"
-#include "generator.h"
-#include "sample.h"
-#include "plugin.h"
-#include "clock.h"
-#include "iomanager.h"
+#include "galan/global.h"
+#include "galan/generator.h"
+#include "galan/sample.h"
+#include "galan/plugin.h"
+#include "galan/clock.h"
+#include "galan/iomanager.h"
 
 #include <set>
 

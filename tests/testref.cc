@@ -5,7 +5,7 @@
 #include <hash_map>
 #include <string>
 
-#include "ref.h"
+#include "galan/ref.h"
 
 using namespace Galan;
 

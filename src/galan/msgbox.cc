@@ -27,8 +27,8 @@
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 
-#include "global.h"
-#include "msgbox.h"
+#include "galan/global.h"
+#include "galan/msgbox.h"
 
 GALAN_USE_NAMESPACE
 

@@ -3,21 +3,21 @@
 EXTRA_PROGRAMS = testref testreg testfns
 
 LDADD = @GLIB_LIBS@
-INCLUDES = -I.. -I$(srcdir)/../include @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
+INCLUDES = -I$(top_srcdir)/src @GLIB_CFLAGS@ -DSITE_PKGLIB_DIR=\"$(pkglibdir)\"
 
 testref_SOURCES = testref.cc
-testref_LDADD = -liberty
+testref_LDADD =
 
 testreg_SOURCES = testreg.cc
-testreg_LDADD = ../src/registry.o -lglib
-testreg_DEPENDENCIES = ../src/registry.o
+testreg_LDADD = ../src/galan/registry.o -lglib
+testreg_DEPENDENCIES = ../src/galan/registry.o
 
 testfns_SOURCES = testfns.cc
 
 install: all
 all: $(EXTRA_PROGRAMS)
 
-../src/%.o: ../src/%.cc
+../src/galan/%.o: ../src/galan/%.cc
 	make -C ../src %.o
 
 clean:

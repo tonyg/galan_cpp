@@ -4,7 +4,7 @@
 ///////////////////////////////////////////////////////////////////////////
 // I/O Manager for galan
 
-#include "global.h"
+#include "galan/global.h"
 
 GALAN_BEGIN_NAMESPACE
 

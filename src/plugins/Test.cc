@@ -6,10 +6,10 @@
 #include <stdio.h>
 #include <stddef.h>
 
-#include "global.h"
-#include "generator.h"
-#include "sample.h"
-#include "plugin.h"
+#include "galan/global.h"
+#include "galan/generator.h"
+#include "galan/sample.h"
+#include "galan/plugin.h"
 
 GALAN_USE_NAMESPACE
 

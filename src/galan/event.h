@@ -8,8 +8,8 @@
 #include <queue>
 #include <iostream>
 
-#include "global.h"
-#include "sample.h"
+#include "galan/global.h"
+#include "galan/sample.h"
 
 GALAN_BEGIN_NAMESPACE
 

@@ -2,11 +2,12 @@
 #include <string.h>
 #include <stdio.h>
 
-#include "global.h"
-#include "gmodule.h"
-#include "msgbox.h"
-#include "registry.h"
-#include "plugin.h"
+#include <gmodule.h>
+
+#include "galan/global.h"
+#include "galan/msgbox.h"
+#include "galan/registry.h"
+#include "galan/plugin.h"
 
 GALAN_USE_NAMESPACE
 

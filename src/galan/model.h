@@ -7,7 +7,7 @@
 
 #include <set>
 
-#include "global.h"
+#include "galan/global.h"
 
 GALAN_BEGIN_NAMESPACE
 

@@ -8,11 +8,11 @@
 #include <memory>
 #include <string>
 
-#include "global.h"
-#include "generator.h"
-#include "registry.h"
-#include "model.h"
-#include "event.h"
+#include "galan/global.h"
+#include "galan/generator.h"
+#include "galan/registry.h"
+#include "galan/model.h"
+#include "galan/event.h"
 
 GALAN_BEGIN_NAMESPACE
 

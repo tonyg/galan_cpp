@@ -2,14 +2,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "global.h"
+#include "galan/global.h"
 
-#include "model.h"
-#include "generator.h"
-#include "clock.h"
-#include "event.h"
-#include "plugin.h"
-#include "macro.h"
+#include "galan/model.h"
+#include "galan/generator.h"
+#include "galan/clock.h"
+#include "galan/event.h"
+#include "galan/plugin.h"
+#include "galan/macro.h"
 
 GALAN_USE_NAMESPACE
 

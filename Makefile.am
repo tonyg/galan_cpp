@@ -1,7 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = include galan.spec TODO
-SUBDIRS = src plugins tests
+EXTRA_DIST = galan.spec TODO
+SUBDIRS = src tests
 
 libtool: $(LIBTOOL_DEPS)
 	$(SHELL) ./config.status --recheck

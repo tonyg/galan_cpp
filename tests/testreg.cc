@@ -5,7 +5,7 @@
 #include <hash_map>
 #include <string>
 
-#include "registry.h"
+#include "galan/registry.h"
 
 GALAN_USE_NAMESPACE
 

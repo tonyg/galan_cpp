@@ -1,6 +1,6 @@
 dnl -*- shell-script -*-
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(src/main.cc)
+AC_INIT(src/galan/global.h)
 AM_INIT_AUTOMAKE(galan, 0.4.0)
 AM_CONFIG_HEADER(config.h)
 
@@ -51,4 +51,11 @@ else
   AC_MSG_RESULT([no, we\'re not using GCC])
 fi
 
-AC_OUTPUT(Makefile src/Makefile plugins/Makefile tests/Makefile galan.spec)
+AC_OUTPUT(
+    Makefile
+    src/Makefile
+    src/galan/Makefile
+    src/plugins/Makefile
+    tests/Makefile
+    galan.spec
+)
