@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-EXTRA_DIST = doc galan.spec TODO
+EXTRA_DIST = doc galan.spec TODO MANIFEST
 SUBDIRS = src tests
 
 bin_SCRIPTS = galan-config

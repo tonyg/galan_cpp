@@ -23,7 +23,7 @@ make
 make install-strip
 
 %files
-%doc AUTHORS COPYING NEWS README
+%doc AUTHORS COPYING NEWS README MANIFEST
 
 @prefix@/bin/qtgalan
 @prefix@/bin/galan-config

@@ -1,0 +1,20 @@
+This file contains information on (parts of) the layout of the gAlan
+source tree.
+
+.
+|-- AUTHORS		Put your name here if you contribute
+|-- ChangeLog		Add a brief description of changes here
+|-- MANIFEST		This file
+|-- NEWS		Release notes?
+|-- README		Technical notes on the system
+|-- TODO		Tasks to be completed
+|-- autocvs		Runs automake/autoconf in the right order
+|-- doc
+|   `-- Doxyfile	Configuration for Doxygen
+|-- galan-config.in	Fragment of shell - useful for library users
+|-- galan.spec.in	RPM spec template
+|-- src
+|   |-- galan		Base gAlan audio processing library
+|   |-- plugins		Plugins distributed in the main source tree
+|   `-- qtgalan		Qt frontend to gAlan library
+`-- tests		Miscellaneous snippets of test code
