@@ -33,7 +33,7 @@ void Clock::advance(sampletime_t remaining) {
     delta = MIN(remaining, Event::mainloop());
     remaining -= delta;
 
-    // IFDEBUG(cerr << "Advancing clock by " << delta << endl);
+    //IFDEBUG(cerr << "Advancing clock by " << delta << endl);
     while (i != realtime_fns.end()) {
       (*i)->realtime_elapsed(delta);
       i++;
@@ -57,6 +57,8 @@ ClockManager *ClockManager::instance() {
 void ClockManager::register_clock(Clock *clock) {
   IFDEBUG(cerr << "Registering clock " << clock->getName() << endl);
   all_clocks.push_back(clock);
+  if (active == default_clock)
+    select_clock(clock);
   notifyViews();
 }
 
@@ -78,13 +80,19 @@ void ClockManager::select_clock(Clock *clock) {
   IFDEBUG(cerr << "Clock " << (clock ? clock->getName() : "<none>") << " selected" << endl);
   active = clock;
 
+  if (active == NULL)
+    active = default_clock;
+
   if (active != NULL)
     active->enable();
 }
 
 void ClockManager::set_default_clock(Clock *clock) {
   IFDEBUG(cerr << "Default clock is now " << (clock ? clock->getName() : "<none>") << endl);
+  bool shouldSelect = (active == default_clock) || (active == NULL);
   default_clock = clock;
+  if (shouldSelect)
+    select_clock(default_clock);
 }
 
 void ClockManager::stop_clock() {
